@@ -499,3 +499,121 @@ class SucursalCine:
                 peliculaPeorCalificada = pelicula
 
         return peliculaPeorCalificada
+    
+#Description: Este metodo se encarga de analizar por semana que peliculas han sido bien o mal calificadas, evaluando
+#las calificaciones de los clientes, si una pelicula es calificada por debajo de 3, la consideramos como mal calificada
+#y la cambiamos de sede, y si la pelicula esta por encima de 3 esta catalogada como bien, ya en el caso en que la 
+#pelicula este calificada como mayor a 4.5, la cambiamos de sede, ya que consideramos que es una muy buena pelicula, y 
+#nos hara ganar mayor rentabilidad.Tambien se encarga de cambiar peliculas de sede, ya que en nuestra logica de negocio implementamos
+#el sistema de calificaciones, entonces tenemos que estar constantemente pendientes de que peliculas han sido
+#buenas o malas recibidas por los clientes, y cambiandolas de sede, esperamos que su calificacion mejore, si esto
+#no se da, la pelicula es eliminada de la cartelera, ya que se considera como mala.
+
+    def logicaCalificacionPeliculas(self, pelicula):
+        peliculasCalificadas = Pelicula.obtenerPeliculasPorNombre(pelicula.getNombre(), self._cartelera)
+        if not peliculasCalificadas:
+            return
+
+        promedio = 0
+        verificacionCambio = True
+        
+        for pelicula in peliculasCalificadas:
+            promedio += pelicula.getValoracion()
+            verificacionCambio = verificacionCambio and pelicula.isStrikeCambio()
+
+        calificacionReal = promedio / len(peliculasCalificadas)
+
+        if calificacionReal < 3:
+            if verificacionCambio:
+                sucursal = self.seleccionarSucursalAleatoriamente()
+                for pelicula1 in peliculasCalificadas:
+                    self.eliminarPeliculas([pelicula1])
+                    if pelicula1.getTipoDeFormato() == "2D":
+                        Pelicula(pelicula1.getNombre(), int(pelicula1.precio * 0.9), pelicula1.getGenero(), pelicula1.getDuracion(), pelicula1.getClasificacion(), pelicula1.getTipoDeFormato(), sucursal)
+            else:
+                self.eliminarPeliculas(peliculasCalificadas)
+        elif calificacionReal > 4.5:
+            sucursal = self.seleccionarSucursalAleatoriamente()
+            for pelicula2 in peliculasCalificadas:
+                if pelicula2.getTipoDeFormato() == "2D":
+                    Pelicula(pelicula2.getNombre(), int(pelicula2.precio * 1.10), pelicula2.getGenero(), pelicula2.getDuracion(), pelicula2.getClasificacion(), pelicula2.getTipoDeFormato(), sucursal)
+
+
+#################### PORQUE ESTA ESTE METODO AQUI Y EN SERVICIO?????????????????????
+#                    LE CORREGI LOS ERRORES QUE CHAT GPT LE HABIA HECHOPARA PODER EJECUTARLO
+# porque los quise poner en los dos hermano, y si, use chat gpt con esos metodos,
+# cual es la wachafita ps?
+#Description: Este metodo se encarga de seleccionar las sucursales del arrayList y con el uso de la funcion random de la libreria math,
+#se selecciona una sucursal aleatoriamente, ya que esto nos permetira mas adelante el cambio de sucursal de una
+#pelicula a otra.
+# 	 
+    def seleccionarSucursalAleatoriamente(self,sucursalCine):
+     if len(sucursalCine) <= 1:
+        raise ValueError("No hay suficientes sucursales para seleccionar una diferente.")
+    
+     while True:
+        numeroAleatorio = random.randint(0, len(sucursalCine) - 1)
+        sucursalSeleccionada = sucursalCine[numeroAleatorio]
+        if sucursalCine != sucursalSeleccionada:
+            return sucursalSeleccionada
+
+
+    def mostrarServicios(self):
+        s = []
+        for servicio in self.getServicios():
+            s.append("Servicio " + servicio.getNombre())
+        return s
+
+
+#Getters and Setters
+################################################
+
+    def getIdSucursal(self):
+        return self._idSucursal
+    
+    def setIdSucursal(self, idSucursal):
+        self._idSucursal = idSucursal
+
+    @classmethod
+    def getCantidadSucursales(cls):
+        return SucursalCine._cantidadSucursales
+    
+    @classmethod
+    def setCantidadSucursales(cls, cantidadSucursales):
+        SucursalCine._cantidadSucursales = cantidadSucursales
+    
+    def getUbicacion(self):
+        return self._ubicacion
+    
+    def setUbicacion(self, ubicacion):
+        self._ubicacion = ubicacion
+    
+    def getSalasDeCine(self):
+        return self._salasDeCine
+    
+    def setSalasDeCine(self, salasDeCine):
+        self._salasDeCine = salasDeCine
+    
+    def getCartelera(self):
+        return self._cartelera
+    
+    def setCartelera(self, cartelera):
+        self._cartelera = cartelera
+    
+    def getCantidadTicketsCreados(self):
+        return self._cantidadTicketsCreados
+
+    def setCantidadTicketsCreados(self, cantidadTicketsCreados):
+        self._cantidadTicketsCreados = cantidadTicketsCreados
+    
+    def getFechaActual(self):
+        return SucursalCine._fechaActual
+    
+    def setFechaActual(self, fechaActual):
+        SucursalCine._fechaActual = fechaActual
+
+    def getTarjetasCinemar(self):
+        return self._tarjetasCinemar
+
+    def setTarjetasCinemar(self, tarjetasCinemar):
+        self._tarjetasCinemar = tarjetasCinemar
