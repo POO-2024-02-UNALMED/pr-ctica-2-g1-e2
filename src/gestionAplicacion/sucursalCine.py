@@ -347,3 +347,155 @@ class SucursalCine:
         for pelicula in peliculasEliminar:
             if pelicula in self.cartelera:
                 self._cartelera.remove(pelicula)
+
+
+#Description: Este metodo se encarga de remover los productos que fueron mal calificadas en dos sucursales, por lo
+#tanto por temas de negocio decidimos eliminar este producto por malas ventas, usando la funcion remove, quitandola
+#de la cartelera principal de peliculas.
+	 
+	 
+    def eliminarProducto(self, productosEliminar):
+        for producto in productosEliminar:
+            if producto in self._inventarioCine:
+                self._inventarioCine.remove(producto)
+
+#Description : Este método se encarga de retornar los productos cuyo nombre coincide con el nombre del producto seleccionada por el cliente.
+#@param nombreProducto : Este método recibe como parámetro el nombre del producto (De tipo String) con el cuál se realizará el filtrado.
+#@param Inventario : Este método recibe como parámetro una lista (De tipo ArrayList<Producto>) que contiene 
+#los productos previamente filtrados según los datos del cliente y su disponibilidad horaria.
+#@return <b>ArrayList<Producto></b> : Este método retorna un ArrayList de los productos cuyo nombre coinciden con el nombre seleccionado 
+#por el cliente.
+	 
+    def filtrarPorNombreDeProducto(nombreProducto, inventario):
+     productosEncontrados = []
+
+     for producto in inventario:
+        if producto.getNombre() == nombreProducto:
+            productosEncontrados.append(producto)
+
+     return productosEncontrados 
+    
+#Description: Este metodo se encarga de analizar por semana que productos han sido bien o mal calificadas, evaluando
+#las calificaciones de los clientes, si un producto es calificado por debajo de 3, lo consideramos como mal calificado
+#y lo cambiamos de sede, y si la valoracion del producto esta por encima de 3 esta catalogada como bien, ya en el caso en que el 
+#bono este calificado como mayor a 4.5, lo cambiamos de sede, ya que consideramos que es un muy buen producto, y 
+#nos hara ganar mayor rentabilidad.Tambien se encarga de cambiar productos de sede, ya que en nuestra logica de negocio implementamos
+#el sistema de calificaciones, entonces tenemos que estar constantemente pendientes de que productos han sido
+#bien o mal recibidos por los clientes, y cambiandolos de sede, esperamos que su calificacion mejore, si esto
+#no se da, el producto es eliminado del inventario, ya que se considera como malo.
+
+    def logicaCalificacionProductos(self, producto):
+        productosCalificados = self.filtrarPorNombreDeProducto(producto.getNombre())
+        
+        verificacionCambio = True
+
+        if producto.getValoracionComida() < 3:
+            if verificacionCambio:
+                sucursal = self.seleccionarSucursalAleatoriamente(producto.getSucursalSede())
+                for producto1 in productosCalificados:
+                    if producto1 in self._inventarioCine:
+                        self._inventarioCine.remove(producto1)
+                    if producto1.getTipoProducto() == "comida":
+                        nuevoProducto = Producto(producto1.getNombre(), producto1.getTamaño(), producto1.getTipoProducto(), producto1.getPrecio() * 0.9, producto1.getCantidad(), producto1.getGenero(), sucursal)
+                        self._inventarioCine.append(nuevoProducto)
+                    elif producto1.getTipoProducto() == "souvenir":
+                        nuevoProducto = Producto(producto1.getNombre(), producto1.getTamaño(), producto1.getTipoProducto(), producto1.getPrecio() * 0.9, producto1.getCantidad(), producto1.getGenero(), sucursal)
+                        self._inventarioCine.append(nuevoProducto)
+            else:
+                self.eliminarProducto(productosCalificados)
+
+        elif producto.getValoracionComida() > 4.5:
+            sucursal1 = self.seleccionarSucursalAleatoriamente(producto.getSucursalSede())
+            for producto2 in productosCalificados:
+                if producto2.getTipoProducto() == "comida":
+                    nuevoProducto = Producto(producto2.getNombre(), producto2.getTamaño(), producto2.getTipoProducto(), producto2.getPrecio() * 1.10, producto2.getCantidad(), producto2.getGenero(), sucursal1)
+                    self._inventarioCine.append(nuevoProducto)
+                elif producto2.getTipoProducto() == "souvenir":
+                    nuevoProducto = Producto(producto2.getNombre(), producto2.getTamaño(), producto2.getTipoProducto(), producto2.getPrecio() * 1.10, producto2.getCantidad(), producto2.getGenero(), sucursal1)
+                    self._inventarioCine.append(nuevoProducto)         
+
+#Description: Este método se encarga de realizar la distribución de productos en los inventarios de los productos
+#ccada semana luego de haber efectuado el cambio de producto de sucursal propio de la funcionalidad 3. 
+
+
+    def logicaSemanalProducto(sucursales_cine):
+     for sede in sucursales_cine:
+        for producto in sede.getInventarioCine():
+            if producto.getTipoProducto() == "comida" or producto.getTipoProducto() == "souvenir":
+                sede.logicaCalificacionProductos(producto) 
+
+#Description: Este metodo se encarga de revisar en el arrayList de inventario que producto ha tenido
+#la mejor calificacion, osea, el producto mas eficiente segun los gustos de los clientes, con este producto vamos 
+#a generar combos en recompensa a los clientes que nos dejaron sus reseñas
+	 
+    def mejorProducto(self):
+        productoMejorCalificado = None
+        primeraComparacion = True
+
+        for producto in self._inventarioCine:
+            if producto.getTipoProducto().lower() in ["comida", "souvenir"]:
+                if primeraComparacion:
+                    productoMejorCalificado = producto
+                    primeraComparacion = False
+                elif producto.getValoracionComida() > productoMejorCalificado.getValoracionComida():
+                    productoMejorCalificado = producto
+
+        return productoMejorCalificado                   
+
+#Description: Este metodo se encarga de revisar en el arrayList de inventario que producto ha tenido
+#la peor calificacion, osea, el producto mas deficiente segun los gustos de los clientes, con este producto vamos 
+#a generar combos en recompensa a los clientes que nos dejaron sus reseñas.
+
+    def peorProducto(self):
+        productoPeorCalificado = None
+        primeraComparacion = True
+
+        for producto in self._inventarioCine:
+            if producto.getTipoProducto().lower() in ["comida", "souvenir"]:
+                if primeraComparacion:
+                    productoPeorCalificado = producto
+                    primeraComparacion = False
+                elif producto.getValoracionComida() < productoPeorCalificado.getValoracionComida():
+                    productoPeorCalificado = producto
+
+        return productoPeorCalificado
+    
+#Description: Este metodo se encarga de revisar en el arrayList de peliculasDisponibles que pelicula ha tenido
+#la mejor calificacion, osea, la pelicula mas eficiente segun los gustos de los clientes, con esta pelicula vamos 
+#a generar combos en recompensa a los clientes que nos dejaron sus reseñas.
+	 
+    def mejorPelicula(self):
+        peliculaMejorCalificada = None
+        primeraComparacion = True
+
+        for pelicula in self._cartelera:
+            if pelicula.seleccionarHorarioMasLejano() is None:
+                continue
+
+            if primeraComparacion:
+                peliculaMejorCalificada = pelicula
+                primeraComparacion = False
+            elif pelicula.getValoracion() > peliculaMejorCalificada.getValoracion():
+                peliculaMejorCalificada = pelicula
+
+        return peliculaMejorCalificada
+    
+#Description: Este metodo se encarga de revisar en el arrayList de peliculasDisponibles que pelicula ha tenido
+#la peor calificacion, osea, la pelicula mas deficiente segun los gustos de los clientes, con esta pelicula vamos 
+#a generar combos en recompensa a los clientes que nos dejaron sus reseñas.
+
+    def peorPelicula(self):
+        peliculaPeorCalificada = None
+        primeraComparacion = True
+
+        for pelicula in self._cartelera:
+            if pelicula.seleccionarHorarioMasLejano() is None:
+                continue
+
+            if primeraComparacion:
+                peliculaPeorCalificada = pelicula
+                primeraComparacion = False
+            elif pelicula.getValoracion() < peliculaPeorCalificada.getValoracion():
+                peliculaPeorCalificada = pelicula
+
+        return peliculaPeorCalificada
