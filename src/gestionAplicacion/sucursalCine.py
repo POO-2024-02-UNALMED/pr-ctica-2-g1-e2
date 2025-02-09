@@ -202,5 +202,148 @@ class SucursalCine:
         for ticket in ticketsAEliminar:
             SucursalCine._ticketsDisponibles.remove(ticket)
         
-        for cliente in SucursalCine._clientes:
+         for cliente in SucursalCine._clientes:
             cliente.dropTicketsCaducados() 
+
+    
+    @classmethod
+    def buscarCliente(cls, numeroDocumento, tipoDeDocumento):
+
+        """
+        <b>Description</b>: Este método se encarga de buscar un cliente en la lista de clientes de la clase SucursalCine cuyo
+        número de documento y tipo de documento coincida con el número y tipo pasados como parámetros
+
+        :param numeroDocumento: Corresponde al número de documento del usuario que estamos buscando
+        :type numeroDocumento: int
+
+        :param tipoDeDocumento: Corresponde al tipo de documento del usuario que estamos buscando
+        :type tipoDeDocumento: String
+
+        :return cliente: Este método retorna el cliente en caso de encontrarlo, sino, retorna None
+        """
+
+        for cliente in SucursalCine._clientes:
+            if cliente.getDocumento() == numeroDocumento:
+                if cliente.getTipoDocumento().value == tipoDeDocumento:
+                    return cliente
+                else:
+                    return 'Tipo de documento incorrecto'
+        
+        return None
+    
+    @classmethod
+    def obtenerSucursalPorUbicacion(cls, ubicacion):
+
+        """
+        <b>Description</b>: Este método se encarga de buscar la sucursal de cine cuya ubicación coincida con la pasada
+        como prámetro
+
+        :param ubicacion: Corresponde a la ubicacion de la sucursal que estamos buscando
+
+        :returns sede: Este método retorna la sede encontrada 
+        """
+        
+        for sede in SucursalCine._sucursalesCine:
+            if sede._ubicacion == ubicacion:
+                return sede
+    
+    def avanzarTiempo(self):
+
+        """
+        :Description: Este método se encarga de avanzar la hora y ejecutar la lógica de negocio en 3 plazos:
+        
+        <ol>
+	    <li>Durante la jornada laboral: Actualiza las salas de cine, ubicando las películas en presentación en sus respectivas salas.</li>
+	    <li>Diariamente: Limpia el array de tickets generados, con el fin de tener únicamente aquellos tickets que pueden usarse para generar descuentos.</li>
+	    <li>Semanalmente: Cambia las películas de sucursal según su rendimiento, distribuye de nuevo las películas en sus salas de cine y crea los horarios de presentación semanal.</li>
+        </ol>
+        """
+
+        SucursalCine._fechaActual += timedelta( seconds = 20 )
+        
+        if SucursalCine._fechaActual.date() >= SucursalCine._fechaRevisionLogicaDeNegocio:
+            #Avanzamos la próxima evaluación a la próxima semana
+            SucursalCine._fechaRevisionLogicaDeNegocio = (self._fechaActual + timedelta( weeks = 1 )).date()
+            #Ejecutamos la lógica semanal
+            SucursalCine.logicaSemanalSistemNegocio()
+        
+        if SucursalCine._fechaActual.date() >= SucursalCine._fechaValidacionNuevoDiaDeTrabajo:
+            #Avanzamos la próxima evaluación al día siguiente
+            SucursalCine._fechaValidacionNuevoDiaDeTrabajo = (SucursalCine._fechaActual + timedelta( days = 1 )).date()
+            #Ejecutamos la lógica diaria
+            SucursalCine.logicaDiariaReservarTicket()
+        
+        if SucursalCine._fechaActual.time() >= SucursalCine._INICIO_HORARIO_LABORAL and SucursalCine._fechaActual.time() < SucursalCine._FIN_HORARIO_LABORAL:
+            SucursalCine.actualizarPeliculasSalasDeCine()
+
+    @classmethod
+    def obtenerSucursalPorId(cls, idSucursal):
+
+        for sede in SucursalCine._sucursalesCine:
+            if sede._idSucursal == idSucursal: return sede
+
+    def obtenerSalaDeCinePorId(self, idSalaCineSucursal):
+
+        for salaCine in self._salasDeCine:
+            if salaCine.getSalaCineId() == idSalaCineSucursal : return salaCine
+
+    def obtenerPeliculaPorId(self, idPeliculaCartelera):
+
+        for pelicula in self._cartelera:
+            if pelicula.getIdPelicula() == idPeliculaCartelera: return pelicula
+
+    @classmethod
+    def notificarFechaLimiteMembresia(cls, clienteProceso):
+        """<b>Description</b>: Este método se encarga de revisar la validez de la membresia del cliente y,
+	    en caso de que este apunto de expirar, se le notificará con antelación (5 dias) para que pueda
+	    renovar su membresia. En caso de que se expire, se notifica y se desvincula del cliente.
+
+	    <b>param</b> cliente : Se usa el cliente para obtener los datos de las membresias
+	    <b>return</b> String : Se retorna el mensaje de advertencia en caso de que la membresia esta apunto de expirar o ya expiró.
+        """
+        mensaje = ""
+        #Se obtiene el objeto MetodoPago Puntos con apuntador puntos.
+        if (clienteProceso.getMembresia() != None):
+            puntos = None
+            for metodopago in clienteProceso.getMetodosDePago():
+                if (metodopago.getNombre() == "Puntos"):
+                    puntos = metodopago
+                    break
+
+            #Se verifica si la fecha actual esta pasada a la fecha limite de la membresia.
+            if (clienteProceso.getCineUbicacionActual().getFechaActual().date() > clienteProceso.getFechaLimiteMembresia()):
+                #Se guardan la cantidad de puntos en el atributo de Cliente para no perder la acumulación.
+                clienteProceso.setPuntos(clienteProceso.getPuntos() + int(puntos.getLimiteMaximoPago()))
+                #Se obtiene el nombre de la membresia y se desvincula del cliente.
+                nombreMembresia = clienteProceso.getMembresia().getNombre()
+                clienteProceso.getMembresia().getClientes().remove(clienteProceso)
+                clienteProceso.setMembresia(None)
+                #Se reinician sus métodos de pago en caso de perder la membresia.
+                MetodoPago.asignarMetodosDePago(clienteProceso)
+                mensaje = "Su membresia ha expirado. Le invitamos a renovarla para no perder sus beneficios."
+
+                #Para volver a asignar la membresia expirada al stock de inventario, se valida con el nombre.
+                for sucursalCine in SucursalCine.getSucursalesCine():
+                    if (sucursalCine.getIdSucursal() == clienteProceso.getOrigenMembresia()):
+                        for producto in sucursalCine.getInventarioCine():
+                            if (producto.getNombre() == nombreMembresia):
+                                producto.setCantidad(producto.getCantidad()+1)
+                                break
+                        break
+            #En caso de que falten 5 días o menos para que la membresía expire, se actualiza el mensaje con una advertencia.
+            elif (clienteProceso.getCineUbicacionActual().getFechaActual().date() > (clienteProceso.getFechaLimiteMembresia() - timedelta(6))
+                  and clienteProceso.getCineUbicacionActual().getFechaActual().date() < clienteProceso.getFechaLimiteMembresia()):
+                mensaje = f"Estimado cliente, recuerde que le quedan {(clienteProceso.getFechaLimiteMembresia() - clienteProceso.getCineUbicacionActual().getFechaActual().date()).days} dia(s) para que caduzca su membresía.\nLo invitamos a actualizar su suscripción para poder disfrutar de sus beneficios."
+
+        return mensaje
+
+    #Description: Este metodo se encarga de remover las peliculas que fueron mal calificadas en dos sucursales, por lo
+	 #tanto por temas de negocio decidimos eliminar esta pelicula por malas ventas, usando la funcion remove, quitandola
+	 #de la cartelera principal de peliculas.
+	 
+	 
+    def eliminarPeliculas(self, peliculasEliminar):
+       
+        for pelicula in peliculasEliminar:
+            if pelicula in self.cartelera:
+                self._cartelera.remove(pelicula)
