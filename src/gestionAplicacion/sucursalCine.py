@@ -617,3 +617,101 @@ class SucursalCine:
 
     def setTarjetasCinemar(self, tarjetasCinemar):
         self._tarjetasCinemar = tarjetasCinemar
+
+    @classmethod
+    def getMetodosDePagoDisponibles(cls):
+        return SucursalCine._metodosDePagoDisponibles
+    
+    @classmethod
+    def setMetodosDePagoDisponibles(cls, metodosDePagoDisponibles):
+        SucursalCine._metodosDePagoDisponibles = metodosDePagoDisponibles
+
+    @classmethod
+    def getTiposDeMembresia(cls):
+        return SucursalCine._tiposDeMembresia
+    
+    @classmethod
+    def setTiposDeMembresia(cls, tiposDeMembresia):
+        SucursalCine._tiposDeMembresia = tiposDeMembresia
+    
+    @classmethod
+    def getTiempoLimpiezaSalaDeCine(cls):
+        return SucursalCine._TIEMPO_LIMPIEZA_SALA_DE_CINE
+    
+    @classmethod
+    def getTiempoLimiteReservaTicket(cls):
+        return SucursalCine._TIEMPO_LIMITE_RESERVA_TICKET
+    
+    def getTicketsDisponibles(self):
+        return SucursalCine._ticketsDisponibles
+    
+    @classmethod
+    def setTicketsDisponibles(cls, ticketsDisponibles):
+        SucursalCine._ticketsDisponibles = ticketsDisponibles
+
+    @classmethod
+    def getJuegos(cls):
+        return SucursalCine._juegos
+
+    @classmethod
+    def setJuegos(cls, juegos):
+        SucursalCine._juegos = juegos
+    
+    def getClientes(self):
+        return SucursalCine._clientes
+
+    @classmethod
+    def setClientes(cls, clientes):
+        SucursalCine._clientes = clientes
+
+    @classmethod
+    def getSucursalesCine(cls):
+        return SucursalCine._sucursalesCine
+    
+    @classmethod
+    def getFechaValidacionNuevoDiaDeTrabajo(cls):
+        return SucursalCine._fechaValidacionNuevoDiaDeTrabajo
+    
+    @classmethod
+    def setFechaValidacionNuevoDiaDeTrabajo(cls, fechaValidacionNuevoDiaDeTrabajo):
+        SucursalCine._fechaValidacionNuevoDiaDeTrabajo = fechaValidacionNuevoDiaDeTrabajo
+
+    @classmethod
+    def getFechaRevisionLogicaDeNegocio(cls):
+        return SucursalCine._fechaRevisionLogicaDeNegocio
+    
+    @classmethod
+    def setFechaRevisionLogicaDeNegocio(cls, fechaRevisionLogicaDeNegocio):
+        SucursalCine._fechaRevisionLogicaDeNegocio = fechaRevisionLogicaDeNegocio
+    
+    @classmethod
+    def getFinHorarioLaboral(cls):
+        return SucursalCine._FIN_HORARIO_LABORAL
+
+    @classmethod
+    def getInicioHorarioLaboral(cls):
+        return SucursalCine._INICIO_HORARIO_LABORAL
+    
+    def getInventarioCine(self):
+        return self._inventarioCine
+
+    def setInventarioCine(self, inventarioCine):
+        self._inventarioCine = inventarioCine
+
+    def getTicketsParaDescuento(self):
+        return self._ticketsParaDescuento
+
+    def setTicketsParaDescuento(self, ticketsParaDescuento):
+        self._ticketsParaDescuento = ticketsParaDescuento
+
+    def getServicios(self):
+        return self._servicios
+
+    def setServicios(self, servicios):
+        self._servicios = servicios
+
+    def getBonosCreados(self):
+        return self._bonosCreados
+
+    def setBonosCreados(self, bonosCreados):
+        self._bonosCreados = bonosCreados
