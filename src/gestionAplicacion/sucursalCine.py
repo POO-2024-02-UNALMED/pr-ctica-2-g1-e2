@@ -51,14 +51,32 @@ class SucursalCine:
     #def mostrarSucursalesCine(cls)
 
     @classmethod
+    def actualizarPeliculasSalasDeCine(cls):
+
+        """
+        :Description: Este método se encarga de actualizar las salas de todas las sedes, para esto, 
+        iteramos sobre el ArrayList de las sedes, luego iteramos sobre el ArrayList de las salas de 
+        cine de cada sede y ejecutamos su método de actualizar peliculas en presentación.
+        """
+
+        for sede in SucursalCine._sucursalesCine:
+            for salaDeCine in sede._salasDeCine:
+
+                try:
+                    if salaDeCine.getHorarioPeliculaEnPresentacion() + salaDeCine.getPeliculaEnPresentacion().getDuracion() <= SucursalCine._fechaActual:
+                        salaDeCine.actualizarPeliculaEnPresentacion()
+                except AttributeError:
+                    salaDeCine.actualizarPeliculaEnPresentacion()
+    
+    @classmethod
     def _dropHorariosVencidos(cls):
 
         """
         :Description: Este método se encarga de eliminar los horarios que ya no pueden ser presentados al pasar de día
-	    o luego de la deserialización, de todas las películas de cada sucursal, eliminando los horarios anteriores al día
-	    de la fecha actual.
+	    o luego de la deserialización, de todas las películas de cada sucursal, eliminando los horarios anteriores al día 
+	    de la fecha actual. 
         """
-
+        
         for sede in SucursalCine._sucursalesCine:
 
             for pelicula in sede._cartelera:
@@ -69,11 +87,64 @@ class SucursalCine:
 
                     if horario.date() < SucursalCine._fechaActual.date():
                         horariosAEliminar.append(horario)
-
+                
                 for horario in horariosAEliminar:
 
                     pelicula.getAsientosSalasVirtuales().pop(pelicula.getHorariosPresentacion().index(horario))
                     pelicula.getHorariosPresentacion().remove(horario)
+
+    def _crearHorariosPeliculasPorSala(self):
+
+        """
+        :Description: Este método se encarga de crear máximo 20 horarios por cada película en cartelera de la sucursal de cine, 
+	    teniendo en cuenta los siguientes criterios: 
+	    <ol>
+	    <li>El horario en el que se presentará la película se encuentra entre el horario de apertura y cierre de nuestras 
+	    instalaciones.</li>
+	    <li>La hora a la que termina la película es menor a la hora de cierre. </li>
+	    <li>Al finalizar una película se tiene en cuenta el tiempo de limpieza de la sala de cine.</li>
+	    <li>La creación de horarios no exceda una semana (Para ejecutar correctamente la lógica semanal de nuestro cine).</li>
+	    <li>Si varias películas serán presentadas en una sala se presentarán de forma intercalada evitando colisiones.</li>
+	    </ol>
+        """
+        
+        peliculasDeSalaDeCine = []
+
+        LIMITE_CREACION_HORARIOS_PRESENTACION = (SucursalCine._fechaActual + timedelta(weeks = 1)).date()
+
+        for salaDeCine in self._salasDeCine:
+
+            horarioParaPresentar = SucursalCine._fechaActual.replace(minute = 0, second = 0, microsecond = 0)
+
+            for pelicula in self._cartelera:
+
+                if pelicula.getSalaCinePresentacion() is salaDeCine:
+                    peliculasDeSalaDeCine.append(pelicula)
+
+            for i in range (0,20):
+
+                if horarioParaPresentar.date() >= LIMITE_CREACION_HORARIOS_PRESENTACION:
+                    break
+
+                for pelicula in peliculasDeSalaDeCine:
+                    
+                    condicionCreacionEnJornadaLaboral = horarioParaPresentar.time() < SucursalCine._FIN_HORARIO_LABORAL and horarioParaPresentar.time() >= SucursalCine._INICIO_HORARIO_LABORAL
+                    condicionCreacionDuranteJornadaLaboral = (horarioParaPresentar + pelicula.getDuracion()).time() <= SucursalCine._FIN_HORARIO_LABORAL and (horarioParaPresentar + pelicula.getDuracion()).date() == horarioParaPresentar.date()
+                    
+                    if  condicionCreacionEnJornadaLaboral and condicionCreacionDuranteJornadaLaboral:
+                            pelicula.crearSalaVirtual(horarioParaPresentar)
+                            horarioParaPresentar += pelicula.getDuracion() + SucursalCine._TIEMPO_LIMPIEZA_SALA_DE_CINE
+                    else: 
+                        if horarioParaPresentar.time() > SucursalCine._INICIO_HORARIO_LABORAL:
+                            horarioParaPresentar += timedelta(days = 1)
+                        
+                        if horarioParaPresentar.date() >= LIMITE_CREACION_HORARIOS_PRESENTACION:
+                            break
+                    
+                        horarioParaPresentar = horarioParaPresentar.replace(hour = SucursalCine._INICIO_HORARIO_LABORAL.hour, minute = SucursalCine._INICIO_HORARIO_LABORAL.minute)
+                        horarioParaPresentar += pelicula.getDuracion() + SucursalCine._TIEMPO_LIMPIEZA_SALA_DE_CINE
+        
+            peliculasDeSalaDeCine.clear()
 
     def _distribuirPeliculasPorSala(self):
 
@@ -202,7 +273,7 @@ class SucursalCine:
         for ticket in ticketsAEliminar:
             SucursalCine._ticketsDisponibles.remove(ticket)
         
-         for cliente in SucursalCine._clientes:
+        for cliente in SucursalCine._clientes:
             cliente.dropTicketsCaducados() 
 
     
@@ -715,3 +786,5 @@ class SucursalCine:
 
     def setBonosCreados(self, bonosCreados):
         self._bonosCreados = bonosCreados
+
+    
