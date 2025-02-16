@@ -489,4 +489,309 @@ class FrameInicioSesion(FieldFrame):
                     messagebox.showinfo('Inicio de sesión exitoso', f'{clienteProceso.getNombre()}, Bienvenid@ a cinemar sede {sucursalSeleccionada}')
                     clienteProceso.setCineUbicacionActual(sucursalProceso)
                     self.logicaInicioProcesosFuncionalidades(clienteProceso)
+
+
+class FrameCrearUsuario(FieldFrame):
+
+    #Construimos el frame usando FieldFrame
+    def __init__(self, tipoDocumentoSeleccionado, numDocumentoSeleccionado, sucursalSeleccionada):
+
+        super().__init__(
+            tituloProceso = 'Crear Usuario', 
+            descripcionProceso = 'Hemos detectado que es la primera vez que visitas nuestras sucursales, te invitamos a diligenciar el siguiente formulario de registro',
+            tituloCriterios = 'Criterios registro',
+            textEtiquetas = ['Nombre :', 'Edad :'],
+            tituloValores = 'Datos registro',
+            infoElementosInteractuables = [None, None],
+            habilitado = [True, True]
+            )
+        
+        #Guardamos los valores obtenidos en el inicio de sesión en vars de instancia
+        self._tipoDocumentoCliente = tipoDocumentoSeleccionado
+        self._numDocumentoCliente = numDocumentoSeleccionado
+        self._sucursalActual = sucursalSeleccionada
+
+        
+    def funAceptar(self):
+
+        #Evaluamos las excepciones
+        if self.evaluarExcepciones():
+            #Obtenemos el nombre ingresado
+            nombreCliente = self.getValue('Nombre :')
+
+            #Obtenemos la edad ingresada y verificamos si es de tipo int
+            try:
+                edadCliente = int(self.getValue('Edad :'))
+            except ValueError:
+                messagebox.showerror('Error', f'El campo {self._infoEtiquetas[1].strip(':')}debe ser numérico')
+                return
+            
+            #Confirmamos las elecciones hechas por el ususario
+            confirmacionCliente = messagebox.askokcancel('Confirmación datos', f'Los datos ingresados son:\nNombre: {nombreCliente}\nEdad: {edadCliente}')
+
+            if confirmacionCliente:
+                #Verificamos que tenga la edad mínima para ingresar al cine
+                if edadCliente > 5:
+                    #Verificamos que la edad ingresada sea apropiada para el documento seleccionado
+                    if (self._tipoDocumentoCliente == TipoDocumento.CC.value and edadCliente >= 18) or (self._tipoDocumentoCliente == TipoDocumento.TI.value and edadCliente < 18) or (self._tipoDocumentoCliente == TipoDocumento.CE.value and edadCliente >= 18):
+                        #Creamos el cliente y nos dirigimos al menú principal de nuestro cine
+                        clienteCreado = Cliente(nombreCliente, edadCliente, self._numDocumentoCliente, [tipoDocumento for tipoDocumento in TipoDocumento if tipoDocumento.value == self._tipoDocumentoCliente][0], self._sucursalActual)
+                        MetodoPago.asignarMetodosDePago(clienteCreado)
+                        self.logicaInicioProcesosFuncionalidades(clienteCreado)
+                    
+                    else: 
+                        messagebox.showerror('Error', 'Debes seleccionar una edad apropiada para el documento seleccionado anteriormente')
+                
+                else:
+                    messagebox.showerror('Error', 'La edad mínima para acceder a nuestras instalaciones es de 5 años')      
+                 
+class FrameVentanaPrincipal(FieldFrame):
+
+    def __init__(self):
+        super().__init__( textEtiquetas = [] )
+
+        self._imagenFramePrincipal = tk.PhotoImage(file = 'src/iuMain/imagenes/fachadaCine.png')
+        
+        self._labelImagen = tk.Label(self, image = self._imagenFramePrincipal)
+        self._labelImagen.grid(row=0, column=0)
+
+
+
+        FieldFrame.setFrameMenuPrincipal(self)
+
+
+
+        #Se buscan los widget que tenga FieldFrame y se eliminan para este frame.
+        for widget in self.winfo_children():
+            if isinstance(widget, tk.Button):
+                widget.destroy()
+        
+        self._barraMenuPrincipal = None
+        self._menuArchivo = None
+        self._menuProcesosConsultas = None
+        self._menuAyuda = None
+
+        self._clienteProceso = FieldFrame.getClienteProceso()
+
+    def construirMenu(self):
+        self._barraMenuPrincipal = tk.Menu(ventanaLogicaProyecto, font=("Times New Roman", 10))
+        ventanaLogicaProyecto.config(menu=self._barraMenuPrincipal)
+        self._menuArchivo = tk.Menu(self._barraMenuPrincipal, tearoff= 0, font=("Times New Roman", 10), activebackground= "light blue", activeforeground="black")
+        self._menuProcesosConsultas = tk.Menu(self._barraMenuPrincipal, tearoff= 0, font=("Times New Roman", 10), activebackground= "light blue", activeforeground="black")
+        self._menuAyuda = tk.Menu(self._barraMenuPrincipal, tearoff= 0, font=("Times New Roman", 10), activebackground= "light blue", activeforeground="black")
+
+        self._barraMenuPrincipal.add_cascade(label="Archivo", menu=self._menuArchivo, font=("Times New Roman", 10))
+        self._barraMenuPrincipal.add_cascade(label="Procesos y Consultas", menu= self._menuProcesosConsultas, font=("Times New Roman", 10))
+        self._barraMenuPrincipal.add_cascade(label="Ayuda", menu= self._menuAyuda, font=("Times New Roman", 10))
+        
+        self._menuArchivo.add_command(label="Aplicación", command=self.mostrarDescripcionSistema)
+        self._menuArchivo.add_command(label="Salir", command=self.mostrarVentanaInicio)
+
+        self._menuProcesosConsultas.add_command(label = "Sistema proyecciones", command = self.ingresarFuncionalidad1)
+        self._menuProcesosConsultas.add_command(label="Zona de juegos", command=self.ingresarFuncionalidad4)
+        self._menuProcesosConsultas.add_command(label="Calificaciones", command=self.ingresarFuncionalidad3)
+        self._menuProcesosConsultas.add_command(label="Servicio de comida/souvenir", command= self.ingresarFuncionalidad2)
+        self._menuProcesosConsultas.add_command(label="Sistema de membresías", command=self.ingresarFuncionalidad5)
+
+        self._menuAyuda.add_command(label="Acerca de", command=self.avanzarDia)
     
+    def mostrarDescripcionSistema(self):
+         messagebox.showinfo("Información del Sistema", "En este programa puedes:\n•Comprar Tickets\n•Comprar comida y regalos\n•Usar la zona de juegos\n•Adquirir membresias\n•Calificar nuestros servicios")
+    
+    def mostrarVentanaInicio(self):
+        ventanaLogicaProyecto.withdraw()
+        ventanaInicio.deiconify()
+
+    def ingresarFuncionalidad1(self):
+        FieldFrame.getFramesFuncionalidades()[0].mostrarFrame()
+    
+    def ingresarFuncionalidad2(self):
+        FieldFrame.getFramesFuncionalidades()[1].mostrarFrame()
+
+    def ingresarFuncionalidad3(self):
+        FieldFrame.getFramesFuncionalidades()[2].mostrarFrame()    
+
+    def ingresarFuncionalidad4(self): 
+        FieldFrame.getFramesFuncionalidades()[3].mostrarFrame()
+
+    def ingresarFuncionalidad5(self):
+        FieldFrame.getFramesFuncionalidades()[4].mostrarFrame()
+
+    def mostrarNombreAutores(self):
+         messagebox.showinfo("Autores de la Aplicación", "• Juan José Gonzalez Morales - Alias: El Juanjo\n• Edinson Andrés Ariza Mendoza - Alias: Pana Andy\n• Rusbel Danilo Jaramillo Hincapie - Alias: El Indigente\n• Gerson Bedoya Hinestroza - Alias: El viejo Gerson\n• Santiago Castro Herrera - Alias: EL LuisMi")
+
+    def logicaMembresia(self):
+
+        SucursalCine.notificarFechaLimiteMembresia(self._clienteProceso)
+
+        if self._clienteProceso.getMembresia() != None:
+
+            diasRestantes = self.evaluarDiasRestantes()
+
+            if diasRestantes < 6:
+                try:
+                    raise ExpiredMembershipException(diasRestantes)
+                except ErrorAplicacion as e:
+                    messagebox.showerror('Error', e.mostrarMensaje())
+
+    def avanzarDia(self):
+
+        #facilitamos el acceso a la sede y creamos una boolean de validación
+        sucursalCineActual = FieldFrame.getClienteProceso().getCineUbicacionActual()
+        sucursalCineActual.setFechaActual((sucursalCineActual.getFechaActual() + timedelta( seconds= 20 )))
+        noHayHorariosPresentaciones = True
+
+        #Iteramos sobre cada sala de cine, consultando si tiene horarios de películas en presentación
+        for salaCine in sucursalCineActual.getSalasDeCine():
+            if salaCine.tieneHorariosPresentacionHoy():
+                noHayHorariosPresentaciones = False
+                break
+        
+        if noHayHorariosPresentaciones:
+            try:
+                raise NoMoreFilmsException(self._clienteProceso.getCineUbicacionActual().getFechaActual())
+            except ErrorAplicacion as e:
+                messagebox.showerror('Error', e.mostrarMensaje())
+            sucursalCineActual.setFechaActual((sucursalCineActual.getFechaActual() + timedelta( days = 1 )).replace(hour = SucursalCine.getInicioHorarioLaboral().hour, minute = SucursalCine.getInicioHorarioLaboral().minute)) #Inicio de la jornada laboral al otro día
+    
+        sucursalCineActual.avanzarTiempo() #Avanzamos el tiempo y ejecutamos lógica semenal o diaria según el caso
+        self.logicaMembresia()
+        self.refrescarFramesFuncionalidades() #Actualizamos los frames, ya que se han visto modificados por el avance de tiempo
+
+    def getBarraMenuPrincipal(self):
+        return self._barraMenuPrincipal
+
+    def getMenuArchivo(self):
+
+        return self._menuArchivo
+    
+    def getMenuProcesosConsultas(self):
+
+        return self._menuProcesosConsultas
+
+    def getMenuAyuda(self):
+        return self._menuAyuda
+
+    def evaluarDiasRestantes(self):
+        #Se verifica si la fecha actual esta pasada a la fecha limite de la membresia.
+        if (self._clienteProceso.getCineUbicacionActual().getFechaActual().date() >= self._clienteProceso.getFechaLimiteMembresia()):
+            return 0
+
+            
+        #En caso de que falten 5 días o menos para que la membresía expire, se actualiza el mensaje con una advertencia.
+        elif (self._clienteProceso.getCineUbicacionActual().getFechaActual().date() < self._clienteProceso.getFechaLimiteMembresia()):
+            return (self._clienteProceso.getFechaLimiteMembresia() - self._clienteProceso.getCineUbicacionActual().getFechaActual().date()).days
+
+###########################################################################################################################################
+
+class FrameZonaJuegos(FieldFrame):
+    
+    
+
+    def __init__(self):
+
+        self.clienteProceso = FieldFrame.getClienteProceso()
+        tituloProceso = 'Zona de Juegos\n'
+        descripcionProceso ='En este espacio podras hacer uso de todos nuestros juegos y conseguir recompensas pagando con tu tarjeta cinemar, la cual podras adquirir y recargar en este mismo espacio.\n'
+        botonVolver = True
+        fecha = f'Fecha Actual : {FieldFrame.getClienteProceso().getCineUbicacionActual().getFechaActual().date()}\nHora actual : {FieldFrame.getClienteProceso().getCineUbicacionActual().getFechaActual().time().replace(microsecond = 0)}\n'
+
+        super().__init__(
+            tituloProceso = tituloProceso,
+            descripcionProceso = descripcionProceso,
+            botonVolver = botonVolver, 
+            frameAnterior = FieldFrame.getFrameMenuPrincipal() 
+        )
+
+
+        #se destruyen todos los widgets creados por el init del padre
+        for widget in self.winfo_children():
+
+            widget.destroy()
+        
+        #se añaden widgets con el uso de canvas para dar mas estetica
+        self._imagenFondo = tk.PhotoImage(file = 'src/iuMain/imagenes/ZonaJuegos.png')
+
+        self.canvas =tk.Canvas(self, width=self._imagenFondo.width(), height=self._imagenFondo.height())
+        self.canvas.pack()
+        self.canvas.create_image(0, 0, anchor=tk.NW, image=self._imagenFondo)
+        
+        self.canvas.create_text(320, 100, text=tituloProceso, fill="black", font= ("Showcard Gothic",30))
+        self.canvas.create_text(320, 200, text=descripcionProceso, fill="black", font= ("Lucida Console",15, "bold"), width=500)
+        self.canvas.create_text(320, 310, text=fecha, fill="black", font= ("Lucida Console",15, "bold"))
+
+        boton1 = tk.Button(self, text="Ingresar", font= ("Lucida Console",15, "bold"), fg = "black", bg = "light blue",command=self.funAceptar, width=12,height=2)
+        boton2 = tk.Button(self, text="Volver", font= ("Lucida Console",15, "bold"), fg = "black", bg = "light blue", command=self.funVolver, width=12,height=2)
+        
+        self.canvas.create_window(230, 380, window=boton1, anchor="center")
+        self.canvas.create_window(420, 380, window=boton2, anchor="center")
+    
+    #Metodo para el boton ingresar
+    def funAceptar(self):
+        if FieldFrame.getClienteProceso().verificarCuenta():
+            FrameEleccion(self).mostrarFrame()
+        else: 
+            self.AlertaSinCuenta()
+
+    #Metodo para mostrar alerta cuando el cliente no tiene cuenta
+    def AlertaSinCuenta(self):
+
+        mensaje = messagebox.askyesno("Sin Cuenta", "•No tienes una Tarjeta Cinemar asociada, ¿Deseas Adquirirla?  🤔 -> 💳❔")
+
+        if mensaje:
+
+            label_ids = [] #lista que almacena los label_ids
+
+            #Se añaden al canvas para simular una cuenta regresiva con el for
+            for i in range(5,0,-1):
+
+                label = tk.Label(
+                        self, 
+                        text="Se le restará el precio de la tarjeta($5000) al saldo de su tarjeta. Redireccionando en " + str(i), 
+                        font=("Lucida Console", 11, "bold"), 
+                        width=500, 
+                        fg="black", 
+                        bg="sky blue", 
+                        bd=2, 
+                        relief="solid",
+                        wraplength= 500
+                        
+                    )
+                
+                #Se añaden al canvas para simular una cuenta regresiva
+                self.canvas.after(1500 * (5 - i), lambda lbl=label: label_ids.append(self.canvas.create_window(320, 450, window=lbl)))
+
+
+            #Metodos para eliminar los labels creados
+            def eliminar_labels():
+                for label_id in label_ids:
+                    self.canvas.delete(label_id)
+                
+
+                Arkade.asociarTarjetaCliente(self.clienteProceso)
+                FrameTarjetaCinemar(self).mostrarFrame() 
+                
+            
+            self.canvas.after(7500, eliminar_labels)
+            
+            
+               
+
+        else:
+            label = tk.Label(
+                        self, 
+                        text="Recuerda que para Ingresar debes tener una Tarjeta Cinemar", 
+                        font=("Lucida Console", 11, "bold"), 
+                        width=500, 
+                        fg="black", 
+                        bg="sky blue", 
+                        bd=2, 
+                        relief="solid",
+                        wraplength= 500
+                        
+                    )
+
+            label_id = self.canvas.create_window(320, 450, window=label)
+
+            # Usar lambda para eliminar el Label después de 5 segundos
+            self.canvas.after(4000, lambda: self.canvas.delete(label_id))
