@@ -180,4 +180,313 @@ class FieldFrame(tk.Frame):
 
         self.pack(expand=True)
     
+    @classmethod
+    def getClienteProceso(cls):
+        return FieldFrame._clienteProceso
+    
+    @classmethod
+    def setClienteProceso(cls, clienteProceso):
+        FieldFrame._clienteProceso = clienteProceso
+
+    @classmethod
+    def getFramesFuncionalidades(cls):
+        return FieldFrame._framesFuncionalidades
+    
+    @classmethod
+    def setFramesFuncionalidades(cls, framesFuncionalidades):
+        FieldFrame._framesFuncionalidades = framesFuncionalidades
+    
+    def tieneCamposPorDefecto(self):
+
+        camposPorDefecto = []
+
+        for i in range(0, len(self._infoElementosInteractuables)):
+
+            valorPorDefecto = '' if self._infoElementosInteractuables[i] == None else self._infoElementosInteractuables[i][0] if len(self._infoElementosInteractuables[i]) == 1 else self._infoElementosInteractuables[i][1]
+
+            if self.getValue(self._infoEtiquetas[i]) == valorPorDefecto:
+                camposPorDefecto.append(self._infoEtiquetas[i])
+        
+        return camposPorDefecto
+    
+    def tieneCamposVacios(self):
+
+        camposVacios = []
+
+        for elemento in self._elementosInteractivos:
+
+            if elemento.get() == '':
+                camposVacios.append(self._infoEtiquetas[self._elementosInteractivos.index(elemento)])
+        
+        return camposVacios
+
+    def getElementosInteractivos(self):
+        return self._elementosInteractivos
+
+    def logicaInicioProcesosFuncionalidades(self, clienteProceso):
+
+        FieldFrame.setClienteProceso(clienteProceso)
+
+        FieldFrame._frameMenuPrincipal = FrameVentanaPrincipal()
+
+        self.refrescarFramesFuncionalidades()
+
+        #Ejecutamos la lógica de la ventana del menú principal
+        FieldFrame.getFrameMenuPrincipal().construirMenu()
+        FieldFrame.getFrameMenuPrincipal().mostrarFrame()
+    
+    def refrescarFramesFuncionalidades(self):
+        #Creación Frames funcionalidades
+        framesFuncionalidades = [
+            FrameFuncionalidad1(), # <_ Funcionalidad 1
+            FrameFuncionalidad2(), # <- Funcionalidad 2
+            FrameFuncionalidad3Calificaciones(), # <- Funcionalidad 3
+            FrameZonaJuegos(), # <- funcionalidad 4
+            FrameFuncionalidad5() # <- Funcionalidad 5
+        ]
+
+        #Setteamos los frames de las funcionalidades al atributo de clase
+        FieldFrame.setFramesFuncionalidades(framesFuncionalidades)
+    
+    def getFrameAnterior(self):
+        return self._frameAnterior
+
+####################################################################################################
+####################################################################################################
+####################################################################################################
+####################################################################################################
+####################################################################################################
+####################################################################################################
+
+class FrameReclamoDeBonos(FieldFrame):
+    def __init__(self, servicio):
+
+        self._servicio=servicio
+        self._sucursalActual = self._clienteProceso.getCineUbicacionActual()
+        self._servicio._sucursalUbicacion = self._sucursalActual
+        self._servicio.actualizarBonos()
+
+        super().__init__(
+            tituloProceso = "Bonos",
+            descripcionProceso = "En este apartado podras reclamar los bonos que tenes asociados",
+            textEtiquetas = ['Bonos Disponibles'],
+            infoElementosInteractuables = [[servicio.mostrarBonos(self._servicio), "Seleccione un Producto"]],
+            habilitado = [False],
+        )
+
+        tituloV = tk.Label(self, text = "Productos en tu orden:", font= ("courier new",14), anchor="center", bg = "#F0F8FF" )
+        tituloV.grid(column=2, row=2, padx = (10,10), pady = (10,10))
+
+        labelCriterio = tk.Label(self, text = servicio.mostrarOrden(),anchor="w", font= ("courier new",10), bg = "#F0F8FF" )
+        labelCriterio.grid(row=3, column=2, sticky="w")
+
+        agregarb = tk.Button(self,text="Agregar Producto", font = ("courier new", 12), fg = "black", bg = "#87CEFA",command=self.agregar,
+        width=15,height=2).grid(pady = (10,10), padx=(10,10), column = 2, row = 4,)
+
+    def agregar(self):
+        condicion = True
+        if self.evaluarExcepciones():
+            nombreProducto = self._elementosInteractivos[0].get()
+            for pro in self._servicio.getBonosCliente():
+                nombrep = f"\n{pro.getProducto().getNombre()} {pro.getProducto().getTamaño()}"
+                if nombrep == nombreProducto:
+                    if len(self._servicio.getOrden()) !=0:
+                        for p in self._servicio.getOrden():
+                            nombre = f"\n{p.getNombre()} {p.getTamaño()}"
+                            if nombre == nombreProducto and condicion:
+                                if messagebox.askokcancel("Dialogo de confirmacion","Preciona aceptar para agregar el producto a la compra o presiona cancelar para descontarlo de la compra"):
+                                    condicion=False
+                                    self._servicio.agregarOrden(pro.getProducto())
+                                    self._servicio.setBonosCliente([])
+                                    self._servicio._sucursalUbicacion.getBonosCreados().remove(pro)
+                                    FrameReclamoDeBonos(self._servicio).mostrarFrame()
+                                else:
+                                    condicion=False
+                                    for i in range(0,len(self._servicio.getOrden())):
+                                        if p == self._servicio.getOrden()[i]:
+                                            self._servicio.getOrden()[i].setPrecio(self._servicio.getOrden()[i].getPrecio()-(self._servicio.getOrden()[i].getPrecio()/self._servicio.getOrden()[i].getCantidad()))
+                                            self._servicio.setBonosCliente([])
+                                            self._servicio._sucursalUbicacion.getBonosCreados().remove(pro)
+                                            FrameReclamoDeBonos(self._servicio).mostrarFrame()
+                    else:
+                        self._servicio.agregarOrden(pro.getProducto())
+                        self._servicio.setBonosCliente([])
+                        self._servicio._sucursalUbicacion.getBonosCreados().remove(pro)
+                        FrameReclamoDeBonos(self._servicio).mostrarFrame()
+
+            if condicion:
+                for pro in self._servicio.getBonosCliente():
+                    condicion=False
+                    self._servicio.agregarOrden(pro.getProducto())
+                    self._servicio.setBonosCliente([])
+                    self._servicio._sucursalUbicacion.getBonosCreados().remove(pro)
+                    FrameReclamoDeBonos(self._servicio).mostrarFrame()
+    
+    def funAceptar(self):
+        total = self._servicio.calcularTotal()
+        self._servicio.setValorPedido(total)
+        FramePasarelaDePagos(self.getFrameMenuPrincipal(),total,self._servicio).mostrarFrame()
+
+class FrameGeneracionDeProductos(FieldFrame):
+    def __init__(self, servicio):
+
+        self._sucursalActual = self._clienteProceso.getCineUbicacionActual()
+        servicio._sucursalUbicacion = self._sucursalActual
+
+        self._servicio = servicio
+        servicio.setCliente(self._clienteProceso)
+        servicio.setInventario(servicio.actualizarInventario())
+
+        super().__init__(
+            tituloProceso = "Generacion de orden",
+            descripcionProceso = "En este apartado podras seleccionar los productos que deseas comprar",
+            tituloCriterios = "Criterio de la orden",
+            textEtiquetas = ['Producto',"Cantidad"],
+            tituloValores = "Datos de compra",
+            infoElementosInteractuables = [[servicio.mostrarInventario(), "Seleccione un Producto"],None],
+            habilitado = [False,True,True],
+        )
+        tituloV = tk.Label(self, text = "Productos en tu orden:", font= ("courier new",14, "bold"), anchor="center", bg = "#F0F8FF" )
+        tituloV.grid(column=2, row=2, padx = (10,10), pady = (10,10))
+
+        self._labelCriterio = tk.Label(self, text = "",anchor="w", font= ("courier new",10))
+        self._labelCriterio.grid(row=3, column=2,rowspan=2, sticky="w")
+
+        self._agregarb = tk.Button(self,text="Agregar Producto", font = ("courier new", 12), fg = "black", bg = "#87CEFA",command = self.agregar,
+        width=15,height=2).grid(pady = (10,10), padx=(10,10), column = 2, row = 5,)
+
+        self._eliminarb=None
+
+        self.getElementosInteractivos()[0].grid_configure(sticky="we")
+        
+    def agregar(self):
+        if self.evaluarExcepciones():
+            nombreProducto = self._elementosInteractivos[0].get()
+            n = 0
+            for productos in self._servicio.getInventario():
+                nombre = f"{productos.getNombre()} {productos.getTamaño()}"
+                if nombre == nombreProducto:
+                    if productos.getCantidad() >= int(self._elementosInteractivos[1].get()):
+                        self._servicio.agregarOrden(self._servicio.hacerPedido(n ,int(self._elementosInteractivos[1].get()) ,self._clienteProceso.getCineUbicacionActual()))
+                        self.mostrar()
+                        self._eliminarb = tk.Button(self,text="Eliminar producto", font = ("Verdana", 12), fg = "white", bg = "gray",command = self.eliminar,
+            width=15,height=2).grid(pady = (10,10), padx=(10,10), column = 1, row = 6)
+                        break
+                    else:
+                        messagebox.showerror("Error",f"No hay suficiente cantidad de {productos.getNombre()} {productos.getTamaño()}, solo hay: {productos.getCantidad()}")
+                        break
+                n+=1
+            self.funBorrar()
+    
+    def eliminar(self):
+        if self.evaluarExcepciones():
+            producto = self._servicio.hacerPedido(self.getElementosInteractivos()[0].current() ,int(self._elementosInteractivos[1].get()),self._clienteProceso.getCineUbicacionActual())
+            cantidad = int(self._elementosInteractivos[1].get())
+
+            for p in self._servicio.getOrden():
+
+                if p.getNombre() == producto.getNombre() and p.getCantidad()>=cantidad and p.getTamaño() == producto.getTamaño():
+
+                    if p.getCantidad()==cantidad:
+
+                        self._servicio.getOrden().remove(p)
+                        self._servicio.getInventario()[self.getElementosInteractivos()[0].current()].setCantidad( self._servicio.getInventario()[self.getElementosInteractivos()[0].current()].getCantidad() + (cantidad*2))
+                    else:
+ 
+                        p.setCantidad(p.getCantidad()-cantidad)
+                        p.setPrecio(p.getPrecio()-(self._servicio.getInventario()[self.getElementosInteractivos()[0].current()].getPrecio()*cantidad))
+                        self._servicio.getInventario()[self.getElementosInteractivos()[0].current()].setCantidad( self._servicio.getInventario()[self.getElementosInteractivos()[0].current()].getCantidad() + (cantidad*2))
+                self.mostrar()
+                self.funBorrar()
+
+    def funAceptar(self):
+        if len(self._servicio.getOrden()) > 0:
+            productoDescuento = self._servicio.descuentarPorGenero(self._clienteProceso.getCineUbicacionActual())
+            if productoDescuento != None:
+                messagebox.showinfo("Descuento","🎉🎉Felicidades obtuviste un descuento 🎉🎉 \n Por comprar un producto del mismo genero que el tiket que compraste")
+                productoDescuento.setPrecio(productoDescuento.getPrecio()*0.9)
+        FrameReclamoDeBonos(self._servicio).mostrarFrame()
+    def mostrar(self):
+        self._labelCriterio.configure(text = self._servicio.mostrarOrden())
+
+    
+class FrameFuncionalidad2(FieldFrame):
+    def __init__(self):
+
+        self._sucursalActual = self._clienteProceso.getCineUbicacionActual()
+
+
+        super().__init__(
+            tituloProceso = "Generacion de orden",
+            descripcionProceso = "En este apartado podras seleccionar el servicio que deseas para generar una orden",
+            tituloCriterios = "Criterio servicio",
+            textEtiquetas = ['Seleccione tipo de servicio'],
+            tituloValores = "Dato servicio",
+            infoElementosInteractuables = [[self._sucursalActual.mostrarServicios(), "Seleccione un servicio"]],
+            habilitado = [False]
+        )
+        
+
+    def funAceptar(self):
+        if self.evaluarExcepciones():
+            if len(self._sucursalActual.getServicios())>1:
+                if self._elementosInteractivos[0].get() == "Servicio comida":
+                    FrameGeneracionDeProductos(self._sucursalActual.getServicios()[0]).mostrarFrame()
+                else:
+                    FrameGeneracionDeProductos(self._sucursalActual.getServicios()[1]).mostrarFrame()
+            else:
+                FrameGeneracionDeProductos(self._sucursalActual.getServicios()[0]).mostrarFrame()
+
+class FrameInicioSesion(FieldFrame):
+
+    #Construimos el frame usando FieldFrame
+    def __init__(self):
+        super().__init__(
+            tituloProceso = 'Iniciar Sesión',
+            descripcionProceso = 'En este apartado gestionamos la lógica de inicio de sesión',
+            tituloCriterios = "Criterios Ingreso", 
+            textEtiquetas = ['Seleccionar Tipo D.I. :', 'Número D.I. :', 'Seleccionar Sucursal :'], 
+            tituloValores = "Datos Ingreso", 
+            infoElementosInteractuables = [[TipoDocumento.listadoTiposDeDocumentos(), 'Seleccionar D.I.'], None, [[sede.getUbicacion() for sede in SucursalCine.getSucursalesCine()], 'Seleccionar Sucursal']], 
+            habilitado = [False, True, False]
+        )
+    
+    def funAceptar(self):
+
+        #Evaluamos las excepciones de UI
+        if self.evaluarExcepciones():
+
+            #Obtenemos el tipo de documento ingresado
+            tipoDocumentoSeleccionado = self.getValue('Seleccionar Tipo D.I. :')
+
+            #obtenemos el numero de documento ingresado y evaluamos si es de tipo int
+            try:
+                numDocumentoSeleccionado = int(self.getValue('Número D.I. :'))
+            except ValueError:
+                messagebox.showerror('Error', f'El campo {self._infoEtiquetas[1].strip(':')}debe ser numérico')
+                return
+
+            #Obtenemos la sucursal seleciconada
+            sucursalSeleccionada = self.getValue('Seleccionar Sucursal :')
+            indiceSucursal = self.getElementosInteractivos()[2].current()
+            sucursalProceso = SucursalCine.getSucursalesCine()[indiceSucursal]
+            
+            #Confirmamos las elecciones hechas por el usuario
+            confirmacionUsuario = messagebox.askokcancel('Confirmación de datos', f'Los datos ingresados son:\nTipo de documento: {tipoDocumentoSeleccionado}\nNúmero de documento: {numDocumentoSeleccionado}\nSucursal seleccionada: {sucursalSeleccionada}')
+            
+            if confirmacionUsuario:
+                #Evaluamos si es la primera vez que visita nuestro cine
+                clienteProceso = SucursalCine.buscarCliente(numDocumentoSeleccionado, tipoDocumentoSeleccionado)
+
+                if clienteProceso is None:
+                    #Si es la primera vez, nos dirigimos al frame de crear usuario para crearlo
+                    FrameCrearUsuario(tipoDocumentoSeleccionado, numDocumentoSeleccionado, sucursalProceso).mostrarFrame()
+                elif type(clienteProceso) == str:
+                    #Detectamos que el número de documento ya se encuentra asignado a otro cliente
+                    messagebox.showerror('Error', 'Hemos detectado que este número de documento se encuentra asociado a otro cliente, por favor verifica el tipo o número de documento digitado.')
+                else:
+                    #En caso de que no, ingresamos al menú principal de nuestro cine
+                    messagebox.showinfo('Inicio de sesión exitoso', f'{clienteProceso.getNombre()}, Bienvenid@ a cinemar sede {sucursalSeleccionada}')
+                    clienteProceso.setCineUbicacionActual(sucursalProceso)
+                    self.logicaInicioProcesosFuncionalidades(clienteProceso)
     
