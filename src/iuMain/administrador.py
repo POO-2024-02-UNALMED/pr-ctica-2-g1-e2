@@ -1218,3 +1218,84 @@ class FrameEleccionJuego(FieldFrame):
                     if respuesta:
                         #Linea para llamar al frame de recargar tarjeta
                         FrameRecargarTarjetaCinemar().mostrarFrame()
+
+        
+class FrameJuego(tk.Frame):
+
+    
+
+    def __init__(self, palabras, genero, redimioCodigo):
+        super().__init__(ventanaLogicaProyecto)
+
+        self.clienteProceso = FieldFrame.getClienteProceso()
+        self.frameAnterior = FrameEleccionJuego(FrameEleccion(FrameZonaJuegos()))
+        self.redimioCodigo = redimioCodigo
+        self.tipoBono = ""
+        self.bonoCliente = None
+
+        # Selecciona una palabra aleatoria de la lista
+        self.palabras = palabras
+        self.palabra_secreta = random.choice(self.palabras)
+        self.letras_adivinadas = ["_" for _ in self.palabra_secreta]
+        self.intentos_restantes = 6
+        self.letras_usadas = set()  # Conjunto para almacenar las letras que ya se han clicado
+        
+        #self.grid(row=0, column=0, sticky="nsew")
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(1, weight=1)
+        self.grid_rowconfigure(2, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+
+        # Título del juego
+        self.lbl_titulo = tk.Label(self, text=f"Hangman de {genero}", font=("courier new", 28, "bold italic"), pady=10, bg= "#F0F8FF")
+        self.lbl_titulo.grid(row=0, column=0)
+
+        # Etiqueta descripcion del juego
+        self.lbl_descripcion = tk.Label(self, text=f"Bienvenido a nuestro juego, clickea sobre las letras de abajo para descubrir la palabra secreta relacionada con la categoria: {genero}, si le das a volver tendrás que volver a pagar con tu tarjeta si quieres ingresar de nuevo", font=("courier new", 12, "bold italic"), pady=10, bg= "#F0F8FF", wraplength= 460)
+        self.lbl_descripcion.grid(row=1, column=0)
+
+        # Etiqueta para mostrar la palabra secreta
+        self.lbl_palabra = tk.Label(self, text=" ".join(self.letras_adivinadas), font=("courier new", 24, "bold italic"), pady=20, bg= "#F0F8FF")
+        self.lbl_palabra.grid(row=2, column=0)
+
+        # Etiqueta para mostrar los intentos restantes
+        self.lbl_intentos = tk.Label(self, text=f"Intentos restantes: {self.intentos_restantes}", font=("courier new", 16, "bold italic"), bg="#F0F8FF")
+        self.lbl_intentos.grid(row=3, column=0)
+
+        # Crear botones para las letras en mayúsculas y organizarlos en dos filas
+        self.frame_botones = tk.Frame(self)
+        self.frame_botones.grid(row=4, column=0, pady=20)
+
+        letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+        # Colocar las primeras 13 letras en la primera fila
+        for i, letra in enumerate(letras[:13]):
+            btn = tk.Button(self.frame_botones, text=letra, font=("courier new", 11, "bold italic"), width=4, command=lambda l=letra: self.comprobar_letra(l), bg="#87CEFA")
+            btn.grid(row=0, column=i)
+
+        # Colocar las últimas 13 letras en la segunda fila
+        for i, letra in enumerate(letras[13:]):
+            btn = tk.Button(self.frame_botones, text=letra, font=("courier new", 11, "bold italic"), width=4, command=lambda l=letra: self.comprobar_letra(l), bg = "#87CEFA")
+            btn.grid(row=1, column=i)
+
+        self.botonVolver = tk.Button(self, text= "Volver", font=("courier new", 18, "bold italic"),bg="#87CEFA", command= self.funVolver)
+        self.botonVolver.grid(row=5, column=0)
+
+        ventanaLogicaProyecto.config(bg= "#F0F8FF")
+        self.config(bg="#F0F8FF")
+
+        # Reiniciar el juego al inicio
+        self.reiniciar_juego()
+
+    def actualizar_palabra(self):
+        """Actualiza la visualización de la palabra en el juego."""
+        self.lbl_palabra.config(text=" ".join(self.letras_adivinadas), font = ("Courier new", 20, "bold italic"))
+
+    def comprobar_letra(self,letra):
+        """Comprueba si la letra está en la palabra secreta."""
+        global intentos_restantes
+        
+        # Si la letra ya fue usada, mostrar un mensaje
+        if letra in self.letras_usadas:
+            messagebox.showinfo("Advertencia", f"Ya has clicado la letra '{letra}'. Intenta con otra.")
+            return
