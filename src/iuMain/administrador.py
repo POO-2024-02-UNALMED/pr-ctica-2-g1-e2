@@ -1298,4 +1298,122 @@ class FrameJuego(tk.Frame):
         # Si la letra ya fue usada, mostrar un mensaje
         if letra in self.letras_usadas:
             messagebox.showinfo("Advertencia", f"Ya has clicado la letra '{letra}'. Intenta con otra.")
-            return
+           return
+        
+        # Añadir la letra al conjunto de letras usadas
+        self.letras_usadas.add(letra)
+        
+        if letra in self.palabra_secreta:
+            for idx, char in enumerate(self.palabra_secreta):
+                if char == letra:
+                    self.letras_adivinadas[idx] = letra
+            self.actualizar_palabra()
+            
+            # Comprueba si ganó
+            if "_" not in self.letras_adivinadas:
+                eleccionUsuario = messagebox.askyesno("Puntuación", f"¡Ganaste! La palabra era: {self.palabra_secreta}, tu puntuacion es: {Arkade.getPuntuacionMaxima()}/10.0 ¿Deseas volver a jugar?" )
+                
+                if eleccionUsuario:
+                    self.funVolver(10.0)
+                else:
+                    if self.redimioCodigo:
+                        self.tipoBono = "Comida"
+                    else:
+                        self.tipoBono = "Souvenir"
+
+                    if self.tipoBono == "Comida":
+                        self.bonoCliente = Bono.generarBonoComidaJuegos(self.clienteProceso.getCineUbicacionActual(), self.clienteProceso)
+                    elif self.tipoBono == "Souvenir": 
+                        self.bonoCliente = Bono.generarBonoSouvenirJuegos(self.clienteProceso.getCineUbicacionActual(), self.clienteProceso)
+                    
+                    if self.bonoCliente is None:
+                        messagebox.showinfo("Sin productos", f"No te podemos generar un bono de tipo {self.tipoBono} ya que no hay productos en nuestro inventario")
+                        FieldFrame.getFrameMenuPrincipal().mostrarFrame()
+                    else:
+                        FrameBono(self.tipoBono, self.bonoCliente ).mostrarFrame()
+        else:
+            self.intentos_restantes -= 1
+            self.lbl_intentos.config(text=f"Intentos restantes: {self.intentos_restantes}")
+            
+            if self.intentos_restantes == 0:
+                puntuacionAleatoria = round(random.uniform(0, 10), 2)
+                eleccionUsuario = messagebox.askyesno("Puntuación", f"Perdiste. La palabra era: {self.palabra_secreta}, tu puntuacion es: {puntuacionAleatoria}/10.0 ¿Deseas volver a jugar?" )
+                if eleccionUsuario:
+                    self.funVolver()
+                else:
+                    FieldFrame.getFrameMenuPrincipal().mostrarFrame()
+
+    def reiniciar_juego(self):
+        """Reinicia el juego con una nueva palabra y restablece los intentos."""
+        
+        self.palabra_secreta = random.choice(self.palabras)
+        self.letras_adivinadas = ["_" for _ in self.palabra_secreta]
+        self.intentos_restantes = 6
+        self.letras_usadas = set()  # Reiniciar el conjunto de letras usadas
+        self.actualizar_palabra()
+        self.lbl_intentos.config(text=f"Intentos restantes: {self.intentos_restantes}")
+
+    def mostrarFrame(self):
+
+        for widget in ventanaLogicaProyecto.winfo_children():
+
+            if isinstance(widget, tk.Frame):
+                widget.pack_forget()
+
+        self.pack(expand=True)
+    
+    def funVolver(self, puntuacion = 0):
+        if puntuacion == 10.0:
+            if self.redimioCodigo:
+                
+                eleccion = messagebox.askyesno("Perdidad de bono de Comida", "Recuerda que redimiste un codigo y obtuviste la puntuacion máxima, si vuelves no obtendras un Bono de comida, ¿Aun asi quieres volver?")
+
+                if eleccion:
+                    self.frameAnterior.mostrarFrame()
+                else:
+                    if self.redimioCodigo:
+                        self.tipoBono = "Comida"
+                    else:
+                        self.tipoBono = "Souvenir"
+
+                    if self.tipoBono == "Comida":
+                        self.bonoCliente = Bono.generarBonoComidaJuegos(self.clienteProceso.getCineUbicacionActual(), self.clienteProceso)
+                    elif self.tipoBono == "Souvenir": 
+                        self.bonoCliente = Bono.generarBonoSouvenirJuegos(self.clienteProceso.getCineUbicacionActual(), self.clienteProceso)
+                    
+                    if self.bonoCliente is None:
+                        messagebox.showinfo("Sin productos", f"No te podemos generar un bono de tipo {self.tipoBono} ya que no hay productos en nuestro inventario")
+                        FieldFrame.getFrameMenuPrincipal().mostrarFrame()
+                    else:
+                        FrameBono(self.tipoBono, self.bonoCliente).mostrarFrame()
+            else:
+                eleccion= messagebox.askyesno("Perdidad de bono de Souvenir", "Recuerda que obtuviste la puntuacion máxima, si vuelves no obtendras un Bono de Souvenir, ¿Aun asi quieres volver?")
+
+                if eleccion:
+                    self.frameAnterior.mostrarFrame()
+                else:
+                    if self.redimioCodigo:
+                        self.tipoBono = "Comida"
+                    else:
+                        self.tipoBono = "Souvenir"
+
+                    if self.tipoBono == "Comida":
+                        self.bonoCliente = Bono.generarBonoComidaJuegos(self.clienteProceso.getCineUbicacionActual(), self.clienteProceso)
+                    elif self.tipoBono == "Souvenir": 
+                        self.bonoCliente = Bono.generarBonoSouvenirJuegos(self.clienteProceso.getCineUbicacionActual(), self.clienteProceso)
+                    
+                    if self.bonoCliente is None:
+                        messagebox.showinfo("Sin productos", f"No te podemos generar un bono de tipo {self.tipoBono} ya que no hay productos en nuestro inventario")
+                        FieldFrame.getFrameMenuPrincipal().mostrarFrame()
+                    else:
+                        FrameBono(self.tipoBono, self.bonoCliente).mostrarFrame()
+        else:
+            self.frameAnterior.mostrarFrame()
+        
+class FrameBono(FieldFrame):
+
+    def __init__(self, tipoBono, bono):
+        
+        self.clienteProceso = FieldFrame.getClienteProceso()
+        self.tipoBono = tipoBono
+        self.bonoCliente = bono
