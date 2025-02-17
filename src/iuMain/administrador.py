@@ -1417,3 +1417,104 @@ class FrameBono(FieldFrame):
         self.clienteProceso = FieldFrame.getClienteProceso()
         self.tipoBono = tipoBono
         self.bonoCliente = bono
+
+
+
+
+        super().__init__(
+            tituloProceso = f'Bono de {self.tipoBono}',
+            descripcionProceso = f'Te has ganado el siguiente bono de {self.tipoBono} por obetner la puntuacion máxima, puedes reclamarlo en nuestro lugar de servicios. Seleccione el proceso a realizar\n',
+            tituloCriterios = 'Criterio',
+            textEtiquetas = ['Seleccionar proceso :'],
+            tituloValores = 'Dato proceso',
+            infoElementosInteractuables = [[['Ir a la ventana principal', 'Ir a la zona de servicios', 'Volver a seleccionar juego', 'Recargar Tarjeta Cinemar', 'Personalizar Tarjeta Cinemar'], '                     Proceso']],
+            habilitado = [False],
+            botonVolver = False,
+
+        )
+
+        self.widgets = []
+        
+        for widget in self.winfo_children():
+
+            self.widgets.append(widget)
+            
+
+        self.widgets[2].grid_configure(row=5, column=0)
+        self.widgets[3].grid_configure(row=5, column=1)
+        self.widgets[4].grid_configure(row=6, column=0)
+        self.widgets[5].grid_configure(row=6, column=1)
+        self.widgets[6].grid_configure(row=7, column=1)
+        self.widgets[7].grid_configure(row=7, column=0)
+
+        self.FrameBono = tk.Frame(self, width=300, height=150, bg = "black")
+        self.FrameBono.grid(row =2, rowspan= 3, column= 0, columnspan= 4)
+
+        # Crear canvas de 300x150 con el fondo rosa claro
+        self.canvas = tk.Canvas(self.FrameBono, width=300, height=150, bg="black", highlightthickness=2, highlightbackground="dark gray")
+        self.canvas.pack()
+
+        # Llamar al método para modificar el canvas
+        self.crearTarjeta()
+
+        tamaños = [21,11,15,15,12,12,15,15]
+        
+        for i, w in enumerate(self.widgets):
+            if isinstance(w, ttk.Combobox):
+                w.config(width=25)
+            else:
+                w.config(font = ("courier new", tamaños[i]), bg = "#F0F8FF")
+
+        self.widgets[0].config(font = ("courier new", 21, "bold"))
+        self.widgets[2].config(font = ("courier new", 15, "bold"))
+        self.widgets[3].config(font = ("courier new", 15, "bold"))
+        self.widgets[-1].config(fg = "black", bg = '#87CEFA', font = ("courier new", 15, "bold"))
+        self.widgets[-2].config(fg = "black", bg = '#87CEFA', font = ("courier new", 15, "bold"))
+        
+        ventanaLogicaProyecto.config(bg= "#F0F8FF")
+        self.config(bg= "#F0F8FF") 
+
+
+    def crearTarjeta(self):
+        # Dibujar el borde del rectángulo (la tarjeta) con borde negro
+        self.canvas.create_rectangle(15, 15, 290, 140, outline="dark gray", width=2, fill="#ADD8E6")
+
+        # Agregar título "Bono" con color de fondo
+        self.canvas.create_text(150, 30, text="Bono", font=("courier new", 16, "bold italic"), fill="#333")
+        
+        # Generar valores aleatorios para producto y código
+        producto = self.bonoCliente.getProducto().getNombre() if self.bonoCliente is not None else print("No hay error")
+        codigo = self.bonoCliente.getCodigo() if self.bonoCliente is not None else print("No hay error x2")
+
+        # Agregar apartado "Producto" con color de fondo
+        self.canvas.create_text(80, 70, text="Producto:", font=("courier new", 12), fill="#333")
+        self.canvas.create_rectangle(140, 60, 250, 80, outline="black", fill="#E6E6FA")
+        self.canvas.create_text(195, 70, text=producto, font=("courier new", 10), fill="#333")
+
+        # Agregar apartado "Código" con color de fondo
+        self.canvas.create_text(80, 110, text="Código:", font=("courier new", 12), fill="#333")
+        self.canvas.create_rectangle(140, 100, 250, 120, outline="black", fill="#E6E6FA")
+        self.canvas.create_text(195, 110, text=codigo, font=("courier new", 10), fill="#333")   
+
+    def funAceptar(self):
+        if self.evaluarExcepciones():
+
+            if self.getElementosInteractivos()[0].get() == 'Ir a la ventana principal':
+
+                FieldFrame.getFrameMenuPrincipal().mostrarFrame()
+
+            elif self.getElementosInteractivos()[0].get() == 'Ir a la zona de servicios':
+                FrameFuncionalidad2().mostrarFrame()
+
+            elif self.getElementosInteractivos()[0].get() == 'Volver a seleccionar juego':
+                FrameEleccionJuego(FrameEleccion(FrameZonaJuegos())).mostrarFrame()
+
+            elif self.getElementosInteractivos()[0].get() == 'Recargar Tarjeta Cinemar':
+                FrameRecargarTarjetaCinemar().mostrarFrame()
+            
+            elif self.getElementosInteractivos()[0].get() == 'Personalizar Tarjeta Cinemar':
+                FrameTarjetaCinemar(FrameZonaJuegos()).mostrarFrame()
+
+
+
+#################################################################################################################################
