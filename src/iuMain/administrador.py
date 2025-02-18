@@ -52,18 +52,18 @@ class FieldFrame(tk.Frame):
         self._elementosInteractivos = []
         self._frameAnterior = frameAnterior
         
-        self.config(bg = "#F0F8FF")
-        ventanaLogicaProyecto.config(bg= "#F0F8FF")
-        tituloFrame = tk.Label(self, text=tituloProceso, font= ("courier new",27, "bold italic"), anchor="center", bg="#F0F8FF")
+        self.config(bg = "#D3D3D3")
+        ventanaLogicaProyecto.config(bg= "#D3D3D3")
+        tituloFrame = tk.Label(self, text=tituloProceso, font= ("courier new",27, "bold italic"), anchor="center", bg="#D3D3D3")
         tituloFrame.grid(row=0, column=0, columnspan=4, sticky='we')
 
-        descripcionFrame = tk.Label(self, text=descripcionProceso, font= ("courier new",10), anchor="center", wraplength=500, bg = "#F0F8FF")
+        descripcionFrame = tk.Label(self, text=descripcionProceso, font= ("courier new",10), anchor="center", wraplength=500, bg = "#D3D3D3")
         descripcionFrame.grid(row=1, column=0, columnspan=4, sticky='we')
 
-        tituloCrit = tk.Label(self, text = tituloCriterios, font= ("courier new",15, "bold"), anchor="center", bg = "#F0F8FF")
+        tituloCrit = tk.Label(self, text = tituloCriterios, font= ("courier new",15, "bold"), anchor="center", bg = "#D3D3D3")
         tituloCrit.grid(column=0, row=2, padx = (10,10), pady = (10,10))
 
-        tituloVal = tk.Label(self, text = tituloValores, font= ("courier new",15, "bold"), anchor="center", bg = "#F0F8FF")
+        tituloVal = tk.Label(self, text = tituloValores, font= ("courier new",15, "bold"), anchor="center", bg = "#D3D3D3")
         tituloVal.grid(column=1, row=2, padx = (10,10), pady = (10,10))
 
 ####################################################################################################
@@ -75,7 +75,7 @@ class FieldFrame(tk.Frame):
 
         for i in range(len(textEtiquetas)):
 
-            labelCriterio = tk.Label(self, text = textEtiquetas[i], font= ("courier new",12), anchor="center", bg = "#F0F8FF")
+            labelCriterio = tk.Label(self, text = textEtiquetas[i], font= ("courier new",12), anchor="center", bg = "#D3D3D3")
             labelCriterio.grid(column=0, row=i+3, padx = (10,10), pady = (10,10))
 
             elementoInteractivo = None
@@ -104,7 +104,7 @@ class FieldFrame(tk.Frame):
             self._elementosInteractivos.append(elementoInteractivo)
 
         if botonVolver:
-            frameBotones = tk.Frame(self, bg = "#F0F8FF" )
+            frameBotones = tk.Frame(self, bg = "#D3D3D3" )
 
             tk.Button(frameBotones, text="Aceptar", font = ("courier new", 12), fg = "black", bg = "#87CEFA",command=self.funAceptar,
             width=12,height=2).grid(pady = (10,10), padx=(20, 20), column = 0, row = len(self._infoEtiquetas)+3, sticky = 'we')
@@ -274,10 +274,10 @@ class FrameReclamoDeBonos(FieldFrame):
             habilitado = [False],
         )
 
-        tituloV = tk.Label(self, text = "Productos en tu orden:", font= ("courier new",14), anchor="center", bg = "#F0F8FF" )
+        tituloV = tk.Label(self, text = "Productos en tu orden:", font= ("courier new",14), anchor="center", bg = "#D3D3D3" )
         tituloV.grid(column=2, row=2, padx = (10,10), pady = (10,10))
 
-        labelCriterio = tk.Label(self, text = servicio.mostrarOrden(),anchor="w", font= ("courier new",10), bg = "#F0F8FF" )
+        labelCriterio = tk.Label(self, text = servicio.mostrarOrden(),anchor="w", font= ("courier new",10), bg = "#D3D3D3" )
         labelCriterio.grid(row=3, column=2, sticky="w")
 
         agregarb = tk.Button(self,text="Agregar Producto", font = ("courier new", 12), fg = "black", bg = "#87CEFA",command=self.agregar,
@@ -346,7 +346,7 @@ class FrameGeneracionDeProductos(FieldFrame):
             infoElementosInteractuables = [[servicio.mostrarInventario(), "Seleccione un Producto"],None],
             habilitado = [False,True,True],
         )
-        tituloV = tk.Label(self, text = "Productos en tu orden:", font= ("courier new",14, "bold"), anchor="center", bg = "#F0F8FF" )
+        tituloV = tk.Label(self, text = "Productos en tu orden:", font= ("courier new",14, "bold"), anchor="center", bg = "#D3D3D3" )
         tituloV.grid(column=2, row=2, padx = (10,10), pady = (10,10))
 
         self._labelCriterio = tk.Label(self, text = "",anchor="w", font= ("courier new",10))
@@ -549,7 +549,7 @@ class FrameVentanaPrincipal(FieldFrame):
     def __init__(self):
         super().__init__( textEtiquetas = [] )
 
-        self._imagenFramePrincipal = tk.PhotoImage(file = 'src/iuMain/imagenes/fachadaCine.png')
+        self._imagenFramePrincipal = tk.PhotoImage(file = 'src/iuMain/imagenes/fachadaCinema.png')
         
         self._labelImagen = tk.Label(self, image = self._imagenFramePrincipal)
         self._labelImagen.grid(row=0, column=0)
@@ -575,9 +575,9 @@ class FrameVentanaPrincipal(FieldFrame):
     def construirMenu(self):
         self._barraMenuPrincipal = tk.Menu(ventanaLogicaProyecto, font=("Times New Roman", 10))
         ventanaLogicaProyecto.config(menu=self._barraMenuPrincipal)
-        self._menuArchivo = tk.Menu(self._barraMenuPrincipal, tearoff= 0, font=("Times New Roman", 10), activebackground= "light blue", activeforeground="black")
-        self._menuProcesosConsultas = tk.Menu(self._barraMenuPrincipal, tearoff= 0, font=("Times New Roman", 10), activebackground= "light blue", activeforeground="black")
-        self._menuAyuda = tk.Menu(self._barraMenuPrincipal, tearoff= 0, font=("Times New Roman", 10), activebackground= "light blue", activeforeground="black")
+        self._menuArchivo = tk.Menu(self._barraMenuPrincipal, tearoff= 0, font=("Times New Roman", 10), activebackground= "light gray", activeforeground="black")
+        self._menuProcesosConsultas = tk.Menu(self._barraMenuPrincipal, tearoff= 0, font=("Times New Roman", 10), activebackground= "light gray", activeforeground="black")
+        self._menuAyuda = tk.Menu(self._barraMenuPrincipal, tearoff= 0, font=("Times New Roman", 10), activebackground= "light gray", activeforeground="black")
 
         self._barraMenuPrincipal.add_cascade(label="Archivo", menu=self._menuArchivo, font=("Times New Roman", 10))
         self._barraMenuPrincipal.add_cascade(label="Procesos y Consultas", menu= self._menuProcesosConsultas, font=("Times New Roman", 10))
@@ -709,18 +709,18 @@ class FrameZonaJuegos(FieldFrame):
             widget.destroy()
         
         #se añaden widgets con el uso de canvas para dar mas estetica
-        self._imagenFondo = tk.PhotoImage(file = 'src/iuMain/imagenes/ZonaJuegos.png')
+        self._imagenFondo = tk.PhotoImage(file = 'src/iuMain/imagenes/zonaJuegos.png')
 
         self.canvas =tk.Canvas(self, width=self._imagenFondo.width(), height=self._imagenFondo.height())
         self.canvas.pack()
         self.canvas.create_image(0, 0, anchor=tk.NW, image=self._imagenFondo)
         
-        self.canvas.create_text(320, 100, text=tituloProceso, fill="black", font= ("Showcard Gothic",30))
-        self.canvas.create_text(320, 200, text=descripcionProceso, fill="black", font= ("Lucida Console",15, "bold"), width=500)
-        self.canvas.create_text(320, 310, text=fecha, fill="black", font= ("Lucida Console",15, "bold"))
+        self.canvas.create_text(320, 100, text=tituloProceso, fill="white", font= ("Showcard Gothic",30))
+        self.canvas.create_text(320, 200, text=descripcionProceso, fill="white", font= ("Lucida Console",15, "bold"), width=500)
+        self.canvas.create_text(320, 310, text=fecha, fill="white", font= ("Lucida Console",15, "bold"))
 
-        boton1 = tk.Button(self, text="Ingresar", font= ("Lucida Console",15, "bold"), fg = "black", bg = "light blue",command=self.funAceptar, width=12,height=2)
-        boton2 = tk.Button(self, text="Volver", font= ("Lucida Console",15, "bold"), fg = "black", bg = "light blue", command=self.funVolver, width=12,height=2)
+        boton1 = tk.Button(self, text="Ingresar", font= ("Lucida Console",15, "bold"), fg = "black", bg = "light gray",command=self.funAceptar, width=12,height=2)
+        boton2 = tk.Button(self, text="Volver", font= ("Lucida Console",15, "bold"), fg = "black", bg = "light gray", command=self.funVolver, width=12,height=2)
         
         self.canvas.create_window(230, 380, window=boton1, anchor="center")
         self.canvas.create_window(420, 380, window=boton2, anchor="center")
@@ -856,21 +856,21 @@ class FrameTarjetaCinemar(FieldFrame):
 
         tamaños = [21,11,15,15,12,12,12,12,12,12]
 
-        self.widgets[-1].config(bg = "#F0F8FF")
+        self.widgets[-1].config(bg = "#D3D3D3")
         self.widgets.pop(-1)
         
         for i, w in enumerate(self.widgets):
             if isinstance(w, ttk.Combobox):
                 pass
             else:
-                w.config(font = ("courier new", tamaños[i]), bg = "#F0F8FF")
+                w.config(font = ("courier new", tamaños[i]), bg = "#D3D3D3")
 
         self.widgets[0].config(font = ("courier new", 21, "bold"))
         self.widgets[2].config(font = ("courier new", 15, "bold"))
         self.widgets[3].config(font = ("courier new", 15, "bold"))
         
-        ventanaLogicaProyecto.config(bg= "#F0F8FF")
-        self.config(bg= "#F0F8FF")   
+        ventanaLogicaProyecto.config(bg= "#D3D3D3")
+        self.config(bg= "#D3D3D3")
 
     def funAceptar(self):
 
@@ -987,7 +987,7 @@ class FrameEleccion(FieldFrame):
 
         tamaños = [21,12,15,15,12]
 
-        self.widgets[-1].config(bg = "#F0F8FF")
+        self.widgets[-1].config(bg = "#D3D3D3")
         self.widgets.pop(-1)
         
         
@@ -995,14 +995,14 @@ class FrameEleccion(FieldFrame):
             if isinstance(w, ttk.Combobox):
                 w.config(width = 30)
             else:
-                w.config(font = ("courier new", tamaños[i]), bg = "#F0F8FF")
+                w.config(font = ("courier new", tamaños[i]), bg = "#D3D3D3")
 
         self.widgets[0].config(font = ("courier new", 21, "bold"))
         self.widgets[2].config(font = ("courier new", 15, "bold"))
         self.widgets[3].config(font = ("courier new", 15, "bold"))
         
-        ventanaLogicaProyecto.config(bg= "#F0F8FF")
-        self.config(bg= "#F0F8FF")   
+        ventanaLogicaProyecto.config(bg= "#D3D3D3")
+        self.config(bg= "#D3D3D3")
     
     def funAceptar(self):
 
@@ -1064,7 +1064,7 @@ class FrameEleccionJuego(FieldFrame):
 
         tamaños = [21,12,15,15,12,9,12,9,12,9]
 
-        self.widgets[-1].config(bg = "#F0F8FF")
+        self.widgets[-1].config(bg = "#D3D3D3")
         self.widgets.pop(-1)
         
         
@@ -1072,19 +1072,19 @@ class FrameEleccionJuego(FieldFrame):
             if isinstance(w, ttk.Combobox):
                 pass
             else:
-                w.config(font = ("courier new", tamaños[i]), bg = "#F0F8FF")
+                w.config(font = ("courier new", tamaños[i]), bg = "#D3D3D3")
 
         self.widgets[0].config(font = ("courier new", 21, "bold"))
         self.widgets[2].config(font = ("courier new", 15, "bold"))
         self.widgets[3].config(font = ("courier new", 15, "bold"))
         
-        ventanaLogicaProyecto.config(bg= "#F0F8FF")
-        self.config(bg= "#F0F8FF")
+        ventanaLogicaProyecto.config(bg= "#D3D3D3")
+        self.config(bg= "#D3D3D3")
 
-        labelrelleno = tk.Label(self, text="", bg="#F0F8FF")
+        labelrelleno = tk.Label(self, text="", bg="#D3D3D3")
         labelrelleno.grid(row=7, column=0, columnspan=3)
 
-        self.labelPrecio = tk.Label(self, text="", font=("Courier New", 15, "bold italic"), bg="#F0F8FF")
+        self.labelPrecio = tk.Label(self, text="", font=("Courier New", 15, "bold italic"), bg="#D3D3D3")
         self.labelPrecio.grid(row=8, column=0, columnspan=3)
 
         self.comboBoxCategorias = self.getElementosInteractivos()[1]
@@ -1246,19 +1246,19 @@ class FrameJuego(tk.Frame):
         self.grid_columnconfigure(0, weight=1)
 
         # Título del juego
-        self.lbl_titulo = tk.Label(self, text=f"Hangman de {genero}", font=("courier new", 28, "bold italic"), pady=10, bg= "#F0F8FF")
+        self.lbl_titulo = tk.Label(self, text=f"Hangman de {genero}", font=("courier new", 28, "bold italic"), pady=10, bg= "#D3D3D3")
         self.lbl_titulo.grid(row=0, column=0)
 
         # Etiqueta descripcion del juego
-        self.lbl_descripcion = tk.Label(self, text=f"Bienvenido a nuestro juego, clickea sobre las letras de abajo para descubrir la palabra secreta relacionada con la categoria: {genero}, si le das a volver tendrás que volver a pagar con tu tarjeta si quieres ingresar de nuevo", font=("courier new", 12, "bold italic"), pady=10, bg= "#F0F8FF", wraplength= 460)
+        self.lbl_descripcion = tk.Label(self, text=f"Bienvenido a nuestro juego, clickea sobre las letras de abajo para descubrir la palabra secreta relacionada con la categoria: {genero}, si le das a volver tendrás que volver a pagar con tu tarjeta si quieres ingresar de nuevo", font=("courier new", 12, "bold italic"), pady=10, bg= "#D3D3D3", wraplength= 460)
         self.lbl_descripcion.grid(row=1, column=0)
 
         # Etiqueta para mostrar la palabra secreta
-        self.lbl_palabra = tk.Label(self, text=" ".join(self.letras_adivinadas), font=("courier new", 24, "bold italic"), pady=20, bg= "#F0F8FF")
+        self.lbl_palabra = tk.Label(self, text=" ".join(self.letras_adivinadas), font=("courier new", 24, "bold italic"), pady=20, bg= "#D3D3D3")
         self.lbl_palabra.grid(row=2, column=0)
 
         # Etiqueta para mostrar los intentos restantes
-        self.lbl_intentos = tk.Label(self, text=f"Intentos restantes: {self.intentos_restantes}", font=("courier new", 16, "bold italic"), bg="#F0F8FF")
+        self.lbl_intentos = tk.Label(self, text=f"Intentos restantes: {self.intentos_restantes}", font=("courier new", 16, "bold italic"), bg="#D3D3D3")
         self.lbl_intentos.grid(row=3, column=0)
 
         # Crear botones para las letras en mayúsculas y organizarlos en dos filas
@@ -1280,8 +1280,8 @@ class FrameJuego(tk.Frame):
         self.botonVolver = tk.Button(self, text= "Volver", font=("courier new", 18, "bold italic"),bg="#87CEFA", command= self.funVolver)
         self.botonVolver.grid(row=5, column=0)
 
-        ventanaLogicaProyecto.config(bg= "#F0F8FF")
-        self.config(bg="#F0F8FF")
+        ventanaLogicaProyecto.config(bg= "#D3D3D3")
+        self.config(bg="#D3D3D3")
 
         # Reiniciar el juego al inicio
         self.reiniciar_juego()
@@ -1462,7 +1462,7 @@ class FrameBono(FieldFrame):
             if isinstance(w, ttk.Combobox):
                 w.config(width=25)
             else:
-                w.config(font = ("courier new", tamaños[i]), bg = "#F0F8FF")
+                w.config(font = ("courier new", tamaños[i]), bg = "#D3D3D3")
 
         self.widgets[0].config(font = ("courier new", 21, "bold"))
         self.widgets[2].config(font = ("courier new", 15, "bold"))
@@ -1470,13 +1470,13 @@ class FrameBono(FieldFrame):
         self.widgets[-1].config(fg = "black", bg = '#87CEFA', font = ("courier new", 15, "bold"))
         self.widgets[-2].config(fg = "black", bg = '#87CEFA', font = ("courier new", 15, "bold"))
         
-        ventanaLogicaProyecto.config(bg= "#F0F8FF")
-        self.config(bg= "#F0F8FF") 
+        ventanaLogicaProyecto.config(bg= "#D3D3D3")
+        self.config(bg= "#D3D3D3")
 
 
     def crearTarjeta(self):
         # Dibujar el borde del rectángulo (la tarjeta) con borde negro
-        self.canvas.create_rectangle(15, 15, 290, 140, outline="dark gray", width=2, fill="#ADD8E6")
+        self.canvas.create_rectangle(15, 15, 290, 140, outline="dark gray", width=2, fill="#D3D3D3")
 
         # Agregar título "Bono" con color de fondo
         self.canvas.create_text(150, 30, text="Bono", font=("courier new", 16, "bold italic"), fill="#333")
@@ -1814,7 +1814,7 @@ class FrameIngresoASalaCine(FieldFrame):
         )
 
         #Creamos un label para mostrar la información de la sala de cine seleccionada
-        self._labelInfoSalaCine = tk.Label(self, text='', font= ("courier new",11), anchor="center", bg = "#F0F8FF" )
+        self._labelInfoSalaCine = tk.Label(self, text='', font= ("courier new",11), anchor="center", bg = "#D3D3D3" )
         self._labelInfoSalaCine.grid(column=0, row=len(self._infoEtiquetas) + 3, columnspan=4)
         
         #Facilitamos el acceso al comboBox creado y le asignamos un evento
@@ -1898,7 +1898,7 @@ class FrameSalaDeEspera(FieldFrame):
         self.getElementosInteractivos()[0].grid_configure(sticky='we')
 
         #Creamos y ubicamos el label que mostrará información sobre el ticket seleccionado
-        self._labelInfoTicketSeleccionado = tk.Label(self, text='', font= ("courier new",11), anchor="center", bg = "#F0F8FF" )
+        self._labelInfoTicketSeleccionado = tk.Label(self, text='', font= ("courier new",11), anchor="center", bg = "#D3D3D3" )
         self._labelInfoTicketSeleccionado.grid(column=0, row=len(self._infoEtiquetas) + 3, columnspan=4)
 
         #Facilitamos el acceso al comboBox de tickets y le asignamos un evento
@@ -2104,7 +2104,7 @@ class FrameFuncionalidad5(FieldFrame):
             desplazarBotonesFila=1
         )
         #Se crean un Label que muestra la información de la membresia como nombre, y requisitos.
-        self._membresiaOpcion = tk.Label(self, text=f"", font= ("courier new",11), anchor="center", bg = "#F0F8FF" )
+        self._membresiaOpcion = tk.Label(self, text=f"", font= ("courier new",11), anchor="center", bg = "#D3D3D3" )
         self._membresiaOpcion.grid(column = 0, row = len(self._infoEtiquetas) + 3, columnspan=2, sticky='we')
 
         #Se obtiene el ComboBox y se vincula un evento para actualizar el Label dependiendo que escoja en el ComboBox.
@@ -2182,10 +2182,10 @@ class FramePasarelaDePagos(FieldFrame):
             desplazarBotonesFila=2
         )
         #Se crean los label que muestran el nuevo valor a pagar luego de aplicar el descuento del método de pago y la información del método de pago a usar.
-        self._precioDescuento = tk.Label(self, text=f"", font= ("courier new",13), anchor="center", bg = "#F0F8FF" )
+        self._precioDescuento = tk.Label(self, text=f"", font= ("courier new",13), anchor="center", bg = "#D3D3D3" )
         self._precioDescuento.grid(column = 0, row = len(self._infoEtiquetas) + 3, columnspan=2, sticky='we')
         
-        self._metodoSeleccionado = tk.Label(self, text= f"", font= ("courier new",10), anchor="center", bg = "#F0F8FF" )
+        self._metodoSeleccionado = tk.Label(self, text= f"", font= ("courier new",10), anchor="center", bg = "#D3D3D3" )
         self._metodoSeleccionado.grid(column = 0, row = len(self._infoEtiquetas) + 4, columnspan=2, sticky='we')
 
         #Se obtiene el ComboBox y se vincula un evento para actualizar el Label dependiendo que escoja en el ComboBox.
@@ -2338,7 +2338,7 @@ class FrameRecargarTarjetaCinemar(FramePasarelaDePagos):
             elif isinstance(w, tk.Entry):
                 pass
             else:
-                w.config(font = ("courier new", tamaños[i]), bg = "#F0F8FF")
+                w.config(font = ("courier new", tamaños[i]), bg = "#D3D3D3")
 
         self.widgets[0].config(font = ("courier new", 21, "bold"))
         self.widgets[2].config(font = ("courier new", 15, "bold"))
@@ -2348,10 +2348,10 @@ class FrameRecargarTarjetaCinemar(FramePasarelaDePagos):
 
         #self.getElementosInteractivos()[1].grid_configure(sticky = "we", columnspan = 2)
         
-        self._precioDescuento = tk.Label(self, text=f"", font= ("courier new",14), anchor="center", bg = "#F0F8FF")
+        self._precioDescuento = tk.Label(self, text=f"", font= ("courier new",14), anchor="center", bg = "#D3D3D3")
         self._precioDescuento.grid(column = 0, row = len(self._infoEtiquetas) + 3, columnspan=2, sticky='we')
         
-        self._metodoSeleccionado = tk.Label(self, text= f"", font= ("courier new",11), anchor="center", bg = "#F0F8FF")
+        self._metodoSeleccionado = tk.Label(self, text= f"", font= ("courier new",11), anchor="center", bg = "#D3D3D3")
         self._metodoSeleccionado.grid(column = 0, row = len(self._infoEtiquetas) + 4, columnspan=2, sticky='we')
 
         self._opcionComboBox = self.getElementosInteractivos()[1]
@@ -2359,8 +2359,8 @@ class FrameRecargarTarjetaCinemar(FramePasarelaDePagos):
 
         self.valorAPagarTotal = 0
         
-        ventanaLogicaProyecto.config(bg= "#F0F8FF")
-        self.config(bg= "#F0F8FF")
+        ventanaLogicaProyecto.config(bg= "#D3D3D3")
+        self.config(bg= "#D3D3D3")
 
         self.establecerError()
 
@@ -2670,14 +2670,14 @@ def ventanaDeInicio():
     frameGrandeDerechoP2.place(relx= 0.51, rely= 0.02, relwidth= 0.475, relheight = 0.96)
 
     #Creacion y posicionamiento de P3 (291.84 x 170.496)
-    frameSuperiorIzquierdoP3 = tk.Frame(frameGrandeIzquierdoP1, bd = 2, relief= "solid", bg = "#ADD8E6")
+    frameSuperiorIzquierdoP3 = tk.Frame(frameGrandeIzquierdoP1, bd = 2, relief= "solid", bg = "#D3D3D3")
     frameSuperiorIzquierdoP3.place(relx= 0.02, rely= 0.011, relwidth= 0.96, relheight = 0.37)
 
-    mensajeBienvenida = tk.Label(frameSuperiorIzquierdoP3, text= "☻Bienvenido a \nnuestro Cine☻", font= ("Courier", 23, "bold"), fg= "#6495ED", bg =  "#ADD8E6")
+    mensajeBienvenida = tk.Label(frameSuperiorIzquierdoP3, text= "☻Bienvenido a \nnuestro Cine☻", font= ("Courier", 23, "bold"), fg= "#6495ED", bg =  "#D3D3D3")
     mensajeBienvenida.pack(anchor= "c", expand=True)
 
     #Creacion y posicionamiento de P4 (291.84 x 275.0976)
-    frameInferiorIzquierdoP4 = tk.Frame(frameGrandeIzquierdoP1, bd = 2, relief= "solid", height= 100, bg = "#ADD8E6")
+    frameInferiorIzquierdoP4 = tk.Frame(frameGrandeIzquierdoP1, bd = 2, relief= "solid", height= 100, bg = "#D3D3D3")
     frameInferiorIzquierdoP4.place(relx= 0.02, rely= 0.392, relwidth= 0.96, relheight = 0.597)
 
     #Metodo boton ingresar
@@ -2709,14 +2709,14 @@ def ventanaDeInicio():
 
     imagenes = [
         
-        tk.PhotoImage(file="src/iuMain/imagenes/P41.png"),
-        tk.PhotoImage(file="src/iuMain/imagenes/P42.png"),
-        tk.PhotoImage(file="src/iuMain/imagenes/P43.png"),
-        tk.PhotoImage(file="src/iuMain/imagenes/P44.png"),
-        tk.PhotoImage(file="src/iuMain/imagenes/P45.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/P1.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/P2.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/P3.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/P4.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/P1.png"),
 
     ]
-    imagenLabel = tk.Button(frameInferiorIzquierdoP4, image= imagenes[indice_imagen], command = ingresarVentanaPrincipal, bd = 1, relief = "solid", bg = "#ADD8E6")
+    imagenLabel = tk.Button(frameInferiorIzquierdoP4, image= imagenes[indice_imagen], command = ingresarVentanaPrincipal, bd = 1, relief = "solid", bg = "#D3D3D3")
     imagenLabel.place(relheight = 1, relwidth = 1)
     #imagenLabel.place(relx = 0.05, y = 5, relheight= 0.8, relwidth=0.9)
 
@@ -2724,19 +2724,19 @@ def ventanaDeInicio():
     imagenLabel.bind("<Leave>", cambiar_imagen)
 
     #Creacion y posicionamineto de P5 (291.84 x 170.496)
-    frameSuperiorDerechoP5 = tk.Frame(frameGrandeDerechoP2, bd = 2, relief= "solid", bg = "#ADD8E6")
+    frameSuperiorDerechoP5 = tk.Frame(frameGrandeDerechoP2, bd = 2, relief= "solid", bg = "#D3D3D3")
     frameSuperiorDerechoP5.place(relx= 0.02, rely= 0.011, relwidth= 0.96, relheight = 0.37)
 
-    nombres = ["Rusbel Danilo Jaramillo", "Edinson Andres Ariza", "Juan José González", "Gerson Bedoya", "Santiago Castro"]
-    edades =  ["19", "18", "18", "23", "18"]
+    nombres = ["Jeronimo Rua Herrera", "Valentina Leon Beltran", "Julian Bedoya Palacio", "Andres Alejandro Rosero Toledo", "Alan David Racines Casierra"]
+    edades =  ["18", "19", "23", "21", "21"]
     estudios = ["Ingeniero de Sistemas"]*5
     instituciones = ["Universidad Nacional Colombia"]*5
-    residencias = ["Marinilla", "Medellín", "Bello", "Medellín", "Rionegro"]
-    emails = ["rjaramilloh@unal.edu.co", "edarizam@unal.edu.co","juagonzalezmo@unal.edu.co","gbedoyah@unal.edu.co", "sancastrohe@unal.edu.co"]
+    residencias = ["Bello", "Medellín", "Itagui", "Medellin", "Medellin"]
+    emails = ["jeruah@unal.edu.co", "vleonb@unal.edu.co","jubedoyap@unal.edu.co","aroserot@unal.edu.co", "aracines@unal.edu.co"]
 
-    nombre = tk.Label(frameSuperiorDerechoP5, text = nombres[0], font=("Times New Roman", 18, "bold"), bg= "#ADD8E6", fg = "#6495ED")
+    nombre = tk.Label(frameSuperiorDerechoP5, text = nombres[0], font=("Lexend", 18, "bold"), bg= "#D3D3D3", fg = "#6495ED")
     nombre.pack(anchor="c")
-    hojaDeVida = tk.Message(frameSuperiorDerechoP5, text = "\n•Edad: " + edades[0]  + "\n•Estudios: " + estudios[0] +"\n•Institución: "+ instituciones[0] +"\n•Residencia: " + residencias[0]+ "\n•Email: " + emails[0], font=("Times New Roman", 12), bg= "#ADD8E6", width = 300 )
+    hojaDeVida = tk.Message(frameSuperiorDerechoP5, text = "\n•Edad: " + edades[0]  + "\n•Estudios: " + estudios[0] +"\n•Institución: "+ instituciones[0] +"\n•Residencia: " + residencias[0]+ "\n•Email: " + emails[0], font=("Times New Roman", 12), bg= "#D3D3D3", width = 300 )
     hojaDeVida.pack(anchor= "c")
 
     def cambiarHojaDeVida(event):
@@ -2754,40 +2754,40 @@ def ventanaDeInicio():
     nombre.bind("<Button-1>", cambiarHojaDeVida)
 
     #Creacion y posicionamiento de P6 (291.84 x 275.0976)
-    frameInferiorDerechoP6 = tk.Frame(frameGrandeDerechoP2, bd = 2, relief= "solid", height= 100, bg = "#ADD8E6")
+    frameInferiorDerechoP6 = tk.Frame(frameGrandeDerechoP2, bd = 2, relief= "solid", height= 100, bg = "#D3D3D3")
     frameInferiorDerechoP6.place(relx= 0.02, rely= 0.392, relwidth= 0.96, relheight = 0.597)
 
 
     imagenes1 = [
-        tk.PhotoImage(file="src/iuMain/imagenes/rusbel1.png"),
-        tk.PhotoImage(file="src/iuMain/imagenes/Andy1.png"),
-        tk.PhotoImage(file="src/iuMain/imagenes/Juanjo1.png"),
-        tk.PhotoImage(file="src/iuMain/imagenes/Gerson1.png"),
-        tk.PhotoImage(file="src/iuMain/imagenes/san1.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Jero1.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Valentina1.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Julian1.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Andres1.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Alan1.png"),
     ]
 
     imagenes2 = [
-        tk.PhotoImage(file="src/iuMain/imagenes/rusbel2.png"),
-        tk.PhotoImage(file="src/iuMain/imagenes/Andy2.png"),
-        tk.PhotoImage(file="src/iuMain/imagenes/Juanjo2.png"),
-        tk.PhotoImage(file="src/iuMain/imagenes/Gerson2.png"),
-        tk.PhotoImage(file="src/iuMain/imagenes/san2.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Jero2.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Valentina2.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Julian2.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Andres2.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Alan2.png"),
     ]
 
     imagenes3 = [
-        tk.PhotoImage(file="src/iuMain/imagenes/rusbel3.png"),
-        tk.PhotoImage(file="src/iuMain/imagenes/Andy3.png"),
-        tk.PhotoImage(file="src/iuMain/imagenes/Juanjo3.png"),
-        tk.PhotoImage(file="src/iuMain/imagenes/Gerson3.png"),
-        tk.PhotoImage(file="src/iuMain/imagenes/san3.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Jero3.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Valentina3.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Julian3.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Andres3.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Alan3.png"),
     ]
 
     imagenes4 = [
-        tk.PhotoImage(file="src/iuMain/imagenes/rusbel4.png"),
-        tk.PhotoImage(file="src/iuMain/imagenes/Andy4.png"),
-        tk.PhotoImage(file="src/iuMain/imagenes/Juanjo4.png"),
-        tk.PhotoImage(file="src/iuMain/imagenes/Gerson4.png"),
-        tk.PhotoImage(file="src/iuMain/imagenes/san4.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Jero4.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Valentina4.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Julian4.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Andres4.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Alan4.png"),
     ]
 
     label1 = tk.Label(frameInferiorDerechoP6, image=imagenes1[0], bd = 3, relief="solid")
@@ -2815,7 +2815,7 @@ def ventanaDeInicio():
     menuOpciones = tk.Menu(barraMenu, tearoff= 0, font=("Courier", 9), activebackground= "#87CEEB", activeforeground= "black")
     barraMenu.add_cascade(label= "Inicio", menu= menuOpciones, font=("Courier", 9) )
 
-    mensaje = tk.Message(frameSuperiorIzquierdoP3, text=  "En este programa puedes:\n•Comprar Tickets\n•Comprar comida y regalos\n•Usar la zona de juegos\n•Adquirir membresias\n•Calificar nuestros servicios" , font= ("Times New Roman",11), bg="#ADD8E6")
+    mensaje = tk.Message(frameSuperiorIzquierdoP3, text=  "En este programa puedes:\n•Comprar Tickets\n•Comprar comida y regalos\n•Usar la zona de juegos\n•Adquirir membresias\n•Calificar nuestros servicios" , font= ("Times New Roman",11), bg="#D3D3D3")
     #Metodos para la barra de opciones
     def mostrarDescripcion():
         #mensaje = tk.Message()
@@ -2847,7 +2847,7 @@ if __name__ == '__main__':
     ventanaInicio = tk.Tk()
     ventanaInicio.title("Ventana de Inicio Cinemar")
     ventanaInicio.geometry("640x480")
-    ventanaInicio.config(bg = "#ADD8E6")
+    ventanaInicio.config(bg = "#D3D3D3")
 
     # Inicializar índice de la imagen para p4 y p5
     indice_imagen = 0
