@@ -486,7 +486,7 @@ class FrameInicioSesion(FieldFrame):
                     messagebox.showerror('Error', 'Hemos detectado que este número de documento se encuentra asociado a otro cliente, por favor verifica el tipo o número de documento digitado.')
                 else:
                     #En caso de que no, ingresamos al menú principal de nuestro cine
-                    messagebox.showinfo('Inicio de sesión exitoso', f'{clienteProceso.getNombre()}, Bienvenid@ a cinemar sede {sucursalSeleccionada}')
+                    messagebox.showinfo('Inicio de sesión exitoso', f'{clienteProceso.getNombre()}, Bienvenid@ a cinemark sede {sucursalSeleccionada}')
                     clienteProceso.setCineUbicacionActual(sucursalProceso)
                     self.logicaInicioProcesosFuncionalidades(clienteProceso)
 
@@ -691,7 +691,7 @@ class FrameZonaJuegos(FieldFrame):
 
         self.clienteProceso = FieldFrame.getClienteProceso()
         tituloProceso = 'Zona de Juegos\n'
-        descripcionProceso ='En este espacio podras hacer uso de todos nuestros juegos y conseguir recompensas pagando con tu tarjeta cinemar, la cual podras adquirir y recargar en este mismo espacio.\n'
+        descripcionProceso ='En este espacio podras hacer uso de todos nuestros juegos y conseguir recompensas pagando con tu tarjeta cinemark, la cual podras adquirir y recargar en este mismo espacio.\n'
         botonVolver = True
         fecha = f'Fecha Actual : {FieldFrame.getClienteProceso().getCineUbicacionActual().getFechaActual().date()}\nHora actual : {FieldFrame.getClienteProceso().getCineUbicacionActual().getFechaActual().time().replace(microsecond = 0)}\n'
 
@@ -735,7 +735,7 @@ class FrameZonaJuegos(FieldFrame):
     #Metodo para mostrar alerta cuando el cliente no tiene cuenta
     def AlertaSinCuenta(self):
 
-        mensaje = messagebox.askyesno("Sin Cuenta", "•No tienes una Tarjeta Cinemar asociada, ¿Deseas Adquirirla?  🤔 -> 💳❔")
+        mensaje = messagebox.askyesno("Sin Cuenta", "•No tienes una Tarjeta Cinemark asociada, ¿Deseas Adquirirla?  🤔 -> 💳❔")
 
         if mensaje:
 
@@ -768,7 +768,7 @@ class FrameZonaJuegos(FieldFrame):
                 
 
                 Arkade.asociarTarjetaCliente(self.clienteProceso)
-                FrameTarjetaCinemar(self).mostrarFrame() 
+                FrameTarjetaCinemar(self).mostrarFrame()
                 
             
             self.canvas.after(7500, eliminar_labels)
@@ -779,7 +779,7 @@ class FrameZonaJuegos(FieldFrame):
         else:
             label = tk.Label(
                         self, 
-                        text="Recuerda que para Ingresar debes tener una Tarjeta Cinemar", 
+                        text="Recuerda que para Ingresar debes tener una Tarjeta Cinemark",
                         font=("Lucida Console", 11, "bold"), 
                         width=500, 
                         fg="black", 
@@ -803,8 +803,8 @@ class FrameTarjetaCinemar(FieldFrame):
         self.clienteProceso = FieldFrame.getClienteProceso()
 
         super().__init__(
-                tituloProceso = 'Personalización Tarjeta Cinemar',
-                descripcionProceso = 'En este espacio podras personalizar tu tarjeta cinemar a tu gusto\n',
+                tituloProceso = 'Personalización Tarjeta Cinemark',
+                descripcionProceso = 'En este espacio podras personalizar tu tarjeta cinemark a tu gusto\n',
                 tituloCriterios = 'Criterios',
                 textEtiquetas = ['Seleccione color de la tarjeta :', 'Seleccione fuente de la tarjeta :', 'Seleccione color de la fuente :'], 
                 tituloValores = 'Elecciones',
@@ -844,7 +844,7 @@ class FrameTarjetaCinemar(FieldFrame):
         self.canvas.pack()
 
         # Crear la tarjeta con personalizaciones
-        FrameTarjetaCinemar.crear_tarjeta(self.canvas, self.clienteProceso.getNombre() , self.clienteProceso.getCuenta().getSaldo(), self.clienteProceso._colorFondoTarjeta, 
+        FrameTarjetaCinemar.crear_tarjeta(self.canvas, self.clienteProceso.getNombre() , self.clienteProceso.getCuenta().getSaldo(), self.clienteProceso._colorFondoTarjeta,
                     (self.clienteProceso._fuenteTarjeta, 16, "bold italic"), (self.clienteProceso._fuenteTarjeta, 12), self.clienteProceso._colorTextoTarjeta)
 
        
@@ -884,7 +884,7 @@ class FrameTarjetaCinemar(FieldFrame):
 
                 self.clienteProceso._colorFondoTarjeta = valores[0]
 
-                FrameTarjetaCinemar.crear_tarjeta(self.canvas, self.clienteProceso.getNombre() , self.clienteProceso.getCuenta().getSaldo(), self.clienteProceso._colorFondoTarjeta, 
+                FrameTarjetaCinemar.crear_tarjeta(self.canvas, self.clienteProceso.getNombre() , self.clienteProceso.getCuenta().getSaldo(), self.clienteProceso._colorFondoTarjeta,
                     (self.clienteProceso._fuenteTarjeta, 16, "bold italic"), (self.clienteProceso._fuenteTarjeta, 12), self.clienteProceso._colorTextoTarjeta)
                 
 
@@ -892,14 +892,14 @@ class FrameTarjetaCinemar(FieldFrame):
 
                 self.clienteProceso._fuenteTarjeta = valores[1]
 
-                FrameTarjetaCinemar.crear_tarjeta(self.canvas, self.clienteProceso.getNombre() , self.clienteProceso.getCuenta().getSaldo(), self.clienteProceso._colorFondoTarjeta, 
+                FrameTarjetaCinemar.crear_tarjeta(self.canvas, self.clienteProceso.getNombre() , self.clienteProceso.getCuenta().getSaldo(), self.clienteProceso._colorFondoTarjeta,
                     (self.clienteProceso._fuenteTarjeta, 16, "bold italic"), (self.clienteProceso._fuenteTarjeta, 12), self.clienteProceso._colorTextoTarjeta)
 
             if valores[2] != 'Color de la fuente':
 
                 self.clienteProceso._colorTextoTarjeta = valores[2]
 
-                FrameTarjetaCinemar.crear_tarjeta(self.canvas, self.clienteProceso.getNombre() , self.clienteProceso.getCuenta().getSaldo(), self.clienteProceso._colorFondoTarjeta, 
+                FrameTarjetaCinemar.crear_tarjeta(self.canvas, self.clienteProceso.getNombre() , self.clienteProceso.getCuenta().getSaldo(), self.clienteProceso._colorFondoTarjeta,
                     (self.clienteProceso._fuenteTarjeta, 16, "bold italic"), (self.clienteProceso._fuenteTarjeta, 12), self.clienteProceso._colorTextoTarjeta)
     
     def funIngresar(self):
@@ -927,7 +927,7 @@ class FrameTarjetaCinemar(FieldFrame):
         canvas.create_rectangle(5, 5, 295, 145, outline="white", width=2)
 
         # Título de la tarjeta (con fuente y color personalizados)
-        canvas.create_text(150, 30, text="Tarjeta Cinemar", font=fuente_titulo, fill=color_texto)
+        canvas.create_text(150, 30, text="Tarjeta Cinemark", font=fuente_titulo, fill=color_texto)
 
         # Espacio para el nombre del titular (con fuente y color personalizados)
         canvas.create_text(150, 60, text=f"Nombre: {nombre}", font=fuente_texto, fill=color_texto)
@@ -957,7 +957,7 @@ class FrameEleccion(FieldFrame):
                 textEtiquetas = ['Seleccione proceso a realizar :'], 
                 tituloValores = ' Proceso',
                 infoElementosInteractuables = [
-                    [["Ingresar a los juegos","Recargar tarjeta Cinemar","Personalizar tarjeta Cinemar"], '                          Proceso'], 
+                    [["Ingresar a los juegos","Recargar tarjeta Cinemark","Personalizar tarjeta Cinemark"], '                          Proceso'],
                     
                 ],
                 habilitado = [False],
@@ -978,7 +978,7 @@ class FrameEleccion(FieldFrame):
         self.canvas = tk.Canvas(self.FrameTarjeta, width=300, height=150)
         self.canvas.pack()
 
-        FrameTarjetaCinemar.crear_tarjeta(self.canvas, self.clienteProceso.getNombre() , self.clienteProceso.getCuenta().getSaldo(), self.clienteProceso._colorFondoTarjeta, 
+        FrameTarjetaCinemar.crear_tarjeta(self.canvas, self.clienteProceso.getNombre() , self.clienteProceso.getCuenta().getSaldo(), self.clienteProceso._colorFondoTarjeta,
                     (self.clienteProceso._fuenteTarjeta, 16, "bold italic"), (self.clienteProceso._fuenteTarjeta, 12), self.clienteProceso._colorTextoTarjeta)
 
         for widget in self.widgets[-1].winfo_children():
@@ -1015,10 +1015,10 @@ class FrameEleccion(FieldFrame):
                     self.valorComoBox.append(w.get())
             if self.valorComoBox[0] == "Ingresar a los juegos":
                 FrameEleccionJuego(self).mostrarFrame()
-            elif self.valorComoBox[0] == "Recargar tarjeta Cinemar":
+            elif self.valorComoBox[0] == "Recargar tarjeta Cinemark":
                 FrameRecargarTarjetaCinemar().mostrarFrame()
-            elif self.valorComoBox[0] == "Personalizar tarjeta Cinemar":
-                FrameTarjetaCinemar(FrameZonaJuegos()).mostrarFrame() 
+            elif self.valorComoBox[0] == "Personalizar tarjeta Cinemark":
+                FrameTarjetaCinemar(FrameZonaJuegos()).mostrarFrame()
     
 
 
@@ -1426,7 +1426,7 @@ class FrameBono(FieldFrame):
             tituloCriterios = 'Criterio',
             textEtiquetas = ['Seleccionar proceso :'],
             tituloValores = 'Dato proceso',
-            infoElementosInteractuables = [[['Ir a la ventana principal', 'Ir a la zona de servicios', 'Volver a seleccionar juego', 'Recargar Tarjeta Cinemar', 'Personalizar Tarjeta Cinemar'], '                     Proceso']],
+            infoElementosInteractuables = [[['Ir a la ventana principal', 'Ir a la zona de servicios', 'Volver a seleccionar juego', 'Recargar Tarjeta Cinemark', 'Personalizar Tarjeta Cinemark'], '                     Proceso']],
             habilitado = [False],
             botonVolver = False,
 
@@ -1508,10 +1508,10 @@ class FrameBono(FieldFrame):
             elif self.getElementosInteractivos()[0].get() == 'Volver a seleccionar juego':
                 FrameEleccionJuego(FrameEleccion(FrameZonaJuegos())).mostrarFrame()
 
-            elif self.getElementosInteractivos()[0].get() == 'Recargar Tarjeta Cinemar':
+            elif self.getElementosInteractivos()[0].get() == 'Recargar Tarjeta Cinemark':
                 FrameRecargarTarjetaCinemar().mostrarFrame()
             
-            elif self.getElementosInteractivos()[0].get() == 'Personalizar Tarjeta Cinemar':
+            elif self.getElementosInteractivos()[0].get() == 'Personalizar Tarjeta Cinemark':
                 FrameTarjetaCinemar(FrameZonaJuegos()).mostrarFrame()
 
 
@@ -2313,7 +2313,7 @@ class FrameRecargarTarjetaCinemar(FramePasarelaDePagos):
         
         FieldFrame.__init__(
             self,
-            tituloProceso = "Recarga Tarjeta Cinemar",
+            tituloProceso = "Recarga Tarjeta Cinemark",
             descripcionProceso=f"(Fecha Actual: {self.getClienteProceso().getCineUbicacionActual().getFechaActual().date()}; Hora actual : {self.getClienteProceso().getCineUbicacionActual().getFechaActual().time().replace(microsecond = 0)})\n Ingresa el valor a recargar y selecciona el método de pago que desees",
             tituloCriterios = "Criterio a seleccionar" ,
             tituloValores= "Valores",
@@ -2647,13 +2647,13 @@ def objetosBasePractica2():
 
     for sucursal in SucursalCine.getSucursalesCine():
         for i in range (20):
-            sucursal.getTarjetasCinemar().append(TarjetaCinemar())
+            sucursal.getTarjetasCinemark().append(TarjetaCinemar())
     
     
 
     SucursalCine.logicaInicioSIstemaReservarTicket()
 
-    #cliente4.setCuenta(SucursalCine.getSucursalesCine()[0].getTarjetasCinemar()[0])
+    #cliente4.setCuenta(SucursalCine.getSucursalesCine()[0].getTarjetasCinemark()[0])
     #cliente4.setCodigosDescuento([ticket.generarCodigoTicket()])
     #cliente4.getCuenta().setSaldo(500000)
 
@@ -2845,7 +2845,7 @@ if __name__ == '__main__':
     #objetosBasePractica2()
     #Creacion de la ventana de inicio 
     ventanaInicio = tk.Tk()
-    ventanaInicio.title("Ventana de Inicio Cinemar")
+    ventanaInicio.title("Ventana de Inicio Cinemark")
     ventanaInicio.geometry("640x480")
     ventanaInicio.config(bg = "#D3D3D3")
 
@@ -2856,7 +2856,7 @@ if __name__ == '__main__':
 
     #Ventana Funcionalidad
     ventanaLogicaProyecto = tk.Toplevel(ventanaInicio)
-    ventanaLogicaProyecto.title("Ventana Principal Cinemar")
+    ventanaLogicaProyecto.title("Ventana Principal Cinemark")
     ventanaLogicaProyecto.geometry("640x480")
 
     #Frames de lógica proyecto
