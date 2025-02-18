@@ -1784,3 +1784,303 @@ class FrameSeleccionarAsiento(FieldFrame):
                     #Ingresamos a la pasarela de pago
                     frameSiguiente = FrameFuncionalidad1()
                     FramePasarelaDePagos(frameSiguiente, ticketProceso.getPrecio(), ticketProceso).mostrarFrame()
+
+class FrameIngresoASalaCine(FieldFrame):
+    
+    def __init__(self, frameAnterior):
+        
+        #Facilitamos el acceso al cliente que realiza el proceso de ingreso a la sala de cine
+        self._clienteProceso = FieldFrame.getClienteProceso()
+
+        #Creamos variables de instancia
+        self._salasDeCineDisponibles = SalaCine.filtrarSalasDeCine(self._clienteProceso.getCineUbicacionActual())
+        self._salaCineSelccionada = None
+
+        #Facilitramos el acceso a la información de salas de cine
+        infoSalasDeCine = SalaCine.mostrarSalasCine(self._salasDeCineDisponibles, self._clienteProceso)
+
+        #Usamos el constructor de FieldFrame
+        super().__init__(
+            tituloProceso = 'Ingreso a sala de cine',
+            descripcionProceso = f'En este apartado puedes acceder a alguna de nuestras salas de cine disponibles haciendo uso de algún ticket reservado previamente.\nInstrucciones de uso:\n1. Se recomendará la sala de cine a la que puedes ingresar en estos momentos.\n2. Tras seleccionar una sala de cine, podrás ver información detallada sobre ella. \n(Fecha actual: {self._clienteProceso.getCineUbicacionActual().getFechaActual().replace(microsecond = 0)})',
+            tituloCriterios = 'Criterios sala cine',
+            textEtiquetas = ['Seleccionar sala cine: '],
+            tituloValores = 'Salas disponibles',
+            infoElementosInteractuables = [[infoSalasDeCine, 'Selecciona la sala de cine']],
+            habilitado = [False],
+            botonVolver = True,
+            desplazarBotonesFila = 1,
+            frameAnterior = frameAnterior
+        )
+
+        #Creamos un label para mostrar la información de la sala de cine seleccionada
+        self._labelInfoSalaCine = tk.Label(self, text='', font= ("courier new",11), anchor="center", bg = "#F0F8FF" )
+        self._labelInfoSalaCine.grid(column=0, row=len(self._infoEtiquetas) + 3, columnspan=4)
+        
+        #Facilitamos el acceso al comboBox creado y le asignamos un evento
+        self._comboBoxSalaCine = self.getElementosInteractivos()[0]
+        self._comboBoxSalaCine.bind('<<ComboboxSelected>>', self._setInfoSalaCine)
+
+    def _setInfoSalaCine(self, evento):
+        #Seleccionamos la sala de cine y seteamos la información de la sala de cine en el Label
+        self._salaCineSelccionada = self._seleccionarSalaCine()
+        self._labelInfoSalaCine.configure(text = f'Película en presentación: {self._salaCineSelccionada.getPeliculaEnPresentacion().getNombre()}; Formato: {self._salaCineSelccionada.getPeliculaEnPresentacion().getTipoDeFormato()},\nHorario inicio presentación: {self._salaCineSelccionada.getHorarioPeliculaEnPresentacion()}')
+    
+    def _seleccionarSalaCine(self):
+        #Obtenemos el número de sala de cine
+        numeroSalaDeCine = int(self._comboBoxSalaCine.get().split('#')[1])
+        
+        #Iteramos sobre las salas de cine y retornamos la sala de cine coincida con el número de sala obtenido
+        for salaCine in self._salasDeCineDisponibles:
+            if salaCine.getNumeroSala() == numeroSalaDeCine:
+                return salaCine
+    
+    def funBorrar(self):
+        super().funBorrar()
+        self._labelInfoSalaCine.configure(text = '')
+
+    def funAceptar(self):
+        #Evaluamos las excepciones
+        if self.evaluarExcepciones():
+
+            #Confirmamos la elección del usuario
+            confirmarEleccion = messagebox.askokcancel('Confirmación dato seleccionado', f'Has seleccionado la sala de cine #{self._salaCineSelccionada.getNumeroSala()}, ¿Es esto correcto?')
+            
+            if confirmarEleccion:
+                #Validamos si puede ingresar a la sala de cine
+                if self._salaCineSelccionada.verificarTicket(self._clienteProceso):
+
+                    #Avanzamos la hora respecto a la duración de la película
+                    nuevaHoraActual = self._salaCineSelccionada.getHorarioPeliculaEnPresentacion() + self._salaCineSelccionada.getPeliculaEnPresentacion().getDuracion()
+                    self._clienteProceso.getCineUbicacionActual().setFechaActual(nuevaHoraActual)
+                    self._clienteProceso.getCineUbicacionActual().avanzarTiempo()
+                    
+                    #Mostramos las ventajas emergentes del proceso realizado y nos redirigimos al menú de la funcionalidad 1
+                    messagebox.showinfo('Ingreso exitoso', '¡Disfruta de tu película!')
+                    messagebox.showinfo('Proceso exitoso', 'La película ha finalizado, serás redireccionado al menú principal de la funcionalidad')
+                    
+                    #Actualizamos la lógica de los frames con el nuevo horario seleccionado
+                    self.refrescarFramesFuncionalidades()
+
+                    #Regresa al menú de la funcionalidad 1
+                    self.getFramesFuncionalidades()[0].mostrarFrame()
+
+                else:
+                    messagebox.showerror('Error', 'No tienes un ticket válido para ingresar a esta sala de cine')
+
+class FrameSalaDeEspera(FieldFrame):
+    
+    def __init__(self, frameAnterior):
+
+        #Facilitamos el acceso a al cliente que está realizando el proceso
+        self._clienteProceso = FieldFrame.getClienteProceso()
+        #Eliminamos los tickets caducados de la lista de tickets del cliente
+        self._clienteProceso.dropTicketsCaducados()
+
+        #Creamos las variables de instancia a usar
+        self._ticketsDisponiblesParaUsarEnSede = self._clienteProceso.mostrarTicketsParaSalaDeEspera()
+        self._horarioAvanzarTiempo = None
+
+        super().__init__(
+            tituloProceso = 'Sala de espera',
+            descripcionProceso = f'En este apartado podrás esperar (Avanzar el tiempo) hasta el horario de presentación de la película asociada a alguno de tus tickets previamente adquiridos en esta sede y cuyo horario sea estrictamente mayor a la fecha actual.\nConsideraciones de uso:\n1. Debes seleciconar un ticket para poder visualizar su información\n(Fecha actual: {self._clienteProceso.getCineUbicacionActual().getFechaActual().replace(microsecond = 0)})',
+            tituloCriterios = 'Criterio Ticket',
+            textEtiquetas = ['Seleccionar ticket :'],
+            tituloValores = 'Dato ticket',
+            infoElementosInteractuables = [ [[f'Horario: {ticket.getHorario()}' for ticket in self._ticketsDisponiblesParaUsarEnSede], 'Seleccionar ticket'] ],
+            habilitado = [False],
+            botonVolver = True,
+            desplazarBotonesFila = 1,
+            frameAnterior = frameAnterior
+        )
+
+        #Expandimos el comboBox creado para visualizar mejor su contenido
+        self.getElementosInteractivos()[0].grid_configure(sticky='we')
+
+        #Creamos y ubicamos el label que mostrará información sobre el ticket seleccionado
+        self._labelInfoTicketSeleccionado = tk.Label(self, text='', font= ("courier new",11), anchor="center", bg = "#F0F8FF" )
+        self._labelInfoTicketSeleccionado.grid(column=0, row=len(self._infoEtiquetas) + 3, columnspan=4)
+
+        #Facilitamos el acceso al comboBox de tickets y le asignamos un evento
+        self._comboBoxTicketsDisponibles = self.getElementosInteractivos()[0]
+        self._comboBoxTicketsDisponibles.bind('<<ComboboxSelected>>', self._setInfoTicket)
+    
+    def _setInfoTicket(self, evento):
+
+        #Obtenemos el horario seleccionado a partir del ticket seleccionado
+        ticketSeleccionado = self._ticketsDisponiblesParaUsarEnSede[self._comboBoxTicketsDisponibles.current()]
+        self._horarioAvanzarTiempo = ticketSeleccionado.getHorario()
+
+        #Actualizamos la información del label de información de ticket seleccionado
+        self._labelInfoTicketSeleccionado.configure(text = f'Película: {ticketSeleccionado.getPelicula().getNombre()}; Formato: {ticketSeleccionado.getPelicula().getTipoDeFormato()},\nSala de cine número: {ticketSeleccionado.getSalaDeCine().getNumeroSala()}')
+    
+    def funBorrar(self):
+        #Seteamos los valores por defecto
+        super().funBorrar()
+        #Reestablecemos la información del label de información de ticket seleccionado
+        self._labelInfoTicketSeleccionado.configure(text = '')
+    
+    def funAceptar(self):
+        
+        #Evaluamos las excepciones
+        if self.evaluarExcepciones():
+
+            #Confirmamos la elección del usuario
+            confirmacionUsuario = messagebox.askquestion('Adevertencia', f'(Fecha actual: {self._clienteProceso.getCineUbicacionActual().getFechaActual().replace(microsecond = 0)}) Estas apunto de esperar (Avanzar el tiempo) hasta {self._horarioAvanzarTiempo}, en caso de tener tickets antes de la fecha y hora a esperar, estos serán eliminados, ¿Desea continuar?')
+
+            if confirmacionUsuario:
+                #Avanzamos el tiempo y notificamos al usuario
+                self._clienteProceso.getCineUbicacionActual().setFechaActual(self._horarioAvanzarTiempo)
+                messagebox.showinfo('Avance de tiempo exitoso', f'Fecha actual: {self._horarioAvanzarTiempo}')
+                self._clienteProceso.getCineUbicacionActual().avanzarTiempo()
+
+                #Actualizamos la lógica de los frames con el nuevo horario seleccionado
+                self.refrescarFramesFuncionalidades()
+
+                #Regresa al menú de la funcionalidad 1
+                self.getFramesFuncionalidades()[0].mostrarFrame()
+
+#################################################################################################################################
+
+class FrameFuncionalidad3Calificaciones(FieldFrame):
+    def __init__(self):
+        self._clienteProceso = FieldFrame.getClienteProceso()
+        self._peliculasCalificar = self._clienteProceso.getPeliculasDisponiblesParaCalificar()
+        self._productosCalificar = self._clienteProceso.getProductosDisponiblesParaCalificar()
+        
+
+        super().__init__ (
+            tituloProceso="Calificaciones",
+            descripcionProceso= f"Bienvenido al apartado de califcaciones de productos y peliculas, en este espacio podras calificar nuestros servicios dependiendo tus gustos y aficiones.(Fecha Actual: {FieldFrame.getClienteProceso().getCineUbicacionActual().getFechaActual().date()}; Hora actual : {FieldFrame.getClienteProceso().getCineUbicacionActual().getFechaActual().time().replace(microsecond = 0)})",
+            tituloCriterios = 'Criterios para calificar',
+            textEtiquetas= ["Que quieres calificar :","Escoge tu item :" ,  "Califica tu item :"],
+            tituloValores = 'Valores ingresados',
+            infoElementosInteractuables = [
+                [["Producto","Pelicula"], 'Seleccionar una opcion'],
+                [[], 'Escoge tu item:'],                         
+                [[], 'Califica tu item:'] 
+            ],
+
+            habilitado = [False, False, False],
+            botonVolver = True,
+            frameAnterior = FieldFrame.getFrameMenuPrincipal()
+            
+        )
+
+        self._comboBoxItems = self.getElementosInteractivos()[0]
+        self._comboBoxEscogerItem = self.getElementosInteractivos()[1]
+        self._comboBoxCalificarItem = self.getElementosInteractivos()[2]
+
+        self._comboBoxEscogerItem.configure(state = 'disabled')
+        self._comboBoxCalificarItem.configure(state = 'disabled')
+
+        self._comboBoxItems.bind('<<ComboboxSelected>>', self.setMostrarItemParaCalificar)
+        self._comboBoxEscogerItem.bind('<<ComboboxSelected>>', self.setCalificarItem)
+
+
+    def setMostrarItemParaCalificar(self,evento):
+        
+        if self._comboBoxItems.current() == 0:
+
+       
+            self._comboBoxEscogerItem.configure(values = Cliente.mostrarProductosParaCalificar(self._productosCalificar))
+            self._comboBoxEscogerItem.configure(state = 'readonly')
+            self._comboBoxEscogerItem.set(self._infoElementosInteractuables[1][1])
+
+        
+            self._comboBoxCalificarItem.configure(state = 'disabled')
+            self._comboBoxCalificarItem.set(self._infoElementosInteractuables[2][1])
+
+            
+
+        else:
+            
+            self._comboBoxEscogerItem.configure(values = Cliente.mostrarPeliculaParaCalificar(self._peliculasCalificar))
+            self._comboBoxEscogerItem.configure(state = 'readonly')
+            self._comboBoxEscogerItem.set(self._infoElementosInteractuables[1][1])
+
+        
+            self._comboBoxCalificarItem.configure(state = 'disabled')
+            self._comboBoxCalificarItem.set(self._infoElementosInteractuables[2][1])
+
+           
+
+    def setCalificarItem(self,evento):
+
+        calificacionesLista= [1,2,3,4,5]
+        self._comboBoxCalificarItem.configure(values = calificacionesLista)
+        self._comboBoxCalificarItem.configure(state = 'readonly')
+        self._nombreProductoSeleccionado = self.getValue("Escoge tu item :")
+
+    def funBorrar(self):
+        #Setteamos los valores por defecto de cada comboBox
+        super().funBorrar()
+
+        #Configuramos el estado del comboBox de columnas
+        self._comboBoxEscogerItem.configure(state = 'disabled')  
+        self._comboBoxCalificarItem.configure(state = 'disabled')    
+           
+
+    def funAceptar(self):
+          #Evaluamos las excepciones de UI
+        if self.evaluarExcepciones():
+
+           if self._comboBoxItems.current() == 0:
+
+            self._productoSeleccionado = self._comboBoxEscogerItem.get()
+            self._calificacionProductoSeleccionado = int(self._comboBoxCalificarItem.get())
+            mejorProducto=self._clienteProceso.getCineUbicacionActual().mejorProducto().getNombre()+ self._clienteProceso.getCineUbicacionActual().mejorProducto().getTamaño()
+            peorPelicula=self._clienteProceso.getCineUbicacionActual().peorPelicula().getNombre()+ self._clienteProceso.getCineUbicacionActual().peorPelicula().getTipoDeFormato()
+            productoCombo1=self._clienteProceso.getCineUbicacionActual().mejorProducto()
+            peliculaCombo=self._clienteProceso.getCineUbicacionActual().peorPelicula()
+            valorComboGlobal=productoCombo1.getPrecio()+peliculaCombo.getPrecio()
+            opcionHorarioPelicula=peliculaCombo.seleccionarHorarioMasLejano()
+            numAsientoProceso=peliculaCombo.seleccionarAsientoAleatorio(opcionHorarioPelicula)
+            codigoBono=Producto.generarCodigoAleatorio(7)
+            ticketProceso= Ticket(peliculaCombo,opcionHorarioPelicula,numAsientoProceso,False,self._clienteProceso.getCineUbicacionActual())
+            bonoProceso= Bono(codigoBono,Producto(productoCombo1.getNombre(),productoCombo1.getTamaño(),productoCombo1.getTipoProducto(),productoCombo1.getPrecio(),1,productoCombo1.getGenero(),self._clienteProceso.getCineUbicacionActual()),productoCombo1.getTipoProducto(),self._clienteProceso)
+            confirmacionUsuario = messagebox.askokcancel('Confirmación datos', f'Has seleccionado el item: {self._productoSeleccionado}; y le has dado una calificacion de: {self._calificacionProductoSeleccionado}')
+            if confirmacionUsuario:
+                
+                confirmacionParaPasarelaDePago = messagebox.askokcancel('Confirmación datos',f'Como calificaste un item te queremos ofrecer un combo especial personalizado, esta compuesto por: {mejorProducto}; y  {peorPelicula}' "¿Deseas Continuar?")
+
+                if confirmacionParaPasarelaDePago:
+                   
+                    FramePasarelaDePagos(self.getFrameMenuPrincipal(),valorComboGlobal,ticketProceso,bonoProceso).mostrarFrame()
+                
+                
+
+           else:
+             self._peliculaSeleccionada = self._comboBoxEscogerItem.get()
+             self._calificacionPeliculaSeleccionada = int(self._comboBoxCalificarItem.get())
+             peorProducto=self._clienteProceso.getCineUbicacionActual().peorProducto().getNombre()+ self._clienteProceso.getCineUbicacionActual().peorProducto().getTamaño()
+             mejorPelicula=self._clienteProceso.getCineUbicacionActual().mejorPelicula().getNombre()+ self._clienteProceso.getCineUbicacionActual().mejorPelicula().getTipoDeFormato()
+             productoCombo1=self._clienteProceso.getCineUbicacionActual().peorProducto()
+             peliculaCombo=self._clienteProceso.getCineUbicacionActual().mejorPelicula()
+             valorComboGlobal=productoCombo1.getPrecio()+peliculaCombo.getPrecio()
+             opcionHorarioPelicula=peliculaCombo.seleccionarHorarioMasLejano()
+             numAsientoProceso=peliculaCombo.seleccionarAsientoAleatorio(opcionHorarioPelicula)
+             codigoBono=Producto.generarCodigoAleatorio(7)
+             ticketProceso= Ticket(peliculaCombo,opcionHorarioPelicula,numAsientoProceso,False,self._clienteProceso.getCineUbicacionActual())
+             bonoProceso= Bono(codigoBono,Producto(productoCombo1.getNombre(),productoCombo1.getTamaño(),productoCombo1.getTipoProducto(),productoCombo1.getPrecio(),1,productoCombo1.getGenero(),self._clienteProceso.getCineUbicacionActual()),productoCombo1.getTipoProducto(),self._clienteProceso)
+             confirmacionUsuario = messagebox.askokcancel('Confirmación datos', f'Has seleccionado el item: {self._peliculaSeleccionada}; y le has dado una calificacion de: {self._calificacionPeliculaSeleccionada}')
+             if confirmacionUsuario:
+                
+                confirmacionParaPasarelaDePago = messagebox.askokcancel('Confirmación datos',f'Como calificaste un item te queremos ofrecer un combo especial personalizado, esta compuesto por: {peorProducto}; y  {mejorPelicula}' "¿Deseas Continuar?")
+
+                if confirmacionParaPasarelaDePago:
+                    FramePasarelaDePagos(self.getFrameMenuPrincipal(),valorComboGlobal,ticketProceso,bonoProceso).mostrarFrame()
+        
+
+        
+            
+
+
+            
+
+
+        
+     
+    #Programar el borrar para que los values de los combobox queden vacíos o investigar forma de que los combobox no desplieguen el menú
+    #Hacer que en el comboBox de horarios se muestre un apartado de horario de presentación en vivo, programar método en clase película
+     
