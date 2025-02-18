@@ -490,7 +490,6 @@ class FrameInicioSesion(FieldFrame):
                     clienteProceso.setCineUbicacionActual(sucursalProceso)
                     self.logicaInicioProcesosFuncionalidades(clienteProceso)
 
-
 class FrameCrearUsuario(FieldFrame):
 
     #Construimos el frame usando FieldFrame
@@ -795,7 +794,7 @@ class FrameZonaJuegos(FieldFrame):
 
             # Usar lambda para eliminar el Label después de 5 segundos
             self.canvas.after(4000, lambda: self.canvas.delete(label_id))
-
+        
 class FrameTarjetaCinemar(FieldFrame):
     
 
@@ -1298,7 +1297,7 @@ class FrameJuego(tk.Frame):
         # Si la letra ya fue usada, mostrar un mensaje
         if letra in self.letras_usadas:
             messagebox.showinfo("Advertencia", f"Ya has clicado la letra '{letra}'. Intenta con otra.")
-           return
+            return
         
         # Añadir la letra al conjunto de letras usadas
         self.letras_usadas.add(letra)
@@ -1514,6 +1513,7 @@ class FrameBono(FieldFrame):
             
             elif self.getElementosInteractivos()[0].get() == 'Personalizar Tarjeta Cinemar':
                 FrameTarjetaCinemar(FrameZonaJuegos()).mostrarFrame()
+
 
 
 
@@ -2083,7 +2083,7 @@ class FrameFuncionalidad3Calificaciones(FieldFrame):
      
     #Programar el borrar para que los values de los combobox queden vacíos o investigar forma de que los combobox no desplieguen el menú
     #Hacer que en el comboBox de horarios se muestre un apartado de horario de presentación en vivo, programar método en clase película
-
+     
 
 class FrameFuncionalidad5(FieldFrame):
     #Se crean variables para almacenar la membresia a comprar y su número
@@ -2301,7 +2301,7 @@ class FramePasarelaDePagos(FieldFrame):
     
     @classmethod
     def setPrecioFactura(cls, precioFactura):
-      FramePasarelaDePagos._precioFactura = precioFactura
+        FramePasarelaDePagos._precioFactura = precioFactura
 
 
 class FrameRecargarTarjetaCinemar(FramePasarelaDePagos):
@@ -2452,3 +2452,415 @@ class FrameRecargarTarjetaCinemar(FramePasarelaDePagos):
         except ErrorAplicacion as e:
             messagebox.showerror('Error', e.mostrarMensaje())
             return False
+
+def objetosBasePractica2():
+
+
+    sucursalCine1 = SucursalCine("Bucaramanga")
+    sucursalCine2 = SucursalCine("Marinilla")
+    sucursalCine3 = SucursalCine("Medellín")
+
+    servicioComidaM = ServicioComida("comida", sucursalCine1)
+
+    servicioComida = ServicioComida("comida", sucursalCine2)
+    servicioSouvenirs = ServicioSouvenir("souvenir", sucursalCine2)
+
+    servicioSouvenirM = ServicioSouvenir("souvenir", sucursalCine3)
+
+    # Productos de la sucursal de Bucaramanga
+
+    producto1M =  Producto("Hamburguesa","Grande","comida",25000,200,"Normal",sucursalCine1)
+    sucursalCine1.getInventarioCine().append(producto1M)
+    producto2M =  Producto("Hamburguesa","Deadpool","comida",30000,200,"Comedia",sucursalCine1)
+    sucursalCine1.getInventarioCine().append(producto2M)
+    producto3M =  Producto("Perro caliente","Grande","comida",20000,200,"Normal",sucursalCine1)
+    sucursalCine1.getInventarioCine().append(producto3M)
+    producto4M =  Producto("Perro caliente","Bolt","comida",30000,200,"Comedia",sucursalCine1)
+    sucursalCine1.getInventarioCine().append(producto4M)
+    producto5M =  Producto("Crispetas","Muerte","comida",15000,200,"Acción",sucursalCine1)
+    sucursalCine1.getInventarioCine().append(producto5M)
+    producto6M =  Producto("Crispetas","Grandes","comida",16000,200,"Normal",sucursalCine1)
+    sucursalCine1.getInventarioCine().append(producto6M)
+    producto7M =  Producto("Gaseosa","Grande","comida",6000,200,"Normal",sucursalCine1)
+    sucursalCine1.getInventarioCine().append(producto7M)
+    producto8M =  Producto("Gaseosa","Pequeña","comida",3000,200,"Normal",sucursalCine1)
+    sucursalCine1.getInventarioCine().append(producto8M)
+
+
+    # Productos de la sucursal de Marinilla
+
+    producto1 = Producto("Hamburguesa","Grande","comida",20000,200,"Normal",sucursalCine2)
+    sucursalCine2.getInventarioCine().append(producto1)
+    producto2 = Producto("Hamburguesa","Cangreburger","comida",25000,200,"Comedia",sucursalCine2)
+    sucursalCine2.getInventarioCine().append(producto2)
+    producto3 = Producto("Perro caliente","Grande","comida",15000,200,"Normal",sucursalCine2)
+    sucursalCine2.getInventarioCine().append(producto3)
+    producto4 = Producto("Perro caliente","Don salchicha","comida",20000,200,"Comedia",sucursalCine2)
+    sucursalCine2.getInventarioCine().append(producto4)
+    producto5 = Producto("Crispetas","cazador de Demonios","comida",14000,200,"Acción",sucursalCine2)
+    sucursalCine2.getInventarioCine().append(producto5)
+    producto6 = Producto("Crispetas","Grandes","comida",13000,200,"Normal",sucursalCine2)
+    sucursalCine2.getInventarioCine().append(producto6)
+    producto7 = Producto("Gaseosa","Grande","comida",4000,200,"Normal",sucursalCine2)
+    sucursalCine2.getInventarioCine().append(producto7)
+    producto8 = Producto("Gaseosa","Pequeña","comida",2000,200,"Normal",sucursalCine2)
+    sucursalCine2.getInventarioCine().append(producto8)
+
+    producto1S = Producto("Camisa","XL","souvenir",16000,200,"Normal",sucursalCine2)
+    sucursalCine2.getInventarioCine().append(producto1S)
+    producto2S = Producto("Camisa","Bob Esponja","souvenir",27000,200,"Comedia",sucursalCine2)
+    sucursalCine2.getInventarioCine().append(producto2S)
+    producto3S = Producto("Gorra","L","souvenir",11000,200,"Normal",sucursalCine2)
+    sucursalCine2.getInventarioCine().append(producto3S)
+    producto4S = Producto("Llavero","Katana","souvenir",22000,200,"Acción",sucursalCine2)
+    sucursalCine2.getInventarioCine().append(producto4S)
+    producto5S = Producto("Peluche","Pajaro loco","souvenir",29000,200,"Comedia",sucursalCine2)
+    sucursalCine2.getInventarioCine().append(producto5S)
+
+    # Productos de la sucursal de Medellin
+
+    producto1SM =  Producto("Camisa","XL","souvenir",19000,200,"Normal",sucursalCine3)
+    sucursalCine3.getInventarioCine().append(producto1SM)
+    producto2SM =  Producto("Camisa","Escuadron suicida","souvenir",30000,200,"Comedia",sucursalCine3)
+    sucursalCine3.getInventarioCine().append(producto2SM)
+    producto3SM =  Producto("Gorra","L","souvenir",12000,200,"Normal",sucursalCine3)
+    sucursalCine3.getInventarioCine().append(producto3SM)
+    producto4SM =  Producto("Llavero","Emociones","souvenir",30000,200,"Acción",sucursalCine3)
+    sucursalCine3.getInventarioCine().append(producto4SM)
+    producto5SM =  Producto("Peluche","Deku","souvenir",30000,200,"Comedia",sucursalCine3)
+    sucursalCine3.getInventarioCine().append(producto5SM)
+    
+
+    cliente1 = Cliente("Rusbel", 18, 13434, TipoDocumento.CC, sucursalCine2)
+    cliente2 = Cliente("Andy", 18, 14343, TipoDocumento.CC, sucursalCine1)
+    cliente3 = Cliente('Gerson', 23, 98765, TipoDocumento.CC, sucursalCine3)
+    cliente4 = Cliente('Juanjo', 18, 987, TipoDocumento.CC, sucursalCine1)
+    cliente5 = Cliente('Santiago', 18, 1125274009, TipoDocumento.CC, sucursalCine3)
+
+    salaDeCine1_1 = SalaCine(1, "2D", sucursalCine1)
+    salaDeCine1_2 = SalaCine(2, "3D", sucursalCine1)
+    salaDeCine1_3 = SalaCine(3, "4D", sucursalCine1)
+    salaDeCine1_4 = SalaCine(4, "2D", sucursalCine1)
+    salaDeCine1_5 = SalaCine(5, "3D", sucursalCine1)
+    salaDeCine1_6 = SalaCine(6, "4D", sucursalCine1)
+
+    pelicula1_1 = Pelicula("Deadpool 3", 18000, "Comedia", timedelta( minutes=110 ), "+18", "2D", sucursalCine1)
+    pelicula1_1.crearPeliculas()
+    pelicula1_2 = Pelicula("Misión Imposible 4", 13000, "Acción", timedelta( minutes=155 ), "+16", "2D", sucursalCine1)
+    pelicula1_2.crearPeliculas()
+    pelicula1_3 = Pelicula("El conjuro 3", 18000, "Terror", timedelta( minutes=140 ), "+16", "2D", sucursalCine1)
+    pelicula1_3.crearPeliculas()
+    pelicula1_4 = Pelicula("Your name", 18000, "Romance", timedelta( minutes=110 ), "+8", "2D", sucursalCine1)
+    pelicula1_4.crearPeliculas()
+    pelicula1_5 = Pelicula("Furiosa: A Mad Max Saga", 17000, "Ciencia ficción", timedelta( minutes=148 ), "+18", "2D", sucursalCine1)
+    pelicula1_5.crearPeliculas()
+    pelicula1_6 = Pelicula("Spy x Familiy Código: Blanco", 19000, "Infantil", timedelta( minutes=90 ), "+5", "2D", sucursalCine1)
+    pelicula1_6.crearPeliculas()
+
+    
+    cliente5.getPeliculasDisponiblesParaCalificar().append(pelicula1_2)
+    cliente5.getProductosDisponiblesParaCalificar().append(producto7)
+    cliente5.getPeliculasDisponiblesParaCalificar().append(pelicula1_3)
+    cliente5.getProductosDisponiblesParaCalificar().append(producto5)
+
+    salaDeCine2_1 = SalaCine(1, "2D", sucursalCine2)
+    salaDeCine2_2 = SalaCine(2, "3D", sucursalCine2)
+    salaDeCine2_3 = SalaCine(3, "4D", sucursalCine2)
+    salaDeCine2_4 = SalaCine(4, "2D", sucursalCine2)
+    salaDeCine2_5 = SalaCine(5, "3D", sucursalCine2)
+    salaDeCine2_6 = SalaCine(6, "4D", sucursalCine2)
+
+    pelicula2_1 = Pelicula("Jujutsu Kaisen Cero", 17000, "Acción", timedelta( minutes=90), "+12", "2D", sucursalCine2) 
+    pelicula2_1.crearPeliculas()
+    pelicula2_2 = Pelicula("The Strangers: Chapter 1", 20000, "Terror", timedelta( minutes=114 ), "+18", "2D", sucursalCine2)
+    pelicula2_2.crearPeliculas()
+    pelicula2_3 = Pelicula("El pájaro loco", 15000, "Infantil", timedelta( minutes=120 ), "+5", "2D", sucursalCine2)
+    pelicula2_3.crearPeliculas()
+    pelicula2_4 = Pelicula("One Life", 19000, "Historia", timedelta( minutes=110 ), "+8", "2D", sucursalCine2)
+    pelicula2_4.crearPeliculas()
+    pelicula2_5 = Pelicula("IP Man", 16000, "Acción", timedelta( minutes=132 ), "+16", "2D", sucursalCine2)
+    pelicula2_5.crearPeliculas()
+    pelicula2_6 = Pelicula("Bad Boys: Hasta la muerte", 17000, "Comedia", timedelta( minutes=109 ), "+18", "2D", sucursalCine2)
+    pelicula2_6.crearPeliculas()
+
+    salaDeCine3_1 = SalaCine(1, "2D", sucursalCine3)
+    salaDeCine3_2 = SalaCine(2, "3D", sucursalCine3)
+    salaDeCine3_3 = SalaCine(3, "4D", sucursalCine3)
+    salaDeCine3_4 = SalaCine(4, "2D", sucursalCine3)
+    salaDeCine3_5 = SalaCine(5, "3D", sucursalCine3)
+    salaDeCine3_6 = SalaCine(6, "4D", sucursalCine3)
+
+    pelicula3_1 = Pelicula("El Paseo 9", 15000, "Comedia", timedelta( minutes=60 ), "+12", "2D", sucursalCine3) 
+    pelicula3_1.crearPeliculas()
+    pelicula3_2 = Pelicula("Scream 8", 18000, "Terror", timedelta( minutes=180 ), "+16", "2D", sucursalCine3)
+    pelicula3_2.crearPeliculas()
+    pelicula3_3 = Pelicula("Oppenheimer", 15000, "Historia", timedelta( minutes=120 ), "+18", "2D", sucursalCine3)
+    pelicula3_3.crearPeliculas()
+    pelicula3_4 = Pelicula("Jhon Wick 4", 17000, "Acción", timedelta( minutes=180 ), "+18", "2D", sucursalCine3)
+    pelicula3_4.crearPeliculas()
+    pelicula3_5 = Pelicula("Intensamente 2", 15000, "Infantil", timedelta( minutes=105 ), "+5", "2D", sucursalCine3)
+    pelicula3_5.crearPeliculas()
+    pelicula3_6 = Pelicula("BNHA temporada 7 movie", 12000, "Acción", timedelta( minutes=60 ), "+12", "2D", sucursalCine3)
+    pelicula3_6.crearPeliculas()
+
+    membresia1 = Membresia("Básico", 1, 5000, 10, 1)
+    membresia2 = Membresia("Heróico", 2, 10000, 15, 1)
+    membresia3 = Membresia("Global", 3, 15000, 20, 1)
+    membresia4 = Membresia("Challenger", 4, 25000, 25, 2)
+    membresia5 = Membresia("Radiante", 5, 30000, 30, 2)
+
+    metodoPago1 = MetodoPago("Bancolombia", 0.10, 200000, sucursalCine1)
+    metodoPago2 = MetodoPago("AV Villas", 0.05, 120000, sucursalCine1)
+    metodoPago3 = MetodoPago("Banco Agrario", 0.15, 300000, sucursalCine1)
+    metodoPago4 = MetodoPago("Efectivo", 0, 5000000, sucursalCine1)
+
+    game1 = Arkade("Hang Man", 15000.0, "Acción", ["KILL", "BOOM", "ARMA", "SPEED", "ARMA"]);
+    game2 = Arkade("Hang Man", 20000.0, "Terror", ["BOO", "GHOST", "EVIL", "DEVIL", "ZOMBIE"]);
+    game3 = Arkade("Hang Man", 10000.0, "Tecnología", ["PYTHON", "POO", "CLASE", "GUZMAN", "ATRIBUTO"]);
+    game4 = Arkade("Hang Man", 30000.0, "Comedia", ["RISA", "FUNNY", "JAJAJA", "CHISTE", "BROMA"]);
+    game5 = Arkade("Hang Man", 7500.0, "Drama", ["MUJER", "LLORAR", "ACTUACION", "FINGIR", "PROBLEMA"]);
+    game6 = Arkade("Hang Man", 7800.0, "Romance", ["AMOR", "KISS", "BESO", "LOVE", "PAREJA"]);
+    game7 = Arkade("Hang Man", 25000, "Ciencia ficción", ["CYBORG", "IRREAL", "FANTASY", "UFFO", "ROBOT"]);
+    game8 = Arkade("Hang Man", 25000, "Infantil", ["TOY", "KID", "PLAY", "GAME", "FUN"]);
+
+    Membresia.stockMembresia(SucursalCine.getSucursalesCine())
+
+    #cliente1.setMembresia(membresia5)
+    
+    MetodoPago.metodoPagoPorTipo(metodoPago1)
+    MetodoPago.metodoPagoPorTipo(metodoPago2)
+    MetodoPago.metodoPagoPorTipo(metodoPago3)
+    MetodoPago.metodoPagoPorTipo(metodoPago4)
+
+    MetodoPago.asignarMetodosDePago(cliente1)
+    MetodoPago.asignarMetodosDePago(cliente2)
+    MetodoPago.asignarMetodosDePago(cliente3)
+    MetodoPago.asignarMetodosDePago(cliente4)
+    MetodoPago.asignarMetodosDePago(cliente5)
+
+
+
+
+
+
+
+
+    for sucursal in SucursalCine.getSucursalesCine():
+        for i in range (20):
+            sucursal.getTarjetasCinemar().append(TarjetaCinemar())
+    
+    
+
+    SucursalCine.logicaInicioSIstemaReservarTicket()
+
+    #cliente4.setCuenta(SucursalCine.getSucursalesCine()[0].getTarjetasCinemar()[0])
+    #cliente4.setCodigosDescuento([ticket.generarCodigoTicket()])
+    #cliente4.getCuenta().setSaldo(500000)
+
+def ventanaDeInicio(): 
+
+    #Tamaño ventana Inicio = (640 x 480)
+
+    #Creacion y posicionamiento de P1 (304 x 460.8)
+    frameGrandeIzquierdoP1 = tk.Frame(ventanaInicio, bd = 2, relief= "solid", cursor="heart", bg = "black")
+    frameGrandeIzquierdoP1.place(relx= 0.015, rely= 0.02, relwidth= 0.475, relheight = 0.96)
+
+    #Creacion y posicionamiento de P2 (304 x 460.8)
+    frameGrandeDerechoP2 = tk.Frame(ventanaInicio, bd = 2, relief= "solid", cursor="heart",  bg = "black")
+    frameGrandeDerechoP2.place(relx= 0.51, rely= 0.02, relwidth= 0.475, relheight = 0.96)
+
+    #Creacion y posicionamiento de P3 (291.84 x 170.496)
+    frameSuperiorIzquierdoP3 = tk.Frame(frameGrandeIzquierdoP1, bd = 2, relief= "solid", bg = "#ADD8E6")
+    frameSuperiorIzquierdoP3.place(relx= 0.02, rely= 0.011, relwidth= 0.96, relheight = 0.37)
+
+    mensajeBienvenida = tk.Label(frameSuperiorIzquierdoP3, text= "☻Bienvenido a \nnuestro Cine☻", font= ("Courier", 23, "bold"), fg= "#6495ED", bg =  "#ADD8E6")
+    mensajeBienvenida.pack(anchor= "c", expand=True)
+
+    #Creacion y posicionamiento de P4 (291.84 x 275.0976)
+    frameInferiorIzquierdoP4 = tk.Frame(frameGrandeIzquierdoP1, bd = 2, relief= "solid", height= 100, bg = "#ADD8E6")
+    frameInferiorIzquierdoP4.place(relx= 0.02, rely= 0.392, relwidth= 0.96, relheight = 0.597)
+
+    #Metodo boton ingresar
+    def ingresarVentanaPrincipal():
+        #Escondemos la ventana de inicio
+        ventanaInicio.withdraw()
+        ventanaLogicaProyecto.deiconify()
+
+        #Mostramos el frame correspondiente
+        #FieldFrame.getFrameMenuPrincipal().mostrarFrame()
+        frameIniciarSesion.mostrarFrame()
+
+    #botonIngreso = tk.Button(frameInferiorIzquierdoP4, text = "Ingresar", font = ("Courier", 10, "bold"), bg= "#FFD700", command= ingresarVentanaPrincipal)
+    #botonIngreso.place(relx = 0.3, rely = 0.8462962963, relwidth=0.4, relheight = 0.1305555556)
+
+
+    # Función para cambiar la imagen cuando el mouse sale
+    def cambiar_imagen(event):
+        global indice_imagen
+
+        #Se verifica si estamos en el indice de la ultima imagen
+        #y lo cambiamos por el indice de la primera menos 1
+        if indice_imagen == 4: 
+            indice_imagen = -1
+        # Cambiar al siguiente índice
+        imagenLabel.config(image=imagenes[indice_imagen+1])
+        #Se incrementa el indice
+        indice_imagen+=1
+
+    imagenes = [
+        
+        tk.PhotoImage(file="src/iuMain/imagenes/P41.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/P42.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/P43.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/P44.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/P45.png"),
+
+    ]
+    imagenLabel = tk.Button(frameInferiorIzquierdoP4, image= imagenes[indice_imagen], command = ingresarVentanaPrincipal, bd = 1, relief = "solid", bg = "#ADD8E6")
+    imagenLabel.place(relheight = 1, relwidth = 1)
+    #imagenLabel.place(relx = 0.05, y = 5, relheight= 0.8, relwidth=0.9)
+
+    # Asignar evento al Label
+    imagenLabel.bind("<Leave>", cambiar_imagen)
+
+    #Creacion y posicionamineto de P5 (291.84 x 170.496)
+    frameSuperiorDerechoP5 = tk.Frame(frameGrandeDerechoP2, bd = 2, relief= "solid", bg = "#ADD8E6")
+    frameSuperiorDerechoP5.place(relx= 0.02, rely= 0.011, relwidth= 0.96, relheight = 0.37)
+
+    nombres = ["Rusbel Danilo Jaramillo", "Edinson Andres Ariza", "Juan José González", "Gerson Bedoya", "Santiago Castro"]
+    edades =  ["19", "18", "18", "23", "18"]
+    estudios = ["Ingeniero de Sistemas"]*5
+    instituciones = ["Universidad Nacional Colombia"]*5
+    residencias = ["Marinilla", "Medellín", "Bello", "Medellín", "Rionegro"]
+    emails = ["rjaramilloh@unal.edu.co", "edarizam@unal.edu.co","juagonzalezmo@unal.edu.co","gbedoyah@unal.edu.co", "sancastrohe@unal.edu.co"]
+
+    nombre = tk.Label(frameSuperiorDerechoP5, text = nombres[0], font=("Times New Roman", 18, "bold"), bg= "#ADD8E6", fg = "#6495ED")
+    nombre.pack(anchor="c")
+    hojaDeVida = tk.Message(frameSuperiorDerechoP5, text = "\n•Edad: " + edades[0]  + "\n•Estudios: " + estudios[0] +"\n•Institución: "+ instituciones[0] +"\n•Residencia: " + residencias[0]+ "\n•Email: " + emails[0], font=("Times New Roman", 12), bg= "#ADD8E6", width = 300 )
+    hojaDeVida.pack(anchor= "c")
+
+    def cambiarHojaDeVida(event):
+        global indice_hojaDeVida
+
+        if indice_hojaDeVida==4:
+            indice_hojaDeVida = -1
+            
+        nombre.config(text = nombres[indice_hojaDeVida + 1])
+        hojaDeVida.config(text= "\n•Edad: " + edades[indice_hojaDeVida+1]  + "\n•Estudios: " + estudios[indice_hojaDeVida+1] +"\n•Institución: "+ instituciones[indice_hojaDeVida+1] +"\n•Residencia: " + residencias[indice_hojaDeVida+1]+ "\n•Email: " + emails[indice_hojaDeVida+1])
+        cambioDeImagenes(event)
+        indice_hojaDeVida+=1
+
+    hojaDeVida.bind("<Button-1>", cambiarHojaDeVida)
+    nombre.bind("<Button-1>", cambiarHojaDeVida)
+
+    #Creacion y posicionamiento de P6 (291.84 x 275.0976)
+    frameInferiorDerechoP6 = tk.Frame(frameGrandeDerechoP2, bd = 2, relief= "solid", height= 100, bg = "#ADD8E6")
+    frameInferiorDerechoP6.place(relx= 0.02, rely= 0.392, relwidth= 0.96, relheight = 0.597)
+
+
+    imagenes1 = [
+        tk.PhotoImage(file="src/iuMain/imagenes/rusbel1.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Andy1.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Juanjo1.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Gerson1.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/san1.png"),
+    ]
+
+    imagenes2 = [
+        tk.PhotoImage(file="src/iuMain/imagenes/rusbel2.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Andy2.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Juanjo2.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Gerson2.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/san2.png"),
+    ]
+
+    imagenes3 = [
+        tk.PhotoImage(file="src/iuMain/imagenes/rusbel3.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Andy3.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Juanjo3.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Gerson3.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/san3.png"),
+    ]
+
+    imagenes4 = [
+        tk.PhotoImage(file="src/iuMain/imagenes/rusbel4.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Andy4.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Juanjo4.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/Gerson4.png"),
+        tk.PhotoImage(file="src/iuMain/imagenes/san4.png"),
+    ]
+
+    label1 = tk.Label(frameInferiorDerechoP6, image=imagenes1[0], bd = 3, relief="solid")
+    label1.grid(row=0, column=0, sticky="nsew")
+
+    label2 = tk.Label(frameInferiorDerechoP6, image=imagenes2[0], bd = 3, relief="solid")
+    label2.grid(row=0, column=1, sticky="nsew")
+
+    label3 = tk.Label(frameInferiorDerechoP6, image=imagenes3[0], bd = 3, relief="solid")
+    label3.grid(row=1, column=0, sticky="nsew")
+
+    label4 = tk.Label(frameInferiorDerechoP6, image=imagenes4[0], bd = 3, relief="solid")
+    label4.grid(row=1, column=1, sticky="nsew")
+
+    def cambioDeImagenes(event):
+        label1.config(image = imagenes1[indice_hojaDeVida + 1])
+        label2.config(image = imagenes2[indice_hojaDeVida + 1])
+        label3.config(image = imagenes3[indice_hojaDeVida + 1])
+        label4.config(image = imagenes4[indice_hojaDeVida + 1])
+
+    #Creacion de la barra de menu
+    barraMenu = tk.Menu(ventanaInicio, font=("Courier", 9))
+    ventanaInicio.config(menu = barraMenu)
+
+    menuOpciones = tk.Menu(barraMenu, tearoff= 0, font=("Courier", 9), activebackground= "#87CEEB", activeforeground= "black")
+    barraMenu.add_cascade(label= "Inicio", menu= menuOpciones, font=("Courier", 9) )
+
+    mensaje = tk.Message(frameSuperiorIzquierdoP3, text=  "En este programa puedes:\n•Comprar Tickets\n•Comprar comida y regalos\n•Usar la zona de juegos\n•Adquirir membresias\n•Calificar nuestros servicios" , font= ("Times New Roman",11), bg="#ADD8E6")
+    #Metodos para la barra de opciones
+    def mostrarDescripcion():
+        #mensaje = tk.Message()
+        if int(mensajeBienvenida.cget("font").split()[1]) == 15:
+            mensaje.pack_forget()
+            mensajeBienvenida.config(font= ("Courier", 23, "bold")) 
+        else:
+            mensajeBienvenida.config(font= ("Courier", 15, "bold")) 
+            mensaje.pack(anchor= "s", expand= True)
+
+    def CerrarVentana():
+        #Serializamos
+        Serializador.serializar()
+        #Destruimos la ventana
+        ventanaInicio.destroy()
+
+    #Opciones de el menu de inicio
+    menuOpciones.add_command(label = "Descripción del programa", command= mostrarDescripcion)
+    menuOpciones.add_command(label = "Salir y Guardar", command= CerrarVentana)
+
+
+if __name__ == '__main__':
+
+    #Creamos los objetos de la lógica del proyecto
+    
+    Deserializador.deserializar()
+    #objetosBasePractica2()
+    #Creacion de la ventana de inicio 
+    ventanaInicio = tk.Tk()
+    ventanaInicio.title("Ventana de Inicio Cinemar")
+    ventanaInicio.geometry("640x480")
+    ventanaInicio.config(bg = "#ADD8E6")
+
+    # Inicializar índice de la imagen para p4 y p5
+    indice_imagen = 0
+    indice_hojaDeVida = 0
+    ventanaDeInicio()
+
+    #Ventana Funcionalidad
+    ventanaLogicaProyecto = tk.Toplevel(ventanaInicio)
+    ventanaLogicaProyecto.title("Ventana Principal Cinemar")
+    ventanaLogicaProyecto.geometry("640x480")
+
+    #Frames de lógica proyecto
+    frameIniciarSesion = FrameInicioSesion()
+
+    ventanaLogicaProyecto.withdraw()
+    ventanaInicio.mainloop()
