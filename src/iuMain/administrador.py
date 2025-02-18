@@ -2083,4 +2083,223 @@ class FrameFuncionalidad3Calificaciones(FieldFrame):
      
     #Programar el borrar para que los values de los combobox queden vacíos o investigar forma de que los combobox no desplieguen el menú
     #Hacer que en el comboBox de horarios se muestre un apartado de horario de presentación en vivo, programar método en clase película
-     
+
+
+class FrameFuncionalidad5(FieldFrame):
+    #Se crean variables para almacenar la membresia a comprar y su número
+    membresiaSeleccionadaInt = 1
+    membresiaSeleccionada = None
+    def __init__(self):
+        clienteProceso = FieldFrame.getClienteProceso()
+        super().__init__(
+            tituloProceso=f"Sistema de membresías.",
+            #En la descripcion, se ejecuta el método de verificarMembresia, esto arroja un string con el mensaje de bienvenida.
+            descripcionProceso= f"(Fecha Actual: {FieldFrame.getClienteProceso().getCineUbicacionActual().getFechaActual().date()}; Hora actual : {FieldFrame.getClienteProceso().getCineUbicacionActual().getFechaActual().time().replace(microsecond = 0)}) \n {Membresia.verificarMembresiaActual(clienteProceso)}",
+            textEtiquetas=["Categoria"],
+            #En los elementos interactuables, se crea un ComboBox usando el método mostrarCategoria, este devuelve una lista de strings con la información de las categorias de membresias.
+            infoElementosInteractuables= [[Membresia.mostrarCategoria(clienteProceso, clienteProceso.getCineUbicacionActual()), "Seleccione membresía"]],
+            habilitado= [False], 
+            botonVolver= True,
+            frameAnterior= FieldFrame.getFrameMenuPrincipal(),
+            desplazarBotonesFila=1
+        )
+        #Se crean un Label que muestra la información de la membresia como nombre, y requisitos.
+        self._membresiaOpcion = tk.Label(self, text=f"", font= ("courier new",11), anchor="center", bg = "#F0F8FF" )
+        self._membresiaOpcion.grid(column = 0, row = len(self._infoEtiquetas) + 3, columnspan=2, sticky='we')
+
+        #Se obtiene el ComboBox y se vincula un evento para actualizar el Label dependiendo que escoja en el ComboBox.
+        self._opcionComboBox = self.getElementosInteractivos()[0]
+        self._opcionComboBox.bind("<<ComboboxSelected>>", self.membresiaEnPantalla)
+
+    #Dependiendo del nombre de la membresía escogida en el ComboBox, se actualiza el Label.
+    def membresiaEnPantalla(self, evento):
+        if (SucursalCine.getTiposDeMembresia()[self._opcionComboBox.current()].getNombre() == "Básico"):
+            self._membresiaOpcion.config(text=f"Nombre: {SucursalCine.getTiposDeMembresia()[self._opcionComboBox.current()].getNombre()}, Requisitos: 0 puntos")
+
+        elif(SucursalCine.getTiposDeMembresia()[self._opcionComboBox.current()].getNombre() == "Heróico"):
+            self._membresiaOpcion.config(text=f"Nombre: {SucursalCine.getTiposDeMembresia()[self._opcionComboBox.current()].getNombre()}, Requisitos: 5000 puntos")
+
+        elif(SucursalCine.getTiposDeMembresia()[self._opcionComboBox.current()].getNombre() == "Global"):
+            self._membresiaOpcion.config(text=f"Nombre: {SucursalCine.getTiposDeMembresia()[self._opcionComboBox.current()].getNombre()}, Requisitos: 10000 puntos")
+        
+        elif(SucursalCine.getTiposDeMembresia()[self._opcionComboBox.current()].getNombre() == "Challenger"):
+            self._membresiaOpcion.config(text=f"Nombre: {SucursalCine.getTiposDeMembresia()[self._opcionComboBox.current()].getNombre()}, Requisitos: 15000 puntos y 10 películas vistas")
+
+        elif(SucursalCine.getTiposDeMembresia()[self._opcionComboBox.current()].getNombre() == "Radiante"):
+            self._membresiaOpcion.config(text=f"Nombre: {SucursalCine.getTiposDeMembresia()[self._opcionComboBox.current()].getNombre()}, Requisitos: 20000 puntos y 15 películas vistas")
+            
+    
+    def funAceptar(self):
+        #Se evaluan las excepciones por valores por defecto.
+        if self.evaluarExcepciones():
+            #Si el cliente tiene membresia escogida y no esta en periodo de renovación, arroja una advertencia y se termina el método. 
+            if (self.getClienteProceso().getMembresia() != None):
+                if (self.getClienteProceso().getMembresia().getNombre() == SucursalCine.getTiposDeMembresia()[self._opcionComboBox.current()].getNombre() and (self.getClienteProceso().getFechaLimiteMembresia() - timedelta(days=6)) > self.getClienteProceso().getCineUbicacionActual().getFechaActual().date()):
+                    messagebox.showwarning(title="Advertencia", message=f"Estimado cliente, usted ya posee esta membresía.")
+                    return
+            #Se actualiza la variable que coincide con el número de categoria y se ejecuta la lógica de RestricciónMembresía
+            FrameFuncionalidad5.membresiaSeleccionadaInt = FrameFuncionalidad5.membresiaSeleccionadaInt + self.getElementosInteractivos()[0].current()
+            esValido = Membresia.verificarRestriccionMembresia(FieldFrame.getClienteProceso(), FrameFuncionalidad5.membresiaSeleccionadaInt, FieldFrame.getClienteProceso().getCineUbicacionActual())
+            if (esValido == True):
+                #Si el cliente puede adquirir la membresía, la variable de membresiaSeleccionada se actualiza y se pasa a la pasarela de Pagos
+                FrameFuncionalidad5.membresiaSeleccionada = Membresia.asignarMembresiaNueva(FrameFuncionalidad5.membresiaSeleccionadaInt)
+                #Para construirla, se le da el frame siguiente que es MenuPrincipal, el valor a pagar que es el valor de suscripcion de la membresia y el apuntador de la membresia.
+                FramePasarelaDePagos(self.getFrameMenuPrincipal(), SucursalCine.getTiposDeMembresia()[FrameFuncionalidad5.membresiaSeleccionadaInt - 1].getValorSuscripcionMensual(), FrameFuncionalidad5.membresiaSeleccionada).mostrarFrame()
+
+            else:
+                #En caso de que no cumpla para adquirir la membresia, se reinicia la variable para el numero de categoria y se arroja una ventana indicando la novedad.
+                FrameFuncionalidad5.membresiaSeleccionadaInt = 1
+                messagebox.showinfo(title="Membresia", message= f"""No puedes adquirir esta membresía debido a que no cumples con los criterios establecidos para ello o no hay unidades en el momento\n
+                                    Puntos actuales: {FieldFrame.getClienteProceso().getPuntos()}\n
+                                    Peliculas vistas: {len(FieldFrame.getClienteProceso().getHistorialDePeliculas())}""")
+                
+    #Se redefine funBorrar para que tambien reinicie el texto del label que muestra la información de la membresia seleccionada en el ComboBox.           
+    def funBorrar(self):
+        for elementoInteractivo in self._elementosInteractivos:
+            if isinstance(elementoInteractivo, ttk.Combobox):
+                self.setValueComboBox(elementoInteractivo)
+            else:
+                elementoInteractivo.delete("0","end")
+        self._membresiaOpcion.config(text=f"")
+
+class FramePasarelaDePagos(FieldFrame):
+    #Se crea una variable que acumule el precio total que paga el cliente.
+    _precioFactura = 0
+    #Para crear el Frame, se necesita un objeto Frame que indica hacia donde ir luego de completar el pago, el valor a pagar y los objetos que va a comprar.
+    def __init__(self, frameSiguiente = None, valorAPagar = 0, *elementosIbuyable):
+        self._valorAPagar = valorAPagar
+        self._frameSiguiente = frameSiguiente
+        self._elementosIbuyable = elementosIbuyable
+
+        super().__init__(
+            tituloProceso=f"Métodos de pago",
+            descripcionProceso=f"(Fecha Actual: {self.getClienteProceso().getCineUbicacionActual().getFechaActual().date()}; Hora actual : {self.getClienteProceso().getCineUbicacionActual().getFechaActual().time().replace(microsecond = 0)})",
+            textEtiquetas=["Precio original :", "Método de pago :"],
+            #En elementos interactuables, se pasan dos elementos: un Entry text con el valor a pagar como valor por defecto y un ComboBox que contiene los métodos de pago que tiene el cliente.
+            infoElementosInteractuables=[[int(valorAPagar)], [MetodoPago.mostrarMetodosDePago(self.getClienteProceso()), "Seleccione una opción:"]],
+            #Ambos elementos son no editables.
+            habilitado=[False, False],
+            desplazarBotonesFila=2
+        )
+        #Se crean los label que muestran el nuevo valor a pagar luego de aplicar el descuento del método de pago y la información del método de pago a usar.
+        self._precioDescuento = tk.Label(self, text=f"", font= ("courier new",13), anchor="center", bg = "#F0F8FF" )
+        self._precioDescuento.grid(column = 0, row = len(self._infoEtiquetas) + 3, columnspan=2, sticky='we')
+        
+        self._metodoSeleccionado = tk.Label(self, text= f"", font= ("courier new",10), anchor="center", bg = "#F0F8FF" )
+        self._metodoSeleccionado.grid(column = 0, row = len(self._infoEtiquetas) + 4, columnspan=2, sticky='we')
+
+        #Se obtiene el ComboBox y se vincula un evento para actualizar el Label dependiendo que escoja en el ComboBox.
+        self._opcionComboBox = self.getElementosInteractivos()[1]
+        self._opcionComboBox.bind("<<ComboboxSelected>>", self.descuentoEnPantalla)
+
+        self.establecerError()
+    
+    def descuentoEnPantalla(self, event):
+        self._metodoSeleccionado.config(text=f"Método de pago: {self.getClienteProceso().getMetodosDePago()[self._opcionComboBox.current()].getNombre()}, Descuento: {int(self.getClienteProceso().getMetodosDePago()[self._opcionComboBox.current()].getDescuentoAsociado() * 100)}%, Máximo saldo: {self.getClienteProceso().getMetodosDePago()[self._opcionComboBox.current()].getLimiteMaximoPago()}")
+        self._precioDescuento.config(text=f"Nuevo valor: {self._valorAPagar * (1 - (self.getClienteProceso().getMetodosDePago()[self._opcionComboBox.current()].getDescuentoAsociado()))}")
+
+    
+    def establecerError(self):
+        self.getFrameMenuPrincipal().getMenuArchivo().delete(0,'end')
+        self.getFrameMenuPrincipal().getMenuProcesosConsultas().delete(0,'end')
+        self.getFrameMenuPrincipal().getMenuAyuda().delete(0,'end')
+
+        self.getFrameMenuPrincipal().getMenuArchivo().add_command(label="Aplicación", command=self._generarError)
+        self.getFrameMenuPrincipal().getMenuArchivo().add_command(label="Salir", command=self._generarError)
+
+        self.getFrameMenuPrincipal().getMenuProcesosConsultas().add_command(label="Sistema proyecciones", command=self._generarError)
+        self.getFrameMenuPrincipal().getMenuProcesosConsultas().add_command(label="Zona de juegos", command=self._generarError)
+        self.getFrameMenuPrincipal().getMenuProcesosConsultas().add_command(label="Calificaciones", command=self._generarError)
+        self.getFrameMenuPrincipal().getMenuProcesosConsultas().add_command(label="Servicio de comida/souvenir", command=self._generarError)
+        self.getFrameMenuPrincipal().getMenuProcesosConsultas().add_command(label="Sistema de membresías", command=self._generarError)
+
+        self.getFrameMenuPrincipal().getMenuAyuda().add_command(label="Acerca de", command=self._generarError)
+
+    def _generarError(self):
+        try:
+            raise CerrarPago()
+        except ErrorAplicacion as e:
+            messagebox.showerror('Error', e.mostrarMensaje())
+    #Se usa este método para actualizar la informacion de los label dependiendo de la seleccion en el ComboBox.
+    def descuentoEnPantalla(self, event):
+        self._metodoSeleccionado.config(text=f"Método de pago: {self.getClienteProceso().getMetodosDePago()[self._opcionComboBox.current()].getNombre()}, Descuento: {int(self.getClienteProceso().getMetodosDePago()[self._opcionComboBox.current()].getDescuentoAsociado() * 100)}%, Máximo saldo: {self.getClienteProceso().getMetodosDePago()[self._opcionComboBox.current()].getLimiteMaximoPago()}")
+        self._precioDescuento.config(text=f"Nuevo valor: {self._valorAPagar * (1 - (self.getClienteProceso().getMetodosDePago()[self._opcionComboBox.current()].getDescuentoAsociado()))}")
+
+    #Se redefine funBorrar para que tambien reinicie el texto del label que muestra la información seleccionada en el ComboBox.
+    def funBorrar(self):
+        for elementoInteractivo in self._elementosInteractivos:
+            if isinstance(elementoInteractivo, ttk.Combobox):
+                self.setValueComboBox(elementoInteractivo)
+            else:
+                elementoInteractivo.delete("0","end")
+        self._metodoSeleccionado.configure(text=f"")
+        self._precioDescuento.configure(text=f"")
+
+    def funAceptar(self):
+        if self.evaluarExcepciones():
+            #Se obtiene el apuntador del método de pago seleccionado.
+            metodoPagoSeleccionado = self.getClienteProceso().getMetodosDePago()[self._opcionComboBox.current()]
+            
+            #Como las ordenes manejan otro tipo de descuento, se revisan de que tipo son los objetos pasados en elementosIbuyable.
+            if isinstance(self._elementosIbuyable[0], Servicio):
+                if self._elementosIbuyable[0].descuento:
+                    if ("Efectivo" not in self._elementosInteractivos[1].get()) and self._elementosIbuyable[0].descuentarPorCompra(metodoPagoSeleccionado):
+                        self._elementosIbuyable[0].setDescuento(False)
+                        self.getElementosInteractivos()[0].configure(state="normal")
+                        self.setValueEntry("Precio original :", self._elementosIbuyable[0].getValorPedido())
+                        self.getElementosInteractivos()[0].configure(state="disabled")
+                        self._valorAPagar = self._elementosIbuyable[0].getValorPedido()
+                        messagebox.showinfo(title="Felicidades", message= f"Tenes un descuento sorpresa por escoger un metodo de pago con descuento y compras asociadas a dichos bancos")
+
+            #Se obtiene el precio aplicando el descuento del método de pago y se actualiza el precio de la factura
+            precio = self._valorAPagar * (1 - (self.getClienteProceso().getMetodosDePago()[self._opcionComboBox.current()].getDescuentoAsociado()))
+            FramePasarelaDePagos.setPrecioFactura(FramePasarelaDePagos.getPrecioFactura() + precio)
+            #Se ejecuta la realización del pago y se guarda en el atributo de valorAPagar.
+            self._valorAPagar = metodoPagoSeleccionado.realizarPago(precio, self.getClienteProceso())
+            if (self._valorAPagar > 0):
+                
+                #Generamos el error de pago inconcluso
+                try:
+                    raise PagoSinCompletar(self._valorAPagar)
+                except ErrorAplicacion as e:
+                    messagebox.showerror('Error', e.mostrarMensaje())
+
+                #En caso de que no cubra la totalidad del valor con metodo de pago, se indica que el valor restante y se actualizan los campos del Frame.
+                self.getElementosInteractivos()[0].configure(state="normal")
+                self.setValueEntry("Precio original :", int(self._valorAPagar))
+                self.getElementosInteractivos()[0].configure(state="disabled")
+                self.getElementosInteractivos()[1].configure(values = MetodoPago.mostrarMetodosDePago(self.getClienteProceso()))
+                self.funBorrar()
+                
+
+            else:
+                #Cuando se cancele el valor a pagar, el precio de la factura se pasa a un atributo de Ibuyable para la factura de membresia.
+                Ibuyable.setPrecioTotal(Ibuyable, precioTotal=FramePasarelaDePagos.getPrecioFactura())
+                mensaje = ""
+                #Se ejecutan los métodos de procesarPago y factura de cada objeto en elementosIbuyable por ligadura dinamica.
+                for elementoIbuyable in self._elementosIbuyable:
+                    elementoIbuyable.procesarPagoRealizado(self.getClienteProceso())
+                    mensaje+=elementoIbuyable.factura()
+                messagebox.showinfo(title="Pago realizado", message= f"Pago realizado exitosamente. \n{mensaje}")
+                #Se settean los valores que acumulaban los precios a 0 y se refrescan/reinician los Frames.
+                Ibuyable.setPrecioTotal(Ibuyable, 0)
+                messagebox.showinfo(title="Pago realizado", message="Gracias por su compra. Saliendo del menú de pagos...")
+                MetodoPago.asignarMetodosDePago(self.getClienteProceso())
+                if isinstance(self._elementosIbuyable[0], Servicio):
+                    self._elementosIbuyable[0].setOrden([])
+                    self._elementosIbuyable[0].setValorPedido(0)
+                
+                #Reestablecemos los eventos
+                FramePasarelaDePagos.setPrecioFactura(0)
+                self.refrescarFramesFuncionalidades()
+                self.getFrameMenuPrincipal().construirMenu()
+                self._frameSiguiente.mostrarFrame()
+
+    @classmethod
+    def getPrecioFactura(cls):
+        return FramePasarelaDePagos._precioFactura
+    
+    @classmethod
+    def setPrecioFactura(cls, precioFactura):
+        FramePasarelaDePagos._precioFactura = precioFactura
+
