@@ -2301,5 +2301,154 @@ class FramePasarelaDePagos(FieldFrame):
     
     @classmethod
     def setPrecioFactura(cls, precioFactura):
-        FramePasarelaDePagos._precioFactura = precioFactura
+      FramePasarelaDePagos._precioFactura = precioFactura
 
+
+class FrameRecargarTarjetaCinemar(FramePasarelaDePagos):
+    def __init__(self):
+
+        self._frameSiguiente = FrameEleccion(FrameZonaJuegos())
+        self._elementosIbuyable = ()
+        MetodoPago.asignarMetodosDePago(self._clienteProceso)
+        
+        FieldFrame.__init__(
+            self,
+            tituloProceso = "Recarga Tarjeta Cinemar",
+            descripcionProceso=f"(Fecha Actual: {self.getClienteProceso().getCineUbicacionActual().getFechaActual().date()}; Hora actual : {self.getClienteProceso().getCineUbicacionActual().getFechaActual().time().replace(microsecond = 0)})\n Ingresa el valor a recargar y selecciona el método de pago que desees",
+            tituloCriterios = "Criterio a seleccionar" ,
+            tituloValores= "Valores",
+            textEtiquetas=["Valor a recargar :", "Método de pago :"],
+            infoElementosInteractuables=[None, [MetodoPago.mostrarMetodosDePago(self.getClienteProceso()), "Seleccione una opción:"]],
+            habilitado=[True, False],
+            desplazarBotonesFila=2
+        )
+
+        self.widgets = []
+        
+        for widget in self.winfo_children():
+
+            self.widgets.append(widget)
+
+
+        tamaños = [21,11,15,15,12,12,12,12,15,15]
+        
+        for i, w in enumerate(self.widgets):
+            if isinstance(w, ttk.Combobox):
+                w.config(width= 50)
+            elif isinstance(w, tk.Entry):
+                pass
+            else:
+                w.config(font = ("courier new", tamaños[i]), bg = "#F0F8FF")
+
+        self.widgets[0].config(font = ("courier new", 21, "bold"))
+        self.widgets[2].config(font = ("courier new", 15, "bold"))
+        self.widgets[3].config(font = ("courier new", 15, "bold"))
+        self.widgets[-1].config(fg = "black", bg = '#87CEFA', font = ("courier new", 15, "bold"))
+        self.widgets[-2].config(fg = "black", bg = '#87CEFA', font = ("courier new", 15, "bold"))
+
+        #self.getElementosInteractivos()[1].grid_configure(sticky = "we", columnspan = 2)
+        
+        self._precioDescuento = tk.Label(self, text=f"", font= ("courier new",14), anchor="center", bg = "#F0F8FF")
+        self._precioDescuento.grid(column = 0, row = len(self._infoEtiquetas) + 3, columnspan=2, sticky='we')
+        
+        self._metodoSeleccionado = tk.Label(self, text= f"", font= ("courier new",11), anchor="center", bg = "#F0F8FF")
+        self._metodoSeleccionado.grid(column = 0, row = len(self._infoEtiquetas) + 4, columnspan=2, sticky='we')
+
+        self._opcionComboBox = self.getElementosInteractivos()[1]
+        self._opcionComboBox.bind("<<ComboboxSelected>>", self.descuentoEnPantalla)
+
+        self.valorAPagarTotal = 0
+        
+        ventanaLogicaProyecto.config(bg= "#F0F8FF")
+        self.config(bg= "#F0F8FF")
+
+        self.establecerError()
+
+    def funAceptar(self):
+        
+        estado = self.getElementosInteractivos()[0].cget("state")
+        if estado == "normal":
+            self._valorAPagar = int(self.getElementosInteractivos()[0].get())
+            self.valorAPagarTotal = int(self.getElementosInteractivos()[0].get())
+        
+        if self.evaluarExcepciones():
+
+
+            if isinstance(self._elementosIbuyable, Servicio):
+                messagebox.showinfo(title="", message= "")
+
+            metodoPagoSeleccionado = self.getClienteProceso().getMetodosDePago()[self._opcionComboBox.current()]
+            precio = self._valorAPagar * (1 - (self.getClienteProceso().getMetodosDePago()[self._opcionComboBox.current()].getDescuentoAsociado()))
+            self._valorAPagar = metodoPagoSeleccionado.realizarPago(precio, self.getClienteProceso())
+
+            if (self._valorAPagar > 0):
+                messagebox.showwarning(title="Proceso de pago", message= f"Falta por pagar: {self._valorAPagar}")
+                
+                #Generamos el error de pago inconcluso
+                try:
+                    raise PagoSinCompletar(self._valorAPagar)
+                except ErrorAplicacion as e:
+                    messagebox.showerror('Error', e.mostrarMensaje())
+
+                self.getElementosInteractivos()[0].configure(state="normal")
+                self.setValueEntry("Valor a recargar :", int(self._valorAPagar))
+                self.getElementosInteractivos()[0].configure(state="disabled")
+                self._metodoSeleccionado.configure(text=f"")
+                self._precioDescuento.configure(text=f"")
+                self.getElementosInteractivos()[1].configure(values = MetodoPago.mostrarMetodosDePago(self.getClienteProceso()))
+                self.funBorrar()
+
+            else:
+                mensaje = ""
+                for elementoIbuyable in self._elementosIbuyable:
+                    elementoIbuyable.procesarPagoRealizado(self.getClienteProceso())
+                    mensaje+=elementoIbuyable.factura()
+                self._clienteProceso.getCuenta().ingresarSaldo(self.valorAPagarTotal)
+                messagebox.showinfo(title="Recarga Exitosa", message= f"Pago realizado exitosamente. Su nuevo saldo es: {self._clienteProceso.getCuenta().getSaldo()} \n{mensaje}")
+                MetodoPago.asignarMetodosDePago(self.getClienteProceso())
+                self.getFrameMenuPrincipal().construirMenu()
+                FrameEleccion(FrameZonaJuegos()).mostrarFrame()
+                #self._frameSiguiente.mostrarFrame() 
+
+    def descuentoEnPantalla(self, event):
+        self._metodoSeleccionado.config(text=f"Método de pago: {self.getClienteProceso().getMetodosDePago()[self._opcionComboBox.current()].getNombre()}, Descuento: {int(self.getClienteProceso().getMetodosDePago()[self._opcionComboBox.current()].getDescuentoAsociado() * 100)}%, Recarga Máxima: {self.getClienteProceso().getMetodosDePago()[self._opcionComboBox.current()].getLimiteMaximoPago()}")
+        
+        if not self.getElementosInteractivos()[0].get() == "":
+            self._valorAPagar = int(self.getElementosInteractivos()[0].get())
+            self._precioDescuento.config(text=f"Valor con descuento: {self._valorAPagar * (1 - (self.getClienteProceso().getMetodosDePago()[self._opcionComboBox.current()].getDescuentoAsociado()))}")
+        else:
+            self._precioDescuento.config(text="")
+
+    def funBorrar(self):
+        for elementoInteractivo in self._elementosInteractivos:
+            if isinstance(elementoInteractivo, ttk.Combobox):
+                self.setValueComboBox(elementoInteractivo)
+            else:
+                elementoInteractivo.delete("0","end")
+        
+        self._precioDescuento.config(text="")
+        self._metodoSeleccionado.config(text = "")
+    
+    def evaluarExcepciones(self):
+        try:
+            valoresVacios = self.tieneCamposVacios()
+            if len(valoresVacios) > 0:
+                raise UiEmptyValues(valoresVacios)
+
+            valoresPorDefecto = self.tieneCamposPorDefecto()
+            if len(valoresPorDefecto) > 0:
+                raise UiDefaultValues(valoresPorDefecto)
+            
+            if self._valorAPagar<0:
+                messagebox.showerror("Error", 'El valor a recargar no puede ser negativo')
+                return False
+            
+            if self._valorAPagar > sum([obj.getLimiteMaximoPago() for obj in self.getClienteProceso().getMetodosDePago()]):
+                messagebox.showerror("Error", f'El valor a recargar no puede superar {sum([obj.getLimiteMaximoPago() for obj in self.getClienteProceso().getMetodosDePago()])}$')
+                return False
+
+            return True
+        
+        except ErrorAplicacion as e:
+            messagebox.showerror('Error', e.mostrarMensaje())
+            return False
