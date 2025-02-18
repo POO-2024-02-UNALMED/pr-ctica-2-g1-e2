@@ -1518,3 +1518,269 @@ class FrameBono(FieldFrame):
 
 
 #################################################################################################################################
+
+class FrameFuncionalidad1(FieldFrame):
+    
+    def __init__(self):
+
+        #Facilitamos el acceso al cliente que realiza este proceso
+        self._clienteProceso = FieldFrame.getClienteProceso()
+        #Ejecutamos la lógica de avance de tiempo antes de construir los frames
+        self._clienteProceso.getCineUbicacionActual().avanzarTiempo()
+        #Definimos los frames a usar durante el desarrollo de la funcionalidad 1
+        self._framesFuncionalidad1 = [FrameReservarTicket(self), FrameIngresoASalaCine(self), FrameSalaDeEspera(self)]
+
+        #Usamos el constructor de FieldFrame
+        super().__init__(
+            tituloProceso = 'Sistema de proyecciones',
+            descripcionProceso = f'(Funcionalidad 1) Desde este apartado podrás ingresar a:\n1. Sistema de reservas de ticket\n2. Salas de cine\n3. Sala de espera\n Para acceder a las salas de cine o a la sala de espera, necesitas al menos un ticket cuyo horario de presentación aún no ha sido presentado y, además, fue comprado en esta sucursal (Fecha Actual : {self._clienteProceso.getCineUbicacionActual().getFechaActual().replace(microsecond = 0)})',
+            tituloCriterios = 'Criterio proceso',
+            textEtiquetas = ['Seleccionar proceso :'],
+            tituloValores = 'Dato proceso',
+            infoElementosInteractuables = [[['Reservar ticket', 'Ingresar a sala de cine', 'Ingresar a sala de espera'], 'Seleccionar proceso']],
+            habilitado = [False],
+            botonVolver = True,
+            frameAnterior = FieldFrame.getFrameMenuPrincipal()
+        )
+
+        #Facilitamos el acceso al elemento interactuable
+        self._comoboBoxProceso = self.getElementosInteractivos()[0]
+    
+    def funAceptar(self):
+        #Evaluamos las excepciones
+        if self.evaluarExcepciones():
+
+            #Confirmamos la elección del usuario
+            confirmarEleccionUsuario = messagebox.askokcancel('Confirmación dato seleccionado', f'Has seleccionado el proceso {self._comoboBoxProceso.get()}, ¿Desea continuar?')
+            if confirmarEleccionUsuario:
+                
+                #Obtenemos el ínidice del criterio seleccionado
+                eleccionUsuario = self._comoboBoxProceso.current()
+                #Eliminamos los tickets caducados
+                self._clienteProceso.dropTicketsCaducados()
+                #Creamos una variable que almacenará los tickets para usar según el proceso
+                ticketsParaUsar = self._clienteProceso.filtrarTicketsParaSede() if eleccionUsuario == 1 else self._clienteProceso.mostrarTicketsParaSalaDeEspera()
+
+                #En caso de que quiera ingresar a sala de cine o sala de espera
+                if eleccionUsuario == 1 or eleccionUsuario == 2:
+                    mensajeError = 'No tienes tickets reservados o estos no pertenecen a esta sucursal, para acceder a este proceso debes concluir de forma exitosa al menos un proceso de reserva de ticket' if eleccionUsuario == 0 else 'No tienes tickets reservados para un horario en presentación distinto al actual o estos no pertenecen a esta sucursal, para acceder a este proceso debes concluir de forma exitosa al menos un proceso de reserva de ticket'
+                    #Verificamos si tiene tickets disponibles para usar
+                    if len(ticketsParaUsar) == 0:
+                        #Mostramos mensaje de error y finalizamos la ejecución
+                        messagebox.showerror('Error', mensajeError)
+                        return 
+                
+                #Ingresamos al frame seleccionado por el usuario
+                self.refrescarFramesFuncionalidad1()
+                if len(Pelicula.filtrarCarteleraPorCliente(self._clienteProceso)) > 0:
+                    self._framesFuncionalidad1[eleccionUsuario].mostrarFrame()
+                else:
+                    FieldFrame.getFrameMenuPrincipal().avanzarDia()
+    
+    def refrescarFramesFuncionalidad1(self):
+        self._framesFuncionalidad1 = [FrameReservarTicket(self), FrameIngresoASalaCine(self), FrameSalaDeEspera(self)]
+
+    #Crear el frame inical de mi funcionalidad (Crear estándar visual frame para ello) (Mas o menos hecho)
+    #Separar por módulos la lógica de cada funcionalidad
+    #Definir lógica de procesos de pago (Con Gerson)
+    #Serializar
+    #Hacer Testeos
+    #Hacer documentación
+
+class FrameReservarTicket(FieldFrame):
+    def __init__(self, frameAnterior):
+
+        #Definimos las variables que usaremos en nuestro proceso
+        clienteProceso = FieldFrame.getClienteProceso()
+
+        self._carteleraCliente = Pelicula.filtrarCarteleraPorCliente(clienteProceso)
+        self._formatosPeliSeleccionada = None
+        self._horariosPeliSeleccionada = None
+        self._peliculaProceso = None
+        self._horarioProceso = None
+
+        filtroNombresCartelera = Pelicula.filtrarCarteleraPorNombre(self._carteleraCliente)
+        filtroPelisRecomendadas = Pelicula.filtarCarteleraPorGenero(self._carteleraCliente, clienteProceso.generoMasVisto())
+
+        #Construimos el frame usando FieldFrame
+        super().__init__(
+            tituloProceso = 'Reservar ticket',
+            descripcionProceso = f'En este espacio solicitamos los datos necesarios para reservar un ticket, debe ingresar los datos de forma secuencial, es decir, en el orden en que se encuentran (Fecha Actual : {FieldFrame.getClienteProceso().getCineUbicacionActual().getFechaActual().replace(microsecond = 0)})',
+            tituloCriterios = 'Criterios reserva',
+            textEtiquetas = ['Seleccionar película :', 'Seleccionar formato :', 'Seleccionar horario :'], 
+            tituloValores = 'Valores ingresados',
+            infoElementosInteractuables = [
+                [Pelicula.mostrarNombrePeliculas(
+                    filtroNombrePeliculas = filtroNombresCartelera, 
+                    clienteProceso = clienteProceso, 
+                    nombrePeliculasRecomendadas = filtroPelisRecomendadas), 'Selecionar película'], 
+                [[], 'Seleccionar formato'], 
+                [[], 'Seleccionar horario']
+            ],
+            habilitado = [False, False, False],
+            botonVolver = True,
+            desplazarBotonesFila = 1,
+            frameAnterior = frameAnterior
+        )
+
+        #Creamos un Label que almacenará información extra sobre la película seleccionada
+        self._labelInfoPeliculaSeleccionada = tk.Label(self, text='', font= ("Verdana",12), anchor="center")
+        self._labelInfoPeliculaSeleccionada.grid(column=0, row=len(self._infoEtiquetas) + 3, columnspan=4)
+
+        #Expandimos los comboBox creados para visualizar mejor su contenido
+        for elemento in self.getElementosInteractivos():
+            elemento.grid_configure(sticky='we')
+
+        #Creamos apuntadores a cada uno de los elementos interactivos para facilitar su acceso
+        self._comboBoxPeliculas = self.getElementosInteractivos()[0]
+        self._comboBoxFormatos = self.getElementosInteractivos()[1]
+        self._comboBoxHorarios = self.getElementosInteractivos()[2]
+
+        #Modificamos el estado de los comboBox para forzar a que se rellene el formulario de forma secuencial
+        self._comboBoxFormatos.configure(state = 'disabled')
+        self._comboBoxHorarios.configure(state = 'disabled')
+
+        #Definimos la operación respecto al evento de seleccionar un item del comboBox
+        self._comboBoxPeliculas.bind('<<ComboboxSelected>>', self.setFormatos)
+        self._comboBoxFormatos.bind('<<ComboboxSelected>>', self.setHorarios)
+
+    def setFormatos(self, event):
+        #Obtenemos el nombre de la película seleccionada
+        nombrePeliculaSeleccionada = self.getValue('Seleccionar película :')
+
+        #Buscamos las películas con el mismo nombre (obtenemos los formatos disponibles de esa película)
+        self._formatosPeliSeleccionada = Pelicula.obtenerPeliculasPorNombre(nombrePeliculaSeleccionada, self._carteleraCliente)
+
+        #Configuramos el comboBox de formatos respecto a la información obtenida y lo habilitamos
+        self._comboBoxFormatos.configure(values = [peli.getTipoDeFormato() for peli in self._formatosPeliSeleccionada])
+        self._comboBoxFormatos.configure(state = 'readonly')
+        self._comboBoxFormatos.set(self._infoElementosInteractuables[1][1])
+
+        #Reestablecemos el comboBox de Horarios y el label de información adicional en caso de modificar la película seleccionada nuevamente
+        self._comboBoxHorarios.configure(state = 'disabled')
+        self._comboBoxHorarios.set(self._infoElementosInteractuables[2][1])
+
+        self._labelInfoPeliculaSeleccionada.configure(text = '')
+
+    def setHorarios(self, event):
+        
+        #Seleccionamos la película que corresponde al formato seleccionada
+        for pelicula in self._formatosPeliSeleccionada:
+            if pelicula.getTipoDeFormato() == self.getValue('Seleccionar formato :'):
+                self._peliculaProceso = pelicula 
+
+        #Mostramos sus horarios de presentación
+        self._horariosPeliSeleccionada = self._peliculaProceso.filtrarHorariosParaMostrar()
+
+        #Configuramos el comboBox de horarios para con la información obtenida y lo habilitamos
+        self._comboBoxHorarios.configure(values = self._horariosPeliSeleccionada)
+        self._comboBoxHorarios.configure(state = 'readonly')
+
+        #Configuramos el label de información adicional con la película seleciconada
+        self._labelInfoPeliculaSeleccionada.configure(text = f'Precio: {self._peliculaProceso.getPrecio()}, Género: {self._peliculaProceso.getGenero()}')
+    
+    def funBorrar(self):
+        #Setteamos los valores por defecto de cada comboBox
+        super().funBorrar()
+
+        #Configuramos el estado de los comboBox para que sean seleccionados de forma secuencial
+        self._comboBoxHorarios.configure(state = 'disabled')
+        self._comboBoxFormatos.configure(state = 'disabled')
+        self._labelInfoPeliculaSeleccionada.configure(text = '')
+    
+    def funAceptar(self):
+
+        #Evaluamos las excepciones de UI
+        if self.evaluarExcepciones():
+            #Obtenemos el horario seleccionado
+            horarioString = self._comboBoxHorarios.get()
+
+            #Evaluamos si es un horario en presentación
+            estaEnPresentacion = False
+            if 'En vivo:' in horarioString:
+                horarioSplit = horarioString.split(':', 1)
+                horarioString = horarioSplit[1].lstrip(' ')
+                estaEnPresentacion = True
+
+            #Convertimos el horario obtenido de str a datetime
+            self._horarioProceso = datetime.strptime(horarioString, '%Y-%m-%d %H:%M:%S')
+
+            #Confirmamos las elecciones del usuario
+            confirmacionUsuario = messagebox.askokcancel('Confirmación datos', f'Has seleccionado {self._peliculaProceso.getNombre()}; con formato: {self._peliculaProceso.getTipoDeFormato()}; en el horario: {self._horarioProceso}')
+
+            if confirmacionUsuario:
+                #Construimos el frame con la información obtenida y lo mostramos
+                FrameSeleccionarAsiento(self._peliculaProceso, self._horarioProceso, estaEnPresentacion, self).mostrarFrame()
+
+class FrameSeleccionarAsiento(FieldFrame):
+    def __init__(self, peliculaProceso, horarioProceso, estaEnPresentacion, frameAnterior):
+        
+        #Guardamos la información obtenida del FrameDeReserva
+        self._peliculaProceso = peliculaProceso
+        self._horarioProceso = horarioProceso
+        self._estaEnPresentacion = estaEnPresentacion
+
+        #Creamos los atributos de instancia que usaremos durante el desarrollo de este frame
+        self._asientosPelicula = peliculaProceso.getAsientosSalasVirtuales()[peliculaProceso.getHorariosPresentacion().index(horarioProceso)]
+        self._filaSeleccionada = 100
+        self._columnaSeleccionada = 100
+
+        super().__init__(
+            tituloProceso = 'Selección de asiento',
+            descripcionProceso = f'En este apartado seleccionaremos uno de los asientos disponibles para hacer efectivo el proceso de reserva de ticket.\nConsideraciones: \n1. La pantalla se encuentra frente a la fila 1. \n2. Una vez seleccionada una fila (solo se muestran los números de fila con algún asiento disponible) se examinará cuáles son los asientos disponibles en ella, es decir, se debe elegir de forma secuencial, primero fila y luego columna (Fecha actual {FieldFrame.getClienteProceso().getCineUbicacionActual().getFechaActual().replace(microsecond = 0)}).',
+            tituloCriterios = 'Criterios asiento',
+            textEtiquetas = ['Seleccionar fila :', 'Seleccionar columna :'],
+            tituloValores = 'Datos asiento',
+            infoElementosInteractuables = [[Pelicula.filasConAsientosDisponibles(self._asientosPelicula), 'Selecciona la fila' ], [[], 'Selecciona la columna']],
+            habilitado = [False, False],
+            botonVolver = True,
+            frameAnterior = frameAnterior
+        )
+
+        #Asociamos los elementos interactivos a variables para facilitar su acceso
+        self._comboBoxFilas = self.getElementosInteractivos()[0]
+        self._comboBoxCols = self.getElementosInteractivos()[1]
+
+        #Asignamos sus respectivo estado y eventos
+        self._comboBoxCols.configure(state = 'disabled')
+        self._comboBoxFilas.bind('<<ComboboxSelected>>', self.setColumnas)
+
+    def setColumnas(self, evento):
+        self._filaSeleccionada = int(self._comboBoxFilas.get())
+
+        self._comboBoxCols.configure(values = Pelicula.asientosDisponibles(self._filaSeleccionada - 1, self._asientosPelicula), state = 'readonly')
+
+    def funBorrar(self):
+        #Setteamos los valores por defecto de cada comboBox
+        super().funBorrar()
+
+        #Configuramos el estado del comboBox de columnas
+        self._comboBoxCols.configure(state = 'disabled')
+    
+    def funAceptar(self):
+        #Evaluamos las excepciones de UI
+        if self.evaluarExcepciones():
+            #Creamos un apuntador al cliente para facilitar su acceso
+            clienteProceso = FieldFrame.getClienteProceso()
+
+            #Obtenemos la columna seleccionada
+            self._columnaSeleccionada = int(self._comboBoxCols.get())
+            
+            #Confirmamos la elecicón de datos
+            confirmacionUsuario = messagebox.askokcancel('Confirmación datos', f'Has seleccionado el asiento en la fila: {self._filaSeleccionada}; con la columna: {self._columnaSeleccionada}')
+
+            if confirmacionUsuario:
+                #Confirmamos ingreso a la pasarela de pagos
+                cofirmacionParaPasarelaDePago = messagebox.askokcancel('Confirmación elección datos de reserva', 'Ya hemos concluido la selección de datos necesarios para la reserva de ticket, ahora procederemos a realizar el pago, ¿Desea Continuar?')
+
+                if cofirmacionParaPasarelaDePago:
+                    #Construimos el ticket en cuestión
+                    ticketProceso = Ticket(self._peliculaProceso, self._horarioProceso, f'{self._filaSeleccionada}-{self._columnaSeleccionada}', self._estaEnPresentacion, clienteProceso.getCineUbicacionActual())
+
+                    #Notificamos al cliente en caso de recibir el descuento
+                    if ticketProceso.getPrecio() != self._peliculaProceso.getPrecio():
+                        messagebox.showinfo('¡FELICITACIONES!', f'Por ser el cliente número: {clienteProceso.getCineUbicacionActual().getCantidadTicketsCreados()} has recibido un descuento del {'80%' if self._peliculaProceso.getTipoDeFormato() == '2D' else '50%'}')
+
+                    #Ingresamos a la pasarela de pago
+                    frameSiguiente = FrameFuncionalidad1()
+                    FramePasarelaDePagos(frameSiguiente, ticketProceso.getPrecio(), ticketProceso).mostrarFrame()
