@@ -10,6 +10,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import tkinter as tk
 import random
+import pygame
 from PIL import Image, ImageTk, ImageSequence
 from gestionAplicacion.servicios.bono import *
 from tkinter import ttk, messagebox
@@ -2876,10 +2877,19 @@ def ventanaDeInicio():
         Serializador.serializar()
         #Destruimos la ventana
         ventanaInicio.destroy()
+    pygame.mixer.init()
+
+    def play():
+        pygame.mixer.music.load("src/iuMain/sound/song.mp3")
+        pygame.mixer.music.play(loops=0)
+    def pause():
+        pygame.mixer.music.pause()
 
     #Opciones de el menu de inicio
     menuOpciones.add_command(label = "Descripción del programa", command= mostrarDescripcion)
     menuOpciones.add_command(label = "Salir y Guardar", command= CerrarVentana)
+    menuOpciones.add_command(label = "Sabrosura", command= play)
+    menuOpciones.add_command(label = "Silencio", command= pause)
 
 
 if __name__ == '__main__':
