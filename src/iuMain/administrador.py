@@ -10,6 +10,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import tkinter as tk
 import random
+from PIL import Image, ImageTk, ImageSequence
 from gestionAplicacion.servicios.bono import *
 from tkinter import ttk, messagebox
 from datetime import datetime, time, timedelta
@@ -592,7 +593,7 @@ class FrameVentanaPrincipal(FieldFrame):
         self._menuProcesosConsultas.add_command(label="Servicio de comida/souvenir", command= self.ingresarFuncionalidad2)
         self._menuProcesosConsultas.add_command(label="Sistema de membresías", command=self.ingresarFuncionalidad5)
 
-        self._menuAyuda.add_command(label="Acerca de", command=self.avanzarDia)
+        self._menuAyuda.add_command(label="Acerca de", command=self.mostrarListaNombres)
     
     def mostrarDescripcionSistema(self):
          messagebox.showinfo("Información del Sistema", "En este programa puedes:\n•Comprar Tickets\n•Comprar comida y regalos\n•Usar la zona de juegos\n•Adquirir membresias\n•Calificar nuestros servicios")
@@ -616,8 +617,14 @@ class FrameVentanaPrincipal(FieldFrame):
     def ingresarFuncionalidad5(self):
         FieldFrame.getFramesFuncionalidades()[4].mostrarFrame()
 
-    def mostrarNombreAutores(self):
-         messagebox.showinfo("Autores de la Aplicación", "• Juan José Gonzalez Morales - Alias: El Juanjo\n• Edinson Andrés Ariza Mendoza - Alias: Pana Andy\n• Rusbel Danilo Jaramillo Hincapie - Alias: El Indigente\n• Gerson Bedoya Hinestroza - Alias: El viejo Gerson\n• Santiago Castro Herrera - Alias: EL LuisMi")
+    def mostrarListaNombres(self):
+        self.avanzarDia()
+        nombres = ["Jeronimo Rua Herrera", "Valentina Leon Beltran", "Julian Bedoya Palacio", "Andres A. Rosero Toledo",
+                   "Alan D. Racines Casierra"]
+        top = tk.Toplevel(self)
+        top.geometry("600x400")
+        frame_lista_nombres = FrameListaNombres(top, nombres)
+        frame_lista_nombres.pack(expand=True, fill='both')
 
     def logicaMembresia(self):
 
@@ -942,6 +949,45 @@ class FrameTarjetaCinemar(FieldFrame):
             x1 = 20 + i * 15  # Posición horizontal inicial y espaciado
             x2 = x1 + 5  # Ancho de la barra
             canvas.create_rectangle(x1, 125, x2, 145, fill="black")
+
+class FrameListaNombres(tk.Frame):
+    def __init__(self, parent, nombres):
+        super().__init__(parent)
+        self.nombres = nombres
+        self.config(bg="#D3D3D3")
+        self.create_widgets()
+
+    def create_widgets(self):
+        titulo = tk.Label(self, text="Autores", font=("courier new", 27, "bold italic"), bg="#D3D3D3")
+        titulo.pack(pady=10)
+
+        lista_frame = tk.Frame(self, bg="#D3D3D3")
+        lista_frame.pack(pady=10)
+
+        for nombre in self.nombres:
+            nombre_label = tk.Label(lista_frame, text=nombre, font=("courier new", 15), bg="#D3D3D3")
+            nombre_label.pack(anchor="w", padx=10, pady=2)
+
+        boton_volver = tk.Button(self, text="Volver", font=("courier new", 12), fg="black", bg="#87CEFA", command=self.volver)
+        boton_volver.pack(pady=10)
+
+        self.gif_label = tk.Label(self, bg="#D3D3D3")
+        self.gif_label.pack(pady=10)
+        self.load_gif("src/iuMain/imagenes/ayuda.gif")
+
+    def volver(self):
+        self.master.destroy()
+
+    def load_gif(self, gif_path):
+        self.gif = Image.open(gif_path)
+        self.gif_frames = [ImageTk.PhotoImage(frame.copy()) for frame in ImageSequence.Iterator(self.gif)]
+        self.gif_index = 0
+        self.animate_gif()
+
+    def animate_gif(self):
+        self.gif_label.config(image=self.gif_frames[self.gif_index])
+        self.gif_index = (self.gif_index + 1) % len(self.gif_frames)
+        self.after(100, self.animate_gif)
 
 
 class FrameEleccion(FieldFrame):
