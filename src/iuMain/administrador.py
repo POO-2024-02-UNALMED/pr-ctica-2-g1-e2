@@ -2455,7 +2455,6 @@ class FrameRecargarTarjetaCinemar(FramePasarelaDePagos):
 
 def objetosBasePractica2():
 
-
     sucursalCine1 = SucursalCine("Bucaramanga")
     sucursalCine2 = SucursalCine("Marinilla")
     sucursalCine3 = SucursalCine("Medellín")
@@ -2531,11 +2530,11 @@ def objetosBasePractica2():
     sucursalCine3.getInventarioCine().append(producto5SM)
     
 
-    cliente1 = Cliente("Rusbel", 18, 13434, TipoDocumento.CC, sucursalCine2)
-    cliente2 = Cliente("Andy", 18, 14343, TipoDocumento.CC, sucursalCine1)
-    cliente3 = Cliente('Gerson', 23, 98765, TipoDocumento.CC, sucursalCine3)
-    cliente4 = Cliente('Juanjo', 18, 987, TipoDocumento.CC, sucursalCine1)
-    cliente5 = Cliente('Santiago', 18, 1125274009, TipoDocumento.CC, sucursalCine3)
+    cliente1 = Cliente("Jero", 18, 1038358638, TipoDocumento.CC, sucursalCine2)
+    cliente2 = Cliente("Valen", 18, 1122922340, TipoDocumento.CC, sucursalCine1)
+    cliente3 = Cliente('Julian', 23, 1193220995, TipoDocumento.CC, sucursalCine3)
+    cliente4 = Cliente('Andres', 18, 1083865080, TipoDocumento.CC, sucursalCine1)
+    cliente5 = Cliente('Alan', 18, 123, TipoDocumento.CC, sucursalCine3)
 
     salaDeCine1_1 = SalaCine(1, "2D", sucursalCine1)
     salaDeCine1_2 = SalaCine(2, "3D", sucursalCine1)
@@ -2647,7 +2646,7 @@ def objetosBasePractica2():
 
     for sucursal in SucursalCine.getSucursalesCine():
         for i in range (20):
-            sucursal.getTarjetasCinemark().append(TarjetaCinemar())
+            sucursal.getTarjetasCinemar().append(TarjetaCinemar())
     
     
 
@@ -2727,7 +2726,7 @@ def ventanaDeInicio():
     frameSuperiorDerechoP5 = tk.Frame(frameGrandeDerechoP2, bd = 2, relief= "solid", bg = "#D3D3D3")
     frameSuperiorDerechoP5.place(relx= 0.02, rely= 0.011, relwidth= 0.96, relheight = 0.37)
 
-    nombres = ["Jeronimo Rua Herrera", "Valentina Leon Beltran", "Julian Bedoya Palacio", "Andres Alejandro Rosero Toledo", "Alan David Racines Casierra"]
+    nombres = ["Jeronimo Rua Herrera", "Valentina Leon Beltran", "Julian Bedoya Palacio", "Andres A. Rosero Toledo", "Alan D. Racines Casierra"]
     edades =  ["18", "19", "23", "21", "21"]
     estudios = ["Ingeniero de Sistemas"]*5
     instituciones = ["Universidad Nacional Colombia"]*5
@@ -2840,10 +2839,9 @@ def ventanaDeInicio():
 if __name__ == '__main__':
 
     #Creamos los objetos de la lógica del proyecto
-    
+
     Deserializador.deserializar()
-    #objetosBasePractica2()
-    #Creacion de la ventana de inicio 
+    #Creacion de la ventana de inicio
     ventanaInicio = tk.Tk()
     ventanaInicio.title("Ventana de Inicio Cinemark")
     ventanaInicio.geometry("640x480")
