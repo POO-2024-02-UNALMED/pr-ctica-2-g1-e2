@@ -14,4 +14,4 @@ pip install -r requirements.txt
 
 :: Run the application
 echo Running the application...
-python main.py
+python .\src\iuMain\administrador.py
