@@ -1,4 +1,5 @@
 @echo off
+cd /d %~dp0
 :: Check if running as administrator
 openfiles >nul 2>&1
 if %errorlevel% neq 0 (
