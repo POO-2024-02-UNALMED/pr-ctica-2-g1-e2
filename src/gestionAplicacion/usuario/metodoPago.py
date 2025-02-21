@@ -1,7 +1,27 @@
+from multimethod import multimethod
 class MetodoPago():
 
     #Inicializador
-    def __init__(self, nombre, descuentoAsociado, limiteMaximoPago, sucursalCine, tipo = 0):
+    #sobre carga de constructores
+    @multimethod
+    def __init__(self):
+        """Constructor vacío que añade la instancia a la lista estática."""
+        self.nombre = None
+        self.limite_maximo_pago = 0.0
+        self.descuento_asociado = 0.0
+        self.tipo = 0
+
+    @multimethod
+    def __init__(self, descuentoAsociado: float, limiteMaximoPago:float, sucursalCine, tipo = 0):
+        """Constructor que añade la instancia a la lista estática."""
+        self.__init__() #Se llama al constructor vacío
+        self.limite_maximo_pago = limiteMaximoPago
+        self.descuento_asociado = descuentoAsociado
+        self.tipo = tipo
+        self.sucursalCine = sucursalCine
+
+    @multimethod
+    def __init__(self, nombre: str, descuentoAsociado: float, limiteMaximoPago: float, sucursalCine, tipo = 0):
         self._nombre = nombre
         self._descuentoAsociado = descuentoAsociado
         self._limiteMaximoPago = limiteMaximoPago

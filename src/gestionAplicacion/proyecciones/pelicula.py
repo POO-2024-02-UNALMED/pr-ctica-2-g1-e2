@@ -1,5 +1,6 @@
 import random
 from datetime import datetime
+from multimethod import multimethod
 
 class Pelicula:
 
@@ -184,7 +185,8 @@ class Pelicula:
 
         self._asientosSalasVirtuales[self._horariosPresentacion.index(horario)][fila - 1][columna - 1] = 1
 
-    def isDisponibilidadAsientoSalaVirtual(self, horario, fila = 100, columna = 100):
+    @multimethod
+    def isDisponibilidadAsientoSalaVirtual(self, horario: datetime):
 
         """
         :Description : Este método se encarga revisar la disponibilidad de un asiento determinado de la sala de cine virtual
@@ -199,16 +201,17 @@ class Pelicula:
 	    
         :return boolean: Este método retorna un boolean que representa la disponibilidad del asiento selccionado por el cliente.
         """
-        
-        if fila == 100 and columna == 100:
-            for filaAsientos in self._asientosSalasVirtuales[self._horariosPresentacion.index(horario)]:
-                for asiento in filaAsientos:
-                    if asiento == 0: return True
-        
-            return False
-        
-        else:
-            return self._asientosSalasVirtuales[self._horariosPresentacion.index(horario)][fila - 1][columna - 1] == 0
+
+        for filaAsientos in self._asientosSalasVirtuales[self._horariosPresentacion.index(horario)]:
+            for asiento in filaAsientos:
+                if asiento == 0: return True
+
+        return False
+
+
+    @multimethod
+    def isDisponibilidadAsientoSalaVirtual(self, horario: datetime, fila: int, columna: int):
+        return self._asientosSalasVirtuales[self._horariosPresentacion.index(horario)][fila - 1][columna - 1] == 0
 
     def filtrarHorariosPelicula(self):
 
