@@ -10,8 +10,7 @@ if %errorlevel% neq 0 (
 
 :: Install dependencies
 echo Installing dependencies...
-pip install -r requirements.txt || py -m pip install -r requirements.txt || python3 -m pip install -r requirements.txt || py3 -m pip install -r requirements.txt || python -m pip install -r requirements.txt || python3 -m pip install -r requirements.txt || py -m pip install -r requirements.txt || py3 -m pip install -r requirements.txt
-
+pip install -r requirements.txt
 :: Run the application
 echo Running the application...
-python .\src\iuMain\administrador.py || py .\src\iuMain\administrador.py || python3 .\src\iuMain\administrador.py || py3 .\src\iuMain\administrador.py
+python .\src\iuMain\administrador.py
