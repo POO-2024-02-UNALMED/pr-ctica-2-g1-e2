@@ -1,5 +1,5 @@
 @echo off
-cd /d %~dp0
+cd /d "%~dp0"
 :: Check if running as administrator
 openfiles >nul 2>&1
 if %errorlevel% neq 0 (
@@ -11,6 +11,7 @@ if %errorlevel% neq 0 (
 :: Install dependencies
 echo Installing dependencies...
 pip install -r requirements.txt
+
 :: Run the application
 echo Running the application...
 python .\src\iuMain\administrador.py
