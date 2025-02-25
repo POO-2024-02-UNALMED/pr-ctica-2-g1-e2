@@ -1,4 +1,5 @@
 from .asiento import Asiento
+from multimethod import multimethod
 
 class SalaCine:
 
@@ -6,7 +7,14 @@ class SalaCine:
 
     _cantidadSalasDeCineCreadas = 0
 
+    @multimethod
+    def __init__(self):
+        SalaCine._cantidadSalasDeCineCreadas += 1
+        self._salaCineId = SalaCine._cantidadSalasDeCineCreadas
+    
+    @multimethod
     def __init__(self, numeroDeSala, tipoDeSala, sucursalUbicacion):
+        self.__init__()
         self._numeroSala = numeroDeSala
         self._tipoSala = tipoDeSala
         self._sucursalUbicacion = sucursalUbicacion
@@ -14,9 +22,6 @@ class SalaCine:
 
         self._horarioPeliculaEnPresentacion = None
         self._peliculaEnPresentacion = None
-
-        SalaCine._cantidadSalasDeCineCreadas += 1
-        self._salaCineId = SalaCine._cantidadSalasDeCineCreadas
 
         sucursalUbicacion.getSalasDeCine().append(self)
 
