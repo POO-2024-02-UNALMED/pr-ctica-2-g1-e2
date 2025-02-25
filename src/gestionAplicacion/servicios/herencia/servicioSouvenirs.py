@@ -15,7 +15,7 @@ class ServicioSouvenir(Servicio):
         return inventario
 
 
-    def descuentarPorCompra(self, metodo):
+    def descontarPorCompra(self, metodo):
         if metodo.getNombre() != "Efectivo":
             for producto in self._orden:
                 if (producto.getTamaño() in ["Katana", "Emociones"]) and (producto.getPrecio() > 100000):

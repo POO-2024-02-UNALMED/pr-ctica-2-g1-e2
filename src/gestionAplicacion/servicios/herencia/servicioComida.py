@@ -15,7 +15,7 @@ class ServicioComida(Servicio):
         return inventario
 
 
-    def descuentarPorCompra(self, metodo):
+    def descontarPorCompra(self, metodo):
         if metodo.getNombre() != "efectivo":
             for producto in self._orden:
                 if (producto.getTamaño() in ["Cangreburger", "Deadpool"]) and (producto.getPrecio() > 100000):

@@ -19,7 +19,7 @@ class Servicio (ABC, Ibuyable):
 
         
     @abstractmethod
-    def descuentarPorCompra(self, metodo):
+    def descontarPorCompra(self, metodo):
         pass
 
     @abstractmethod
@@ -40,7 +40,7 @@ class Servicio (ABC, Ibuyable):
             if bono.getTipoServicio() == self.getNombre() and bono.getCliente().getNombre() == self.cliente.getNombre():
                 self.getBonosCliente().append(bono) 
 
-    def descuentarPorGenero(self, cine):
+    def descontarPorGenero(self, cine):
         for producto in self._orden:
             for ticket in cine.getTicketsParaDescuento():
                 if producto.getGenero() == ticket.getPelicula().getGenero() and self.cliente == ticket.getDueno():

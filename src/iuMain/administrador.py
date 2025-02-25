@@ -403,7 +403,7 @@ class FrameGeneracionDeProductos(FieldFrame):
 
     def funAceptar(self):
         if len(self._servicio.getOrden()) > 0:
-            productoDescuento = self._servicio.descuentarPorGenero(self._clienteProceso.getCineUbicacionActual())
+            productoDescuento = self._servicio.descontarPorGenero(self._clienteProceso.getCineUbicacionActual())
             if productoDescuento != None:
                 messagebox.showinfo("Descuento","🎉🎉Felicidades obtuviste un descuento 🎉🎉 \n Por comprar un producto del mismo genero que el tiket que compraste")
                 productoDescuento.setPrecio(productoDescuento.getPrecio()*0.9)
@@ -2290,7 +2290,7 @@ class FramePasarelaDePagos(FieldFrame):
             #Como las ordenes manejan otro tipo de descuento, se revisan de que tipo son los objetos pasados en elementosIbuyable.
             if isinstance(self._elementosIbuyable[0], Servicio):
                 if self._elementosIbuyable[0].descuento:
-                    if ("Efectivo" not in self._elementosInteractivos[1].get()) and self._elementosIbuyable[0].descuentarPorCompra(metodoPagoSeleccionado):
+                    if ("Efectivo" not in self._elementosInteractivos[1].get()) and self._elementosIbuyable[0].descontarPorCompra(metodoPagoSeleccionado):
                         self._elementosIbuyable[0].setDescuento(False)
                         self.getElementosInteractivos()[0].configure(state="normal")
                         self.setValueEntry("Precio original :", self._elementosIbuyable[0].getValorPedido())
