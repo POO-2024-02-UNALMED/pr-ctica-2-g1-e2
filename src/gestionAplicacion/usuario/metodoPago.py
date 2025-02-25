@@ -12,16 +12,15 @@ class MetodoPago():
         self.tipo = 0
 
     @multimethod
-    def __init__(self, descuentoAsociado: float, limiteMaximoPago:float, sucursalCine, tipo = 0):
+    def __init__(self, descuentoAsociado: float, limiteMaximoPago:int, sucursalCine):
         """Constructor que añade la instancia a la lista estática."""
-        self.__init__() #Se llama al constructor vacío
+        self.__init__(self) #Se llama al constructor vacío
         self.limite_maximo_pago = limiteMaximoPago
         self.descuento_asociado = descuentoAsociado
-        self.tipo = tipo
         self.sucursalCine = sucursalCine
 
     @multimethod
-    def __init__(self, nombre: str, descuentoAsociado: float, limiteMaximoPago: float, sucursalCine, tipo = 0):
+    def __init__(self, nombre: str, descuentoAsociado: float, limiteMaximoPago:int, sucursalCine, tipo:int = 0):
         self._nombre = nombre
         self._descuentoAsociado = descuentoAsociado
         self._limiteMaximoPago = limiteMaximoPago
@@ -31,6 +30,16 @@ class MetodoPago():
         if (nombre != "Puntos"):
             self._sucursalCine.getMetodosDePagoDisponibles().append(self)
 
+    @multimethod
+    def __init__(self, nombre: str, descuentoAsociado: float, limiteMaximoPago: float, sucursalCine, tipo: int = 0):
+        self._nombre = nombre
+        self._descuentoAsociado = descuentoAsociado
+        self._limiteMaximoPago = limiteMaximoPago
+        self._tipo = tipo
+        self._sucursalCine = sucursalCine
+
+        if (nombre != "Puntos"):
+            self._sucursalCine.getMetodosDePagoDisponibles().append(self)
 
     #Metodos
     
