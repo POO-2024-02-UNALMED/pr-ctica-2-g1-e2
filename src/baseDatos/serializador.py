@@ -3,7 +3,7 @@ from gestionAplicacion.sucursalCine import SucursalCine
 
 class Serializador:
 
-    #Creamos un método base que serializa una lista de instancia
+    #Creamos un method base que serializa una lista de instancia
     @classmethod
     def serializarListaInstancia(cls, sede, archivo, lista):
 

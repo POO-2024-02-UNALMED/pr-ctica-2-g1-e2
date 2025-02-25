@@ -54,9 +54,9 @@ class SucursalCine:
     def actualizarPeliculasSalasDeCine(cls):
 
         """
-        :Description: Este método se encarga de actualizar las salas de todas las sedes, para esto, 
+        :Description: Este method se encarga de actualizar las salas de todas las sedes, para esto,
         iteramos sobre el ArrayList de las sedes, luego iteramos sobre el ArrayList de las salas de 
-        cine de cada sede y ejecutamos su método de actualizar peliculas en presentación.
+        cine de cada sede y ejecutamos su method de actualizar peliculas en presentación.
         """
 
         for sede in SucursalCine._sucursalesCine:
@@ -72,7 +72,7 @@ class SucursalCine:
     def _dropHorariosVencidos(cls):
 
         """
-        :Description: Este método se encarga de eliminar los horarios que ya no pueden ser presentados al pasar de día
+        :Description: Este method se encarga de eliminar los horarios que ya no pueden ser presentados al pasar de día
 	    o luego de la deserialización, de todas las películas de cada sucursal, eliminando los horarios anteriores al día 
 	    de la fecha actual. 
         """
@@ -96,7 +96,7 @@ class SucursalCine:
     def _crearHorariosPeliculasPorSala(self):
 
         """
-        :Description: Este método se encarga de crear máximo 20 horarios por cada película en cartelera de la sucursal de cine, 
+        :Description: Este method se encarga de crear máximo 20 horarios por cada película en cartelera de la sucursal de cine,
 	    teniendo en cuenta los siguientes criterios: 
 	    <ol>
 	    <li>El horario en el que se presentará la película se encuentra entre el horario de apertura y cierre de nuestras 
@@ -149,8 +149,8 @@ class SucursalCine:
     def _distribuirPeliculasPorSala(self):
 
         """
-        :Description: Este método se encarga de distribuir las películas en cartelera en las distintas salas de cine 
-	    de la sucursal de cine que ejecuta este método, para esta distribución se tienen encuenta 3 casos posibles:
+        :Description: Este method se encarga de distribuir las películas en cartelera en las distintas salas de cine
+	    de la sucursal de cine que ejecuta este method, para esta distribución se tienen encuenta 3 casos posibles:
 	    <ol>
 	    <li>Hay menos películas que salas de cine o igual cantidad de ambas.</li>
 	    <li>Hay más películas que salas de cine, pero caben exactamente la misma cantidad de películas en cada sala.</li>
@@ -202,7 +202,7 @@ class SucursalCine:
     def logicaSemanalSistemNegocio(cls):
 
         """
-        :Description: Este método se encarga de realizar los preparativos para ejecutar la lógica de la funcionalidad #3:
+        :Description: Este method se encarga de realizar los preparativos para ejecutar la lógica de la funcionalidad #3:
 	    <ol>
 	    <li>Renueva las cantidades disponibles de los productos en inventario</li>
 	    <li>Eliminar los horarios de la semana anterior.</li>
@@ -222,7 +222,7 @@ class SucursalCine:
     def logicaInicioSIstemaReservarTicket(cls):
 
         """
-        :Description: Este método se encarga de ejecutar toda la lógica para realizar reservas de ticket por primera vez,
+        :Description: Este method se encarga de ejecutar toda la lógica para realizar reservas de ticket por primera vez,
 	    se compone de 3 puntos principales:
 	    <ol>
 	    <li>Distribuir las películas en cartelera de cada sucursal de forma equitativa respecto a sus salas de cine.</li>
@@ -248,7 +248,7 @@ class SucursalCine:
     def logicaDiariaReservarTicket(cls):
 
         """
-        :Description : Este método se encarga de evaluar la lógica diaria de la reserva de tickets, para esto evalua los siguientes criterios:
+        :Description : Este method se encarga de evaluar la lógica diaria de la reserva de tickets, para esto evalua los siguientes criterios:
 	    <ol>
 	    <li>Añade los tickets de películas que serán presentadas el día de hoy al array de tickets para descuento y elimina los tickets
 	    caducados de los clientes y del array de tickets disponibles.</li>
@@ -281,7 +281,7 @@ class SucursalCine:
     def buscarCliente(cls, numeroDocumento, tipoDeDocumento):
 
         """
-        <b>Description</b>: Este método se encarga de buscar un cliente en la lista de clientes de la clase SucursalCine cuyo
+        <b>Description</b>: Este method se encarga de buscar un cliente en la lista de clientes de la clase SucursalCine cuyo
         número de documento y tipo de documento coincida con el número y tipo pasados como parámetros
 
         :param numeroDocumento: Corresponde al número de documento del usuario que estamos buscando
@@ -290,7 +290,7 @@ class SucursalCine:
         :param tipoDeDocumento: Corresponde al tipo de documento del usuario que estamos buscando
         :type tipoDeDocumento: String
 
-        :return cliente: Este método retorna el cliente en caso de encontrarlo, sino, retorna None
+        :return cliente: Este method retorna el cliente en caso de encontrarlo, sino, retorna None
         """
 
         for cliente in SucursalCine._clientes:
@@ -306,12 +306,12 @@ class SucursalCine:
     def obtenerSucursalPorUbicacion(cls, ubicacion):
 
         """
-        <b>Description</b>: Este método se encarga de buscar la sucursal de cine cuya ubicación coincida con la pasada
+        <b>Description</b>: Este method se encarga de buscar la sucursal de cine cuya ubicación coincida con la pasada
         como prámetro
 
         :param ubicacion: Corresponde a la ubicacion de la sucursal que estamos buscando
 
-        :returns sede: Este método retorna la sede encontrada 
+        :returns sede: Este method retorna la sede encontrada
         """
         
         for sede in SucursalCine._sucursalesCine:
@@ -321,7 +321,7 @@ class SucursalCine:
     def avanzarTiempo(self):
 
         """
-        :Description: Este método se encarga de avanzar la hora y ejecutar la lógica de negocio en 3 plazos:
+        :Description: Este method se encarga de avanzar la hora y ejecutar la lógica de negocio en 3 plazos:
         
         <ol>
 	    <li>Durante la jornada laboral: Actualiza las salas de cine, ubicando las películas en presentación en sus respectivas salas.</li>
@@ -365,7 +365,7 @@ class SucursalCine:
 
     @classmethod
     def notificarFechaLimiteMembresia(cls, clienteProceso):
-        """<b>Description</b>: Este método se encarga de revisar la validez de la membresia del cliente y,
+        """<b>Description</b>: Este method se encarga de revisar la validez de la membresia del cliente y,
 	    en caso de que este apunto de expirar, se le notificará con antelación (5 dias) para que pueda
 	    renovar su membresia. En caso de que se expire, se notifica y se desvincula del cliente.
 
@@ -389,7 +389,7 @@ class SucursalCine:
                 nombreMembresia = clienteProceso.getMembresia().getNombre()
                 clienteProceso.getMembresia().getClientes().remove(clienteProceso)
                 clienteProceso.setMembresia(None)
-                #Se reinician sus métodos de pago en caso de perder la membresia.
+                #Se reinician sus methods de pago en caso de perder la membresia.
                 MetodoPago.asignarMetodosDePago(clienteProceso)
                 mensaje = "Su membresia ha expirado. Le invitamos a renovarla para no perder sus beneficios."
 
@@ -430,11 +430,11 @@ class SucursalCine:
             if producto in self._inventarioCine:
                 self._inventarioCine.remove(producto)
 
-#Description : Este método se encarga de retornar los productos cuyo nombre coincide con el nombre del producto seleccionada por el cliente.
-#@param nombreProducto : Este método recibe como parámetro el nombre del producto (De tipo String) con el cuál se realizará el filtrado.
-#@param Inventario : Este método recibe como parámetro una lista (De tipo ArrayList<Producto>) que contiene 
+#Description : Este method se encarga de retornar los productos cuyo nombre coincide con el nombre del producto seleccionada por el cliente.
+#@param nombreProducto : Este method recibe como parámetro el nombre del producto (De tipo String) con el cuál se realizará el filtrado.
+#@param Inventario : Este method recibe como parámetro una lista (De tipo ArrayList<Producto>) que contiene
 #los productos previamente filtrados según los datos del cliente y su disponibilidad horaria.
-#@return <b>ArrayList<Producto></b> : Este método retorna un ArrayList de los productos cuyo nombre coinciden con el nombre seleccionado 
+#@return <b>ArrayList<Producto></b> : Este method retorna un ArrayList de los productos cuyo nombre coinciden con el nombre seleccionado
 #por el cliente.
 	 
     def filtrarPorNombreDeProducto(nombreProducto, inventario):
@@ -485,7 +485,7 @@ class SucursalCine:
                     nuevoProducto = Producto(producto2.getNombre(), producto2.getTamaño(), producto2.getTipoProducto(), producto2.getPrecio() * 1.10, producto2.getCantidad(), producto2.getGenero(), sucursal1)
                     self._inventarioCine.append(nuevoProducto)         
 
-#Description: Este método se encarga de realizar la distribución de productos en los inventarios de los productos
+#Description: Este method se encarga de realizar la distribución de productos en los inventarios de los productos
 #ccada semana luego de haber efectuado el cambio de producto de sucursal propio de la funcionalidad 3. 
 
 

@@ -68,7 +68,7 @@ class Cliente():
     def verificarCuenta(self):
 
         """
-        Description: Este método verifica si el usuario tiene asociada una cuenta de tarjeta cinemar.
+        Description: Este method verifica si el usuario tiene asociada una cuenta de tarjeta cinemar.
 
         :return boolean: Retorna true or false dependiendo si el cliente tiene cuenta Cinemar o no.
         """
@@ -98,7 +98,7 @@ class Cliente():
     def dropTicketsCaducados(self):
 
         """
-        :Description: Este método se encarga de eliminar los tickets cuyo horario, más la duración de la película para la cuál fue adquirido 
+        :Description: Este method se encarga de eliminar los tickets cuyo horario, más la duración de la película para la cuál fue adquirido
 	    es menor a la fecha actual.
         """
         
@@ -114,9 +114,9 @@ class Cliente():
     def filtrarTicketsParaSede(self):
 
         """
-        :Description: Este método se encarga de retornar los tickets correspondientes a la sucursal de cine en la que se encuentra el cliente.
+        :Description: Este method se encarga de retornar los tickets correspondientes a la sucursal de cine en la que se encuentra el cliente.
 	    
-        :return list(Ticket): Este método retorna el resultado de la verifcación, con el fin de que el cliente solo pueda acceder a las salas de cine
+        :return list(Ticket): Este method retorna el resultado de la verifcación, con el fin de que el cliente solo pueda acceder a las salas de cine
 	    o a la sala de espera si este posee al menos un ticket de esta sucursal.
         """
 
@@ -131,10 +131,10 @@ class Cliente():
     def mostrarTicketsParaSalaDeEspera(self):
 
         """
-        :Description: Este método se encarga de retornar los tickets correspondientes a la sucursal de cine en la que se encuentra el cliente
+        :Description: Este method se encarga de retornar los tickets correspondientes a la sucursal de cine en la que se encuentra el cliente
         cuyo horario aún no se encuentra en presentación.
 	    
-        :return list(Ticket): Este método retorna el resultado de la verifcación, con el fin de que el cliente solo pueda usar los tickets
+        :return list(Ticket): Este method retorna el resultado de la verifcación, con el fin de que el cliente solo pueda usar los tickets
 	    en la sala de espera cuyo horario sea estrictamente mayor y sean de esta sucursal.
         """
 
@@ -149,12 +149,12 @@ class Cliente():
     def generoMasVisto(self):
 
         """
-        :Description: Este método se encarga de encontrar el género más visto por un cliente, para realizar este proceso, iteramos sobre su historial
+        :Description: Este method se encarga de encontrar el género más visto por un cliente, para realizar este proceso, iteramos sobre su historial
 	    de películas, luego, obtenemos el género de cada una y alamacenamos las veces que se repite este género en arraylists distintos, conservando
 	    el mismo índice, por último, evaluamos cuál género tiene más visualizaciones y se retorna este, en caso de coincidir en visualizaciones con 
 	    otro género, retornamos el género más reciente.
 
-	    :return String: Este método retorna el género (De tipo String) con más visualizaciones.  
+	    :return String: Este method retorna el género (De tipo String) con más visualizaciones.
         """
 
         generosVistos = []

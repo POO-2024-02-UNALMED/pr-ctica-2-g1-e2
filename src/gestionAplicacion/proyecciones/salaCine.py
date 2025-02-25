@@ -31,9 +31,9 @@ class SalaCine:
     def _crearAsientosSalaDeCine(self):
 
         """
-        :Description: Este método se encarga de generar asientos para la sala de cine, facilitando el proceso de crear una sala de cine.
+        :Description: Este method se encarga de generar asientos para la sala de cine, facilitando el proceso de crear una sala de cine.
 	    
-        :return Asiento[][]:  Este método retorna una matriz de asientos.
+        :return Asiento[][]:  Este method retorna una matriz de asientos.
         """
 
         asientos = []
@@ -50,10 +50,10 @@ class SalaCine:
     def cambiarDisponibilidadAsientoAOcupado(self, numeroAsiento):
 
         """
-        Description: Este método se encarga de modificar la disponiblidad de un asiento dado número de asiento, si su disponibilidad 
+        Description: Este method se encarga de modificar la disponiblidad de un asiento dado número de asiento, si su disponibilidad
         es verdadera la cambia a falsa, se usa para separar un asiento luego de ser reservado exitosamente.
 	    
-        :param numeroAsiento: Este método recibe como parámetro el numero del asiento seleccionado por el cliente
+        :param numeroAsiento: Este method recibe como parámetro el numero del asiento seleccionado por el cliente
 	    (De tipo String) durante el proceso de reserva de una sala de cine actual.
         :type numeroAsiento: String
         """
@@ -71,9 +71,9 @@ class SalaCine:
     def _actualizarDisponibilidadAOcupado(self, fila, columna):
 
         """
-        :Description: Este método se encarga de modificar la disponiblidad de un asiento dada su posición,
+        :Description: Este method se encarga de modificar la disponiblidad de un asiento dada su posición,
 	    si su disponibilidad es verdadera la cambia a falsa, se usa para cambiar la disponibilidad de un asiento
-	    la actualizar la sala con base en la información de la sala virtual (En el método actualizarPeliculaEnPresentacion()).
+	    la actualizar la sala con base en la información de la sala virtual (En el method actualizarPeliculaEnPresentacion()).
 	    
         :param fila: Índice de la fila del asiento que queremos modificar (De tipo int).
 	    
@@ -85,9 +85,9 @@ class SalaCine:
     def _cambiarDisponibilidadAsientoALibre(self, fila, columna):
 
         """
-        :Description: Este método se encarga de modificar la disponiblidad de un asiento dada su posición, 
+        :Description: Este method se encarga de modificar la disponiblidad de un asiento dada su posición,
         si su disponibilidad es false la cambia a true, es especialmente útil para preparar la sala de cine
-	    para presentar una nueva película (En el método actualizarPeliculaEnPresentacion()).
+	    para presentar una nueva película (En el method actualizarPeliculaEnPresentacion()).
 	    
         :param fila: Índice de la fila del asiento que queremos modificar (De tipo int).
 	    
@@ -101,13 +101,13 @@ class SalaCine:
     def filtrarSalasDeCine(cls, sucursalCine):
 
         """
-        :Description: Este método se encarga de filtrar las salas de cine según si su película aún se encuentra en presentación,
+        :Description: Este method se encarga de filtrar las salas de cine según si su película aún se encuentra en presentación,
 	    para esto verifica que el horario de la película en presentación más su duración no sea menor a la hora actual.
 	    
-        :param sucursalCine: Este método recibe como parámetro la sede (De tipo SucursalCine) en donde se realiza la busqueda 
+        :param sucursalCine: Este method recibe como parámetro la sede (De tipo SucursalCine) en donde se realiza la busqueda
         desde sus salas de cine.
 
-	    :return list(SalaCine): Este método retorna las salas de cine, ( De tipo list(SalaCine) ), que aún tienen su película 
+	    :return list(SalaCine): Este method retorna las salas de cine, ( De tipo list(SalaCine) ), que aún tienen su película
         en presentación, con el fin de ser las únicas que serán mostradas en pantalla durante el proceso de ingreso a salas de cines. 
         """
 
@@ -126,12 +126,12 @@ class SalaCine:
     def mostrarSalasCine(cls, filtroSalasDeCine, clienteProceso):
 
         """
-        :Description: Este método se encarga de generar una lista con el número de sala de las salas de cine, sugiriendo
+        :Description: Este method se encarga de generar una lista con el número de sala de las salas de cine, sugiriendo
         la sala de cine que debería seleccionar el cliente en base a su lista de tickets
 
-        :param filtroSalasDecine: Este método recibe como parámetro el filtro de salas de cine realizado previamente
+        :param filtroSalasDecine: Este method recibe como parámetro el filtro de salas de cine realizado previamente
 
-        :param clienteProceso: Este método recibe como parámetro el cliente que accede a este servicio, con el fin de obtener
+        :param clienteProceso: Este method recibe como parámetro el cliente que accede a este servicio, con el fin de obtener
         su lista de tickets para realizar la recomendación
 
         :return salaCineStr: Este métod retorna una lista de Strings con el número de la sala de cine y, en caso de requerirlo,
@@ -156,17 +156,17 @@ class SalaCine:
     def verificarTicket(self, cliente):
 
         """
-        :Description: Este método se encarga de verificar si una persona tiene al menos un ticket registrado en su array que 
+        :Description: Este method se encarga de verificar si una persona tiene al menos un ticket registrado en su array que
         cumpla los siguientes criterios para ingresar a la sala de cine:
 	    <ol>
 	    <li> La película asociada al ticket coincide con la pelicula en presentacion de la sala de cine.</li>
 	    <li> La fecha actual es anterior a la fecha en que finaliza la película.</li>
-	    <li> La sala de cine asociada al ticket es la misma que la sala de cine que ejecuta este método.</li>
+	    <li> La sala de cine asociada al ticket es la misma que la sala de cine que ejecuta este method.</li>
 	    </ol>
 
-	    :param cliente: Este método solicita al cliente (De tipo cliente) que va a ingresar a la SalaDeCine.
+	    :param cliente: Este method solicita al cliente (De tipo cliente) que va a ingresar a la SalaDeCine.
 
-        :return boolean: Este método se encarga de retornar un boolean que será el resultado del proceso de verificación 
+        :return boolean: Este method se encarga de retornar un boolean que será el resultado del proceso de verificación
         de entrada a la sala de Cine.
         """
 
@@ -196,7 +196,7 @@ class SalaCine:
     def actualizarPeliculaEnPresentacion(self):
 
         """
-        :Description: Este método se encarga actualizar la película en presentación, según los siguientes criterios: 
+        :Description: Este method se encarga actualizar la película en presentación, según los siguientes criterios:
 	    <ol>
 	    <li> La sala de cine en que se presentará alguna de las películas en cartelera de la sucursal de cine 
 	    coincide con alguna de las salas de cine de esta. </li>
@@ -259,13 +259,13 @@ class SalaCine:
     def isDisponibilidadAsientoReserva(self, fila, columna):
 
         """
-        <b>Description</b>: Este método se encarga de retornar la disponibilidad de un asiento dada su fila y su columna.
+        <b>Description</b>: Este method se encarga de retornar la disponibilidad de un asiento dada su fila y su columna.
 	    
-        :param fila: Este método recibe la fila del asiento a consultar (De tipo int).
+        :param fila: Este method recibe la fila del asiento a consultar (De tipo int).
 	    
-        :param columna: Este método recibe la columna del asiento a consultar (De tipo int).
+        :param columna: Este method recibe la columna del asiento a consultar (De tipo int).
 	    
-        :return boolean: Este método retorna la disponibilidad del asiento consultado.
+        :return boolean: Este method retorna la disponibilidad del asiento consultado.
         """
         
         return self._asientos[fila - 1][columna - 1].isDisponibilidad()
@@ -273,9 +273,9 @@ class SalaCine:
     def isDisponibilidadAlgunAsientoReserva(self):
 
         """
-        <b>Description</b>: Este método se encarga de evaluar si la sala de cine tiene algún asiento disponible.
+        <b>Description</b>: Este method se encarga de evaluar si la sala de cine tiene algún asiento disponible.
 	    
-        :return boolean: Este método retorna un boolean que representa si tiene asientos disponibles.
+        :return boolean: Este method retorna un boolean que representa si tiene asientos disponibles.
         """
 
         for filaAsientos in self._asientos:
@@ -291,7 +291,7 @@ class SalaCine:
     def tieneHorariosPresentacionHoy(self):
 
         """
-        <b>Description</b>: Este método se encarga de revisar si una sala de cine tendrá durante ese día más películas en presentación.
+        <b>Description</b>: Este method se encarga de revisar si una sala de cine tendrá durante ese día más películas en presentación.
 	    
         :return boolean: retorna el estado de la validación.
         """

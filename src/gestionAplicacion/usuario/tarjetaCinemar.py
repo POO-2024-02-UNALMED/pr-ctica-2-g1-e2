@@ -8,9 +8,9 @@ class TarjetaCinemar:
 
   def ingresarSaldo(self, saldo):
     """
-    Description: Este método se encarga de ingresar el saldo dado a la tarjeta Cinemar.
+    Description: Este method se encarga de ingresar el saldo dado a la tarjeta Cinemar.
 
-    :param saldo: Este método recibe como parámetro el saldo a ingresar (de tipo float).
+    :param saldo: Este method recibe como parámetro el saldo a ingresar (de tipo float).
     :return void: No hay retorno.
     """
     self._saldo += saldo

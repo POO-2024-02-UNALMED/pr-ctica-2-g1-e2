@@ -20,7 +20,7 @@ class Membresia (Ibuyable):
     #Metodos
     @classmethod
     def verificarMembresiaActual(cls, clienteProceso):
-        """<b>Description</b>: Este método se encarga de verificar si el cliente tiene membresia activa.
+        """<b>Description</b>: Este method se encarga de verificar si el cliente tiene membresia activa.
 
 	    <b>Param</b>: cliente : Se pide al cliente para revisar su atributo de tipo Membresia
 	    <b>Return</b>: <b>string</b> : Se retorna un texto personalizado indicando si tiene membresia o no.
@@ -42,7 +42,7 @@ class Membresia (Ibuyable):
 
     @classmethod
     def asignarDescuento(cls):
-        """<b>Description</b>: Este método se encarga de asignar los descuentos dependiendo de la categoria de la membresia.
+        """<b>Description</b>: Este method se encarga de asignar los descuentos dependiendo de la categoria de la membresia.
 
 	    <b>param</b>: none : No se necesitan parametros.
 	    <b>return</b>: <b>void</b> : No realiza retorno. El sistema asigna el correspondiente descuento dependiendo de la categoria recorrida en el array.
@@ -57,12 +57,12 @@ class Membresia (Ibuyable):
 
     @classmethod
     def mostrarCategoria(cls, clienteProceso, sucursalCineProceso):
-        """<b>Description</b>: Este método se encarga de mostrar las categorias de membresias disponibles que hayan en la sucursal actual.
+        """<b>Description</b>: Este method se encarga de mostrar las categorias de membresias disponibles que hayan en la sucursal actual.
 	    Se realiza una búsqueda de los objetos de tipo Producto que sean de Membresia en el inventario de la sucursal. En caso
 	    de que la cantidad de alguno de estos productos este en 0, se indica al cliente que la opción esta agotada.
 	    Otra notación es que si el cliente ya posse una membresía y aún no esta en plazo de renovación, se omite su selección para tener mejor control sobre nuestras unidades limitadas en el inventario de la sucursal de la compra.
 
-	    <b>param</b>: clienteProceso : Se pide al cliente para verificar si posee membresía, lo cual modifica el resultado del método.
+	    <b>param</b>: clienteProceso : Se pide al cliente para verificar si posee membresía, lo cual modifica el resultado del method.
 	    <b>param</b>: sucursalCineProceso : Se pide la sucursal actual para poder realizar la búsqueda de objetos de tipo Producto pertenecientes a Membresía.
 	    <b>return</b>: <b>string</b> : Se retorna un texto mostrando el nombre de las categorias disponibles en la sucursal de la compra.
         """
@@ -106,7 +106,7 @@ class Membresia (Ibuyable):
 
     @classmethod
     def verificarRestriccionMembresia(cls, clienteProceso, categoriaSeleccionada, sucursalCineProceso):
-        """<b>Description</b>: Este método verifica a que categorias puede acceder el cliente. Se revisa si hay membresias disponibles y si el cliente tiene la cantidad de puntos e historial de peliculas como requisitos.
+        """<b>Description</b>: Este method verifica a que categorias puede acceder el cliente. Se revisa si hay membresias disponibles y si el cliente tiene la cantidad de puntos e historial de peliculas como requisitos.
 
 	    <b>param</b>: clienteProceso : Se pide al cliente para revisar su historial de peliculas para la verificación. Si tiene X peliculas vistas en el cine, tiene acceso a ciertas categorias.
 	    <b>param</b>: categoriaSeleccionada : Se pide el número de la categoria que quiera adquirir.
@@ -167,7 +167,7 @@ class Membresia (Ibuyable):
     
     @classmethod
     def asignarTipoMembresia(cls):
-        """<b>Description</b>: Este método asigna el tipo a la categoria de la membresia para ser usado posteriormente en otras funcionalidades.
+        """<b>Description</b>: Este method asigna el tipo a la categoria de la membresia para ser usado posteriormente en otras funcionalidades.
 
 	    <b>param</b>: none : No se solicitan parametros.
 	    <b>return</b>: <b>void</b> : No retorna ningún dato ya que solo actualiza el tipo de las membresias existentes.
@@ -183,7 +183,7 @@ class Membresia (Ibuyable):
 
     @classmethod
     def asignarMembresiaNueva(cls, categoriaMembresia):
-        """<b>Description</b>: Este método se encarga de asignar la nueva membresia con un apuntador de Membresia que coincida con la opción seleccionada durante el proceso de compra.
+        """<b>Description</b>: Este method se encarga de asignar la nueva membresia con un apuntador de Membresia que coincida con la opción seleccionada durante el proceso de compra.
 
 	    <b>param</b>: membresia : Se pide una instancia de tipo de membresia para usarlo como apuntador.
 	    <b>param</b>: categoriaMembresia : Se pide un entero que es la selección de la membresia.
@@ -203,7 +203,7 @@ class Membresia (Ibuyable):
 
     @classmethod
     def stockMembresia(cls, sucursalesCine = []):
-        """<b>Description</b>: Este método se encarga de añadir al inventario de cada sucursal de cine, 
+        """<b>Description</b>: Este method se encarga de añadir al inventario de cada sucursal de cine,
 	    los productos de tipo Membresia que se usarán para limitar las membresias que se puede adquirir en cada sucursal.
 	    Por cada sucursal de cine en el lista, se crean los productos que corresponden a cada membresia con una cantidad limitada.
 	    Esto se usa para tener un control sobre el número de membresia que se pueden adquirir en cada cine.
@@ -267,9 +267,9 @@ class Membresia (Ibuyable):
     def setClientes(self, clientes):
         self._clientes = clientes
 
-    #Métodos de Ibuyable
+    #methods de Ibuyable
     def procesarPagoRealizado(self, clienteProceso):
-        #Se asigna la referencia de la membresia adquirida en el cliente y se actualizan sus métodos de pago.
+        #Se asigna la referencia de la membresia adquirida en el cliente y se actualizan sus methods de pago.
         isPrimerMembresia = False
 
         #Si el cliente no tiene membresia al momento de la compra, se le asigna y se cambia el boolean.
@@ -305,7 +305,7 @@ class Membresia (Ibuyable):
                     productoMembresia.setCantidad(productoMembresia.getCantidad() - 1)
                     break
         
-        #Al adquirir la membresia, se crea y asigna un método de pago único que permite acumular puntos canjeables con compras en el cine.
+        #Al adquirir la membresia, se crea y asigna un method de pago único que permite acumular puntos canjeables con compras en el cine.
         MetodoPago.asignarMetodosDePago(clienteProceso)
 
         #Se pasa la referencia de la membresia al cliente que lo compró y se agrega este último al array de clientes en Membresia

@@ -6,7 +6,7 @@ import os
 
 class Deserializador:
     
-    #Creamos un método base que deserializa el primer elemento
+    # Creamos un méthod base que deserializa el primer elemento
     @classmethod
     def deserializarLugar(cls, dir):
 

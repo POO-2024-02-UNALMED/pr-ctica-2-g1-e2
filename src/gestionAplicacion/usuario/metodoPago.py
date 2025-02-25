@@ -46,12 +46,12 @@ class MetodoPago():
     @classmethod
     def mostrarMetodosDePago(cls, clienteProceso):
         """
-        <b>Description</b>: Este método se encarga de mostrar los métodos de pago disponibles con
+        <b>Description</b>: Este method se encarga de mostrar los methods de pago disponibles con
 	    sus descuentos. El resultado puede cambiar si el cliente posee membresia y el tipo de esta.
 	    
-        <b>Parameter</b>: <b>cliente</b> : Se usa el objeto de tipo Cliente para acceder a su lista de métodos de pago.
+        <b>Parameter</b>: <b>cliente</b> : Se usa el objeto de tipo Cliente para acceder a su lista de methods de pago.
 	    
-        <b>return</b>: <b>string</b> : Se retorna un texto mostrando el nombre de los métodos de pago con sus descuentos.
+        <b>return</b>: <b>string</b> : Se retorna un texto mostrando el nombre de los methods de pago con sus descuentos.
         """
         resultado = []
         i = 1
@@ -76,18 +76,18 @@ class MetodoPago():
 
     @classmethod
     def asignarMetodosDePago(cls, clienteProceso):
-        """<b>Description</b>: Este método se encarga de asignar los métodos de pago disponibles por 
-	    su tipo de membresia a su lista de métodos de pago.
+        """<b>Description</b>: Este method se encarga de asignar los methods de pago disponibles por
+	    su tipo de membresia a su lista de methods de pago.
 	    que tiene el cliente.
 
 	    <b>Parameters</b>: <b>cliente</b> : Se usa el objeto de tipo Cliente para revisar su membresia y poder asignar
-	    los métodos de pago.
+	    los methods de pago.
 
-	    <b>Return</b>: <b>Lista de métodos de pago</b> : Se retorna una lista mostrando los métodos de pago luego
+	    <b>Return</b>: <b>Lista de methods de pago</b> : Se retorna una lista mostrando los methods de pago luego
 	    de realizar el filtrado por la membresia.
         """
 
-        #Se limpia la lista de métodos de pago, esto en caso de que el cliente haya adquirido una membresia.
+        #Se limpia la lista de methods de pago, esto en caso de que el cliente haya adquirido una membresia.
         puntos = None
 
         for metodoPagoCliente in clienteProceso.getMetodosDePago():
@@ -96,7 +96,7 @@ class MetodoPago():
 
         clienteProceso.getMetodosDePago().clear()
 
-        #Se revisa si el cliente posee una membresia y de ser el caso, se asigna el canje de puntos como método de pago.
+        #Se revisa si el cliente posee una membresia y de ser el caso, se asigna el canje de puntos como method de pago.
         tipoMembresia = clienteProceso.getMembresia()
         tipoMembresiaInt = 0
 
@@ -106,7 +106,7 @@ class MetodoPago():
                 clienteProceso.setPuntos(2500)
                 puntos = MetodoPago("Puntos", 0.0, clienteProceso.getPuntos(), clienteProceso.getCineUbicacionActual(), tipoMembresiaInt)
 
-        #Se realiza un ciclo para filtrar los métodos de pago por el tipoMembresia del cliente y se añaden sus lista de métodos de pago.
+        #Se realiza un ciclo para filtrar los methods de pago por el tipoMembresia del cliente y se añaden sus lista de methods de pago.
         for metodoPago in clienteProceso.getCineUbicacionActual().getMetodosDePagoDisponibles():
             if (tipoMembresiaInt == metodoPago.getTipo()):
                 clienteProceso.getMetodosDePago().append(metodoPago)
@@ -120,7 +120,7 @@ class MetodoPago():
 
     @classmethod
     def metodoPagoPorTipo(cls, metodoPago):
-        """<b>Description</b>: Este método se encarga de crear varias instancias de los métodos de
+        """<b>Description</b>: Este method se encarga de crear varias instancias de los methods de
 	    pago con distinto tipo. Esto para usarse en la funcionalidad 5.
 
 	    <b>Parameters</b>: <b>metodopago</b> : Se usa el objeto de MetodoPago para crear sus instancias.
@@ -128,7 +128,7 @@ class MetodoPago():
 	    <b>Return</b> <b>void</b> : No se retorna dato. Se toman los atributos del objeto para crear varias instancias. Estos valores son modificados dependiendo del número de tipo en el ciclo for.
         """
 
-        #Se realiza un ciclo para crear varias instancias de los métodos de pago variando sus atributos.
+        #Se realiza un ciclo para crear varias instancias de los methods de pago variando sus atributos.
         for i in range (1, 3):
             nombre = metodoPago.getNombre()
             tipo = metodoPago.getTipo() + i
@@ -139,15 +139,15 @@ class MetodoPago():
 
     @classmethod
     def usarMetodoPago(cls, clienteProceso, metodoPagoAUsar):
-        """<b>Description</b>: Este método de asignar el método de pago para ser usado.
+        """<b>Description</b>: Este method de asignar el method de pago para ser usado.
 
-	    <b>Parameters</b>: metodoPagoAUsar : Se usa el número de la selección para poder escoger el método de pago.
-	    <b>Parameters</b>: cliente : Se usa el objeto de cliente para acceder a los métodos de pago.
-	    <b>Return</b>: <b>MetodoPago</b> : Se retorna el método de pago que coincide con la opción seleccionada.
+	    <b>Parameters</b>: metodoPagoAUsar : Se usa el número de la selección para poder escoger el method de pago.
+	    <b>Parameters</b>: cliente : Se usa el objeto de cliente para acceder a los methods de pago.
+	    <b>Return</b>: <b>MetodoPago</b> : Se retorna el method de pago que coincide con la opción seleccionada.
         """
 
         usar = None
-        #Se busca en los métodos de pago del cliente y se hace un apuntador al método de pago que coincida con el indice del método de pago más 1.
+        #Se busca en los methods de pago del cliente y se hace un apuntador al method de pago que coincida con el indice del method de pago más 1.
         for metodoPago in clienteProceso.getMetodosDePago():
             if (metodoPagoAUsar == clienteProceso.getMetodosDePago().index(metodoPago) + 1):
                 usar = metodoPago
@@ -157,27 +157,27 @@ class MetodoPago():
     
       
     def realizarPago(self, precio, clienteProceso):
-        """<b>Description</b> : Este método se encarga de tomar el valor a pagar, aplicar el descuento del método de pago elegido por el cliente y restarle el monto máximo que se puede pagar con ese método de pago, si el método de pago cubre el valor a pagar, éste se cambia se cambia a 0.
-	    Además, este método se encarga de pasar la referencia del método de pago a los métodos de pago usados y quita la referencia de métodos de pago disponibles asociados al cliente.
+        """<b>Description</b> : Este method se encarga de tomar el valor a pagar, aplicar el descuento del method de pago elegido por el cliente y restarle el monto máximo que se puede pagar con ese method de pago, si el method de pago cubre el valor a pagar, éste se cambia se cambia a 0.
+	    Además, este method se encarga de pasar la referencia del method de pago a los methods de pago usados y quita la referencia de methods de pago disponibles asociados al cliente.
 	    En caso de que el cliente tenga una membresía, se realiza la acumulación de puntos en base al valor pagado.
 
 	    <b>Parameter</b>: precio : Se pide el valor a pagar, este se obtuvo anteriormente como variable durante el proceso de la funcionalidad
 	    <b>Parameter</b>: cliente : Se pide al cliente que va a efectuar el proceso de realizar pago. Se revisa si tiene asignado una membresía.
 
-	    <b>Return</b>: <b>double</b> : En caso de que el método de pago cubra el valor a pagar retorna 0, en caso de que no
+	    <b>Return</b>: <b>double</b> : En caso de que el method de pago cubra el valor a pagar retorna 0, en caso de que no
 	    retorna el valor restante a pagar. 
         """
 
-        #Creamos un atributo con scope de método donde obtenemos el precio del producto, aplicamos el descuentoAsociado al metodoDePago y le restamos el LimiteMaximoPago
+        #Creamos un atributo con scope de method donde obtenemos el precio del producto, aplicamos el descuentoAsociado al metodoDePago y le restamos el LimiteMaximoPago
         valorAPagar = precio * (1-self.getDescuentoAsociado()) - self.getLimiteMaximoPago()
         if (valorAPagar < 0):
             valorAPagar = 0
 
-        #Cuando el método usado sea efectivo, no se pasará a usados y no se acumularan los puntos por la logica de negocios gracias a los convenios.
+        #Cuando el method usado sea efectivo, no se pasará a usados y no se acumularan los puntos por la logica de negocios gracias a los convenios.
         if (self.getNombre() == "Efectivo"):
             return valorAPagar
         
-        #Cuando el método sea Puntos, se realiza el descuento de esos puntos en el saldo.
+        #Cuando el method sea Puntos, se realiza el descuento de esos puntos en el saldo.
         if (self.getNombre() == "Puntos"):
             self.setLimiteMaximoPago(self.getLimiteMaximoPago() - precio)
             if (self.getLimiteMaximoPago() < 0):
@@ -195,17 +195,17 @@ class MetodoPago():
                     puntos = metodoPago
                     break
 
-        #Partimos de 1 para contar el método de pago puntos
+        #Partimos de 1 para contar el method de pago puntos
         totalMetodosDePagoPorTipo = 1
 
-        #Se realiza un ciclo para contar los métodos de pago por el tipoMembresia del cliente
+        #Se realiza un ciclo para contar los methods de pago por el tipoMembresia del cliente
         for metodoPago in self._sucursalCine.getMetodosDePagoDisponibles():
             if (tipoMembresia == metodoPago.getTipo()):
                 totalMetodosDePagoPorTipo+=1
 
 
 
-        #En caso de que el cliente no pudo cubrir la totalidad del pago y se haya llegado al limite de ese método de pago,
+        #En caso de que el cliente no pudo cubrir la totalidad del pago y se haya llegado al limite de ese method de pago,
 		#la acumulación de puntos solo se hara sobre el primer precio calculado luego del descuento. Los siguientes pagos ya estan cubiertos.
         if (len(clienteProceso.getMetodosDePago()) == totalMetodosDePagoPorTipo):
             if (tipoMembresia == 1):

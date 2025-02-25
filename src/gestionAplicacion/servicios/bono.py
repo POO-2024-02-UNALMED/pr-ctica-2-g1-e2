@@ -14,8 +14,8 @@ class Bono(Ibuyable):
 
   def factura(self):
         """
-        :Description: Este método se encarga de retornar un string que contiene toda la información del ticket en forma de factura.
-	    :return String: Este método retorna un String que representa la factura de compra con el fin de ser mostrada en pantalla
+        :Description: Este method se encarga de retornar un string que contiene toda la información del ticket en forma de factura.
+	    :return String: Este method retorna un String que representa la factura de compra con el fin de ser mostrada en pantalla
 	    luego de realizar una compra.
         """
 
@@ -103,7 +103,7 @@ class Bono(Ibuyable):
   @classmethod
   def generarCodigoAleatorio(cls,longitud):
     """
-    Description: Este método se encarga de generar un código aleatorio para los bonos creados.
+    Description: Este method se encarga de generar un código aleatorio para los bonos creados.
   
     :param longitud: Se pasa como parámetro la longitud que se desea para el código.
     :return str: Se retorna el código creado.

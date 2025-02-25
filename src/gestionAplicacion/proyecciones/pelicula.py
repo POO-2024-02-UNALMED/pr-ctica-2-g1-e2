@@ -37,10 +37,10 @@ class Pelicula:
     def crearSalaVirtual(self, horario):
 
         """
-        :Description: Este método se encarga de crear una matriz que representa la sala virtual, posteriormente se añade al array 
+        :Description: Este method se encarga de crear una matriz que representa la sala virtual, posteriormente se añade al array
 	    de asientos virtuales de la película y se añade el horario al array de horarios.
 
-	    :param horario: Este método recibe una fecha (De tipo datetime) para crear la salaDeCineVirtual.
+	    :param horario: Este method recibe una fecha (De tipo datetime) para crear la salaDeCineVirtual.
         """
 
         asientosSalaVirtual = []
@@ -57,15 +57,15 @@ class Pelicula:
     def filtrarCarteleraPorCliente(cls, cliente):
 
         """
-        :Description : Este método se encarga de filtar las películas en cartelera con los siguientes criterios:
+        :Description : Este method se encarga de filtar las películas en cartelera con los siguientes criterios:
 	    <ol>  
 	    <li>Su categoría es menor o igual a la edad del cliente.</li>
 	    <li>La película tiene al menos 1 horario en el cuál será presentada o se encuentra en presentación y no supera el
 	    límite de tiempo para comprar un ticket de una película en presentación (15 minutos).</li>  
 	    </ol>
-	    Todo esto con el fin de mostrar en pantalla, posteriormente, el array de las películas que cumplan estos criterios.
+	    Todito esto con el fin de mostrar en pantalla, posteriormente, el array de las películas que cumplan estos criterios.
 
-	    :param clienteProceso: Este método recibe como parámetro un cliente (De tipo cliente), que realizará el proceso de reserva de ticket.
+	    :param clienteProceso: Este method recibe como parámetro un cliente (De tipo cliente), que realizará el proceso de reserva de ticket.
 	    
         :return list(String): Retorna una lista con las peliculas filtradas por el criterio anterior.
         """
@@ -83,9 +83,9 @@ class Pelicula:
     def filtrarCarteleraPorNombre(cls, filtroPeliculasPorCliente):
 
         """
-        Description : Este método genera una lista filtrada según el nombre de las películas disponibles sin repetición.
+        Description : Este method genera una lista filtrada según el nombre de las películas disponibles sin repetición.
 	    
-        :param filtroPeliculasPorCliente: Este método recibe como parámetro las peliculas ( De tipo list(Pelicula) ) 
+        :param filtroPeliculasPorCliente: Este method recibe como parámetro las peliculas ( De tipo list(Pelicula) )
 	    resultantes de realizar el filtro por cliente (Edad y disponibilidad horaria).
 	    
         :return list(String): Retorna una lista de nombres de las películas distintos entre sí.
@@ -103,13 +103,13 @@ class Pelicula:
     def filtarCarteleraPorGenero(cls, filtroPeliculasPorCliente, genero):
 
         """
-	    :Description: Este método genera una lista filtrada según el nombre de las películas que coinciden con 
+	    :Description: Este method genera una lista filtrada según el nombre de las películas que coinciden con
         determinado género, sin repetición.
 
-	    :param filtroPeliculasPorCliente: Este método recibe como parámetro las peliculas ( De tipo list(Pelicula) ) 
+	    :param filtroPeliculasPorCliente: Este method recibe como parámetro las peliculas ( De tipo list(Pelicula) )
         resultantes de realizar el filtro por cliente (Edad y disponibilidad horaria). 
 	    
-        :param genero : Este método recibe como parámetro el género (De tipo String) más visualizado por el cliente.
+        :param genero : Este method recibe como parámetro el género (De tipo String) más visualizado por el cliente.
 
 	    :return list(String): Retorna una lista de nombres de las películas distintos entre sí, cuyo género es igual.
 	
@@ -144,16 +144,16 @@ class Pelicula:
     def obtenerPeliculasPorNombre(cls, nombrePelicula, peliculasDisponiblesCliente):
 
         """
-        :Description: Este método se encarga de retornar las películas cuyo nombre coincide con el nombre de la película 
+        :Description: Este method se encarga de retornar las películas cuyo nombre coincide con el nombre de la película
         seleccionada por el cliente.
 	    
-        :param nombrePelicula: Este método recibe como parámetro el nombre de la película ( De tipo String ) con el cuál 
+        :param nombrePelicula: Este method recibe como parámetro el nombre de la película ( De tipo String ) con el cuál
         se realizará el filtrado.
 	    
-        :param peliculasDisponiblesCliente: Este método recibe como parámetro una lista ( De tipo list(Pelicula) ) que contiene 
+        :param peliculasDisponiblesCliente: Este method recibe como parámetro una lista ( De tipo list(Pelicula) ) que contiene
 	    las películas previamente filtradas según los datos del cliente y su disponibilidad horaria.
 	    
-        :return list(Pelicula): Este método retorna un ArrayList de las películas cuyo nombre coinciden con el nombre seleccionado 
+        :return list(Pelicula): Este method retorna un ArrayList de las películas cuyo nombre coinciden con el nombre seleccionado
 	    por el cliente.
         """
         
@@ -172,7 +172,7 @@ class Pelicula:
     def modificarSalaVirtual(self, horario, fila, columna):
 
         """
-        :Description: Este método se encarga de cambiar la disponibilidad del asiento, seleccionado por el cliente, de la sala 
+        :Description: Este method se encarga de cambiar la disponibilidad del asiento, seleccionado por el cliente, de la sala
         virtual.
 	    
         :param horario: Recibe la fecha seleccionada por el cliente para obtener su índice de sala virtual y así acceder a sus 
@@ -189,7 +189,7 @@ class Pelicula:
     def isDisponibilidadAsientoSalaVirtual(self, horario: datetime):
 
         """
-        :Description : Este método se encarga revisar la disponibilidad de un asiento determinado de la sala de cine virtual
+        :Description : Este method se encarga revisar la disponibilidad de un asiento determinado de la sala de cine virtual
         o de evaluar si existe algún asiento disponible en los asientos asociados al horario.
 	    
         :param horario: Recibe la fecha seleccionada por el cliente para obtener su índice de sala virtual y así acceder a sus asientos ( De tipo datetime ).
@@ -199,7 +199,7 @@ class Pelicula:
 	    
         :param columna: Recibe el número de la columna seleccionada por el cliente (De tipo int).
 	    
-        :return boolean: Este método retorna un boolean que representa la disponibilidad del asiento selccionado por el cliente.
+        :return boolean: Este method retorna un boolean que representa la disponibilidad del asiento selccionado por el cliente.
         """
 
         for filaAsientos in self._asientosSalasVirtuales[self._horariosPresentacion.index(horario)]:
@@ -216,10 +216,10 @@ class Pelicula:
     def filtrarHorariosPelicula(self):
 
         """
-        :Description: Este método se encarga de filtrar los horarios de la película más próximos que no han sido presentados 
+        :Description: Este method se encarga de filtrar los horarios de la película más próximos que no han sido presentados
         aún y tienen asientos disponibles.
 
-	    :return list(datetime): Este método se encarga de retornar los primeros 7 horarios más cercanos a la fecha actual 
+	    :return list(datetime): Este method se encarga de retornar los primeros 7 horarios más cercanos a la fecha actual
         que cumplen los criterios de filtrado.
         """
         
@@ -237,7 +237,7 @@ class Pelicula:
     def filtrarHorariosParaMostrar(self):
         
         """
-        :Description: Este método se encarga de generar la lista de horarios que serán mostrados en el combobox de la interfaz
+        :Description: Este method se encarga de generar la lista de horarios que serán mostrados en el combobox de la interfaz
         """
 
         if self.isPeliculaEnPresentacion():
@@ -252,11 +252,11 @@ class Pelicula:
     def filtrarHorariosPeliculaParaSalaCine(self):
 
         """
-        :Description: Este método se encarga de filtrar los horarios de la película ejecutando el método que están disponibles 
+        :Description: Este method se encarga de filtrar los horarios de la película ejecutando el method que están disponibles
         durante el día actual, retornando la lista de horarios encontrados, con el fin de optimizar la actualización de las
         salas de cine.
 
-	    :return list(datetime): Este método retorna los horarios de la película que serán o fueron presentados el día de hoy.
+	    :return list(datetime): Este method retorna los horarios de la película que serán o fueron presentados el día de hoy.
         """
         
         filtrarHorariosPresentacionesHoy = []
@@ -274,8 +274,8 @@ class Pelicula:
     def isPeliculaEnPresentacion(self):
 
         """
-        :Description: Este método se encarga de buscar si la pelicula que ejecuta este método se encuentra en presentación, la 
-	    utilidad de este método radica en que retornará verdadero en caso de:
+        :Description: Este method se encarga de buscar si la pelicula que ejecuta este method se encuentra en presentación, la
+	    utilidad de este method radica en que retornará verdadero en caso de:
 	    <ol> 
 	    <li> Encontrar la sala de cine donde está siendo presentada.</li>
 	    <li> No lleva más de 15 minutos en presentación.</li>
@@ -283,10 +283,10 @@ class Pelicula:
 	    </ol>
 	    Respecto a este retorno, se ejecutará un menú determinado en el proceso de la funcionalidad 1.
 	    
-        :param sucursalCine: Este método recibe como parámetro la sede (De tipo SucursalCine) en donde se realiza este proceso, para
+        :param sucursalCine: Este method recibe como parámetro la sede (De tipo SucursalCine) en donde se realiza este proceso, para
 	    obtener sus salas de cine.
 	    
-        :return boolean: Este método retorna un boolean, que representa si la película cumple, o no, con los criterios.
+        :return boolean: Este method retorna un boolean, que representa si la película cumple, o no, con los criterios.
         """
 
         for salaDeCine in self._sucursalCartelera.getSalasDeCine():
@@ -303,10 +303,10 @@ class Pelicula:
     def whereIsPeliculaEnPresentacion(self):
 
         """
-        :Description: Este método se encarga de retornar la sala de cine donde película que ejecuta este método se encuentra en 
+        :Description: Este method se encarga de retornar la sala de cine donde película que ejecuta este method se encuentra en
         presentación.
 	    
-        :return SalaCine: Este método retorna la sala de cine donde está siendo proyectada la película.
+        :return SalaCine: Este method retorna la sala de cine donde está siendo proyectada la película.
         """
         
         for salaDeCine in self._sucursalCartelera.getSalasDeCine():
@@ -316,11 +316,11 @@ class Pelicula:
     def filasConAsientosDisponibles(matrizDeAsientos):
 
         """
-        :Description: Este método se encarga de retornar una lista de las filas con asientos disponibles
+        :Description: Este method se encarga de retornar una lista de las filas con asientos disponibles
 
-        :param matrizDeAsientos: Este método recibe como parámetro los asientos que analizará
+        :param matrizDeAsientos: Este method recibe como parámetro los asientos que analizará
 
-        :return list(int): Este método retorna una lista con los números de las filas que tienen algún asiento disponible
+        :return list(int): Este method retorna una lista con los números de las filas que tienen algún asiento disponible
         """
 
         numeroFilaDisponible = []
@@ -339,11 +339,11 @@ class Pelicula:
     def asientosDisponibles(fila, matrizDeAsientos):
 
         """
-        :Description: Este método se encarga de retornar una lista de los asientos disponibles dada una fila de asientos
+        :Description: Este method se encarga de retornar una lista de los asientos disponibles dada una fila de asientos
 
-        :param matrizDeAsientos: Este método recibe como parámetro los asientos que analizará
+        :param matrizDeAsientos: Este method recibe como parámetro los asientos que analizará
 
-        :return list(int): Este método retorna una lista con los números de las columnas que representan los asientos disponibles
+        :return list(int): Este method retorna una lista con los números de las columnas que representan los asientos disponibles
         """
 
         numeroColumnaDisponible = []
@@ -360,12 +360,12 @@ class Pelicula:
     def crearPeliculas(self):
 
         """
-        :Description : Este método se encarga de automatizar la creación de películas en varios formatos con distinto precio, 
-        para hacer esto se evalua si el género de la película que ejecuta este método se encuentra en los géneros que tienen 
+        :Description : Este method se encarga de automatizar la creación de películas en varios formatos con distinto precio,
+        para hacer esto se evalua si el género de la película que ejecuta este method se encuentra en los géneros que tienen
         permitido el 3D y 4D o únicamente 3D, en caso de ser así, crea una película nueva con toda su misma información, 
         a excepción del tipo de formato y precio.
 	    
-        :param sucursalCine: Este método recibe como parámetro la sede (De tipo SucursalCine) en la que será presentada la película.
+        :param sucursalCine: Este method recibe como parámetro la sede (De tipo SucursalCine) en la que será presentada la película.
         """
         
         generos4D = ["Aventura", "Acción", "Ciencia ficción", "Terror", "Infantil"]
@@ -378,7 +378,7 @@ class Pelicula:
             Pelicula(self._nombre, self._precio + 15000, self._genero, self._duracion, self._clasificacion, "3D", self._sucursalCartelera)
 
 
-#Description: Este método se encarga de filtrar los horarios de la película ejecutando el método
+#Description: Este method se encarga de filtrar los horarios de la película ejecutando el method
 #que están disponibles durante el día actual, retornando la lista de horarios encontrados, con 
 #el fin de efectuar la actualización y solicitud de actualización de las salas de cine.
 

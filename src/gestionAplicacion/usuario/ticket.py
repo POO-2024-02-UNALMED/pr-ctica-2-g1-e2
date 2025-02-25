@@ -27,7 +27,7 @@ class Ticket(Ibuyable):
     def _clienteSuertudo(self):
 
         """
-        :Description: Este método se encarga de verificar si se puede aplicar o no un descuento sobre el precio de la película
+        :Description: Este method se encarga de verificar si se puede aplicar o no un descuento sobre el precio de la película
 	    según si la cantidad de tickets creados corresponde a un cuadrado perfecto.
 	    
         :return float: Retorna un float que corresponde al precio del ticket en caso de aplicarse o no el descuento.
@@ -44,7 +44,7 @@ class Ticket(Ibuyable):
     def procesarPagoRealizado(self, cliente):
 
         """
-        Description: Este método se encarga de generar el último paso del proceso de pago y será ejecutado por un ticket luego de ser verificado el pago: 
+        Description: Este method se encarga de generar el último paso del proceso de pago y será ejecutado por un ticket luego de ser verificado el pago:
 	    <ol>
 	    <li> Se vuelven a settear los metodos de pago que el cliente tendrá disponibles.</li>
 	    <li> Se pasa la referencia del ticket al array de tickets del usuario.</li>
@@ -104,8 +104,8 @@ class Ticket(Ibuyable):
 
     def factura(self):
         """
-        :Description: Este método se encarga de retornar un string que contiene toda la información del ticket en forma de factura.
-	    :return String: Este método retorna un String que representa la factura de compra con el fin de ser mostrada en pantalla
+        :Description: Este method se encarga de retornar un string que contiene toda la información del ticket en forma de factura.
+	    :return String: Este method retorna un String que representa la factura de compra con el fin de ser mostrada en pantalla
 	    luego de realizar una compra.
         """
 
@@ -125,10 +125,10 @@ class Ticket(Ibuyable):
     @classmethod
     def encontrarGeneroCodigoPelicula(cls, codigo):
         """
-        Descripción: Este método se encarga de encontrar el género de la película asociada a un código que está contenido dentro del string del mismo.
+        Descripción: Este method se encarga de encontrar el género de la película asociada a un código que está contenido dentro del string del mismo.
 
-        :param codigo: Este método recibe como parámetro el código del cual se sacará un substring con el género de la película.
-        :return: Este método retorna un string que contiene la información del género de la película del código.
+        :param codigo: Este method recibe como parámetro el código del cual se sacará un substring con el género de la película.
+        :return: Este method retorna un string que contiene la información del género de la película del código.
         """
         indice_guion = codigo.find("-")
 
